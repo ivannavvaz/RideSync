@@ -24,6 +24,9 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentProfileBinding.inflate(layoutInflater)
 
+        // Hide main tab layout
+        (activity as? MainActivity)?.hideTabLayout()
+
         mAuth = FirebaseAuth.getInstance()
 
         mBinding.tvEmail.text = getEmail()

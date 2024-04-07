@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Activity
@@ -18,6 +20,7 @@ import com.inavarro.ridesync.databinding.FragmentFindBinding
 import com.inavarro.ridesync.databinding.ItemActivityForFindBinding
 import com.inavarro.ridesync.databinding.ItemGroupBinding
 import com.inavarro.ridesync.databinding.ItemGroupForFindBinding
+import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.mainModule.chatsModule.ChatsFragment
 
 class FindFragment : Fragment() {
@@ -29,6 +32,9 @@ class FindFragment : Fragment() {
     private lateinit var mFirestoreAdapter: FirestoreRecyclerAdapter<Any, FindHolder>
 
     private lateinit var mItems: MutableList<Any>
+
+    private lateinit var mTabLayout: TabLayout
+    private lateinit var mViewPager: ViewPager2
 
     inner class FindHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -48,6 +54,10 @@ class FindFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mBinding = FragmentFindBinding.inflate(layoutInflater)
+
+        // Show main tab layout
+        (activity as? MainActivity)?.showTabLayout()
+
         return mBinding.root
     }
 
@@ -56,10 +66,7 @@ class FindFragment : Fragment() {
 
         mLayoutManager = LinearLayoutManager(context)
 
-        val queryGroups = FirebaseFirestore.getInstance().collection("groups")
-
-        val queryActivities = FirebaseFirestore.getInstance().collection("activities")
-
+        /*
         val optionsGroups = FirestoreRecyclerOptions.Builder<Group>()
             .setQuery(queryGroups, Group::class.java)
             .build()
@@ -67,8 +74,6 @@ class FindFragment : Fragment() {
         val optionsActivities = FirestoreRecyclerOptions.Builder<Activity>()
             .setQuery(queryActivities, Activity::class.java)
             .build()
-
-        mItems = mutableListOf<Any>()
-        
+         */
     }
 }

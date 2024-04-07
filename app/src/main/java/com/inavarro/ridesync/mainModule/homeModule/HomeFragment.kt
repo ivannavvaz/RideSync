@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentHomeBinding
+import com.inavarro.ridesync.mainModule.MainActivity
 
 class HomeFragment : Fragment() {
 
@@ -18,6 +19,10 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mBinding = FragmentHomeBinding.inflate(layoutInflater)
+
+        // Hide main tab layout
+        (activity as? MainActivity)?.hideTabLayout()
+
         return mBinding.root
     }
 }

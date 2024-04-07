@@ -58,6 +58,9 @@ open class ChatsFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentChatsBinding.inflate(layoutInflater)
 
+        // Hide main tab layout
+        (activity as? MainActivity)?.hideTabLayout()
+
         setupSearchView()
 
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
@@ -126,9 +129,16 @@ open class ChatsFragment : Fragment() {
                                 }
                             }
 
+                            val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                             val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                            val date = Timestamp(message.sendTime!!, 0).toDate()
-                            binding.tvLastMessageTime.text = hourFormat.format(date)
+                            val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
+                            val dateHourFormat = Timestamp(message.sendTime!!, 0).toDate()
+
+                            if (dayFormat.format(dateDayFormat) == dayFormat.format(Date())) {
+                                binding.tvLastMessageTime.text = hourFormat.format(dateHourFormat)
+                            } else {
+                                binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
+                            }
                         }
                     }
 
