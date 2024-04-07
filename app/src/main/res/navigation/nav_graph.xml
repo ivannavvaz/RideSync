@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.inavarro.ridesync.mainModule.homeModule.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_chatsFragment2"
+            app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_findFragment2"
+            app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/findFragment"
+        android:name="com.inavarro.ridesync.mainModule.findModule.FindFragment"
+        android:label="fragment_find"
+        tools:layout="@layout/fragment_find" >
+        <action
+            android:id="@+id/action_findFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_findFragment_to_chatsFragment2"
+            app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_findFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatsFragment"
+        android:name="com.inavarro.ridesync.mainModule.chatsModule.ChatsFragment"
+        android:label="fragment_chats"
+        tools:layout="@layout/fragment_chats" >
+        <action
+            android:id="@+id/action_chatsFragment_to_findFragment2"
+            app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_chatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.inavarro.ridesync.mainModule.profileModule.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_findFragment2"
+            app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_chatsFragment2"
+            app:destination="@id/chatsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_homeFragment2"
+            app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.inavarro.ridesync.mainModule.chatModule.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" >
+        <action
+            android:id="@+id/action_chatFragment_to_chatsFragment"
+            app:destination="@id/chatsFragment" />
+        <argument
+            android:name="idGroup"
+            app:argType="string"
+            android:defaultValue="0" />
+    </fragment>
+</navigation>

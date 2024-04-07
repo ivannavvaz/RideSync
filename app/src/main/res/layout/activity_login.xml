@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".authModule.loginModule.LoginActivity">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal" >
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="Iniciar Sesión"
+                android:textSize="30sp" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:hint="Email"
+                android:textAlignment="textStart" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPassword"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:textAlignment="textStart" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLogin"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Login" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegister"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Register" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnGoogle"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:layout_marginTop="10dp"
+                android:paddingStart="@dimen/common_padding_default"
+                android:drawablePadding="@dimen/common_padding_default"
+                android:drawableStart="@mipmap/google"
+                android:background="@null"
+                android:text="Google"
+                android:textAlignment="textStart"
+                android:contentDescription="Google Login" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
