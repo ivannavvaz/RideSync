@@ -11,5 +11,6 @@ data class Group(
     val description: String? = null,
     val members: List<DocumentReference>? = null,
     val image: String? = null,
-    val lastMessageRef: DocumentReference? = null
+    val lastMessageRef: DocumentReference? = null,
+    val lastMessageTime: Long? = null
 )

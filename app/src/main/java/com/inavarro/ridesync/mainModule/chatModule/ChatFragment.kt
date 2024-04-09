@@ -88,6 +88,10 @@ class ChatFragment : Fragment() {
                 db.collection("groups")
                     .document(arguments?.getString("idGroup")!!)
                     .update("lastMessageRef", db.collection("groups").document(arguments?.getString("idGroup")!!).collection("messages").document(ref.key!!))
+
+                db.collection("groups")
+                    .document(arguments?.getString("idGroup")!!)
+                    .update("lastMessageTime", Timestamp.now().seconds)
             }
         }
 

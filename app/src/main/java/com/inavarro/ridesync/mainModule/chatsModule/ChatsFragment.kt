@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.Message
@@ -58,9 +59,6 @@ open class ChatsFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentChatsBinding.inflate(layoutInflater)
 
-        // Hide main tab layout
-        (activity as? MainActivity)?.hideTabLayout()
-
         setupSearchView()
 
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
@@ -79,7 +77,7 @@ open class ChatsFragment : Fragment() {
 
         mLayoutManager = LinearLayoutManager(context)
 
-        val query= FirebaseFirestore.getInstance().collection("groups")
+        val query= FirebaseFirestore.getInstance().collection("groups").orderBy("lastMessageTime", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
             .setQuery(query, Group::class.java)
@@ -131,6 +129,7 @@ open class ChatsFragment : Fragment() {
 
                             val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                             val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+
                             val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
                             val dateHourFormat = Timestamp(message.sendTime!!, 0).toDate()
 

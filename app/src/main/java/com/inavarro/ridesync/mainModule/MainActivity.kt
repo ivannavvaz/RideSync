@@ -4,19 +4,14 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.firebase.ui.auth.AuthUI
-import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.databinding.ActivityMainBinding
-import com.inavarro.ridesync.mainModule.chatModule.ChatFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,13 +55,5 @@ class MainActivity : AppCompatActivity() {
 
     fun showBottomNav() {
         mBinding.bottomNavigationView.visibility = View.VISIBLE
-    }
-
-    fun hideTabLayout() {
-        mBinding.tabLayout.visibility = View.GONE
-    }
-
-    fun showTabLayout() {
-        mBinding.tabLayout.visibility = View.VISIBLE
     }
 }
