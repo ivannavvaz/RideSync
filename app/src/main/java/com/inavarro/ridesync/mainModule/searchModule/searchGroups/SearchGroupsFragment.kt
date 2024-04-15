@@ -153,6 +153,7 @@ class SearchGroupsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     val query = FirebaseFirestore.getInstance().collection("groups")
+                        .orderBy("name")
                         .startAt(newText.lowercase())
                         .endAt(newText.lowercase() + "\uf8ff")
 

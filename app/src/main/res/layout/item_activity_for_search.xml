@@ -6,7 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:ignore="MissingDefaultResource"
     app:cardCornerRadius="24dp"
-    android:minHeight="160dp">
+    android:minHeight="160dp"
+    android:layout_marginStart="@dimen/common_margin_default"
+    android:layout_marginEnd="@dimen/common_margin_default">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

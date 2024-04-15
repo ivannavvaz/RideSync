@@ -159,6 +159,7 @@ class SearchActivitiesFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     val query = FirebaseFirestore.getInstance().collection("activities")
+                        .orderBy("title")
                         .startAt(newText.lowercase())
                         .endAt(newText.lowercase() + "\uf8ff")
 
