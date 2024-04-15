@@ -50,6 +50,8 @@ class ChatFragment : Fragment() {
 
         (activity as? MainActivity)?.hideBottomNav()
 
+        mBinding.tvName.text = arguments?.getString("nameGroup").toString().replaceFirstChar { it.uppercase() }
+
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()
         }

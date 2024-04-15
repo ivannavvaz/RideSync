@@ -61,14 +61,6 @@ open class ChatsFragment : Fragment() {
 
         setupSearchView()
 
-        mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                (activity as? MainActivity)?.hideBottomNav()
-            } else {
-                (activity as? MainActivity)?.showBottomNav()
-            }
-        }
-
         return mBinding.root
     }
 
@@ -77,7 +69,9 @@ open class ChatsFragment : Fragment() {
 
         mLayoutManager = LinearLayoutManager(context)
 
-        val query= FirebaseFirestore.getInstance().collection("groups").orderBy("lastMessageTime", Query.Direction.DESCENDING)
+        val query = FirebaseFirestore.getInstance()
+            .collection("groups")
+            .orderBy("lastMessageTime", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
             .setQuery(query, Group::class.java)
@@ -90,7 +84,8 @@ open class ChatsFragment : Fragment() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupHolder {
                 context = parent.context
 
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_group, parent, false)
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_group, parent, false)
 
                 return GroupHolder(view)
             }
@@ -149,7 +144,7 @@ open class ChatsFragment : Fragment() {
                             }
                         }
 
-                        findNavController().navigate(ChatsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!))
+                        findNavController().navigate(ChatsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
                     }
                 }
             }
@@ -157,8 +152,6 @@ open class ChatsFragment : Fragment() {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChanged() {
                 super.onDataChanged()
-
-                mBinding.rvChats.scrollToPosition(mFirestoreAdapter.itemCount - 1)
 
                 notifyDataSetChanged()
             }
@@ -177,6 +170,20 @@ open class ChatsFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val query = FirebaseFirestore.getInstance()
+            .collection("groups")
+            .orderBy("lastMessageTime", Query.Direction.DESCENDING)
+
+        val options = FirestoreRecyclerOptions.Builder<Group>()
+            .setQuery(query, Group::class.java)
+            .build()
+
+        mFirestoreAdapter.updateOptions(options)
+    }
+
     override fun onStart() {
         super.onStart()
 
@@ -192,6 +199,14 @@ open class ChatsFragment : Fragment() {
     }
 
     private fun setupSearchView() {
+        mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                (activity as? MainActivity)?.hideBottomNav()
+            } else {
+                (activity as? MainActivity)?.showBottomNav()
+            }
+        }
+
         mBinding.svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false

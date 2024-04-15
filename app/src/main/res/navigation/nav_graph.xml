@@ -79,5 +79,8 @@
             android:name="idGroup"
             app:argType="string"
             android:defaultValue="0" />
+        <argument android:name="nameGroup"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
 </navigation>

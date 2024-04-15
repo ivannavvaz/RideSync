@@ -9,6 +9,7 @@ data class Group(
 
     val name: String? = null,
     val description: String? = null,
+    val location: String? = null,
     val members: List<DocumentReference>? = null,
     val image: String? = null,
     val lastMessageRef: DocumentReference? = null,

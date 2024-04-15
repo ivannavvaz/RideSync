@@ -9,5 +9,6 @@ data class Activity(
     val title: String? = null,
     val description: String? = null,
     val date: Long? = null,
+    val location: String? = null,
     val image: String? = null,
 )

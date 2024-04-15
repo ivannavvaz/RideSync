@@ -29,8 +29,8 @@ class SearchFragment : Fragment() {
         mBinding.viewPager.adapter = ViewPagerAdapter(this)
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
             when(position){
-                0 -> tab.text = "Grupos"
-                1 -> tab.text = "Actividades"
+                0 -> tab.text = "Actividades"
+                1 -> tab.text = "Grupos"
             }
         }.attach()
     }
