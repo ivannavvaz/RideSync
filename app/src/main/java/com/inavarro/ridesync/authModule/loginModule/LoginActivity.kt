@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.R
+import com.inavarro.ridesync.authModule.registerModule.RegisterActivity
 import com.inavarro.ridesync.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -52,7 +53,8 @@ class LoginActivity : AppCompatActivity() {
         }
 
         mBinding.btnRegister.setOnClickListener {
-            // TODO: Go to the register activity
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
         }
 
         mBinding.btnGoogle.setOnClickListener {
