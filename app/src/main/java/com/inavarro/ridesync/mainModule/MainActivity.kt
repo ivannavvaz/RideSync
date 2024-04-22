@@ -56,4 +56,8 @@ class MainActivity : AppCompatActivity() {
     fun showBottomNav() {
         mBinding.bottomNavigationView.visibility = View.VISIBLE
     }
+
+    fun getUidUser(): String {
+        return mAuth.currentUser?.uid ?: ""
+    }
 }

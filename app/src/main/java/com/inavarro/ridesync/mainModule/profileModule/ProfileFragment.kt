@@ -11,6 +11,7 @@ import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.mainModule.MainActivity
+import java.util.Locale
 
 class ProfileFragment : Fragment() {
 
@@ -52,7 +53,8 @@ class ProfileFragment : Fragment() {
     private fun getUserName(): String? {
         val user = mAuth.currentUser
         return if (user != null) {
-            user.displayName
+            // First letter in uppercase
+            user.displayName?.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
         } else "anonymous"
     }
 

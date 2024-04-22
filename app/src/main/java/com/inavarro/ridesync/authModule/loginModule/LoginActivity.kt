@@ -2,7 +2,9 @@ package com.inavarro.ridesync.authModule.loginModule
 
 import android.app.Activity
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -23,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityLoginBinding
     private lateinit var mAuth: FirebaseAuth
+    private lateinit var mSharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +35,20 @@ class LoginActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        setup()
+        setupSharedPreferences()
+
+        mBinding.btnLogin.setOnClickListener {
+            signIn()
+        }
+
+        mBinding.btnGoogle.setOnClickListener {
+            signInWithGoogle()
+        }
+
+        mBinding.btnRegister.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun reload() {
@@ -45,61 +61,76 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun setup() {
-        mBinding.btnLogin.setOnClickListener {
-            val email = mBinding.etEmail.text.toString().trim()
-            val password = mBinding.etPassword.text.toString().trim()
-            signIn(email, password)
-        }
-
-        mBinding.btnRegister.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
-
-        mBinding.btnGoogle.setOnClickListener {
-            val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build()
-
-            val googleClient = GoogleSignIn.getClient(this, googleConf)
-            googleClient.signOut()
-
-            //startActivityForResult(googleClient.signInIntent, mGoogleSignIn)
-
-            resultLauncher.launch(googleClient.signInIntent)
+    private fun setupSharedPreferences() {
+        mSharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
+        if (mSharedPreferences.getBoolean("session", false)) {
+            val email = mSharedPreferences.getString("email", "")
+            val password = mSharedPreferences.getString("password", "")
+            mBinding.etEmail.setText(email)
+            mBinding.etPassword.setText(password)
+            mBinding.cbRemember.isChecked = true
         }
     }
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
-            Toast.makeText(this, "Authentication success.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Credenciales incorrectas.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun signIn(email: String, password: String) {
-        mAuth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
+    private fun signIn() {
 
-                    val user = mAuth.currentUser
-                    updateUI(user)
+        val email = mBinding.etEmail.text.toString().trim()
+        val password = mBinding.etPassword.text.toString().trim()
 
-                    // Go to the next activity
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos.", Toast.LENGTH_SHORT).show()
+        } else {
+            mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(TAG, "signInWithEmail:success")
 
-                    updateUI(null)
+                        val user = mAuth.currentUser
+                        updateUI(user)
+
+                        if (mBinding.cbRemember.isChecked) {
+                            mSharedPreferences.edit()
+                                .putString("email", email)
+                                .putString("password", password)
+                                .putBoolean("session", true)
+                                .apply()
+                        } else {
+                            mSharedPreferences.edit()
+                                .putBoolean("session", false)
+                                .apply()
+                        }
+
+                        // Go to the next activity
+                        intentToMainActivity()
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+
+                        updateUI(null)
+                    }
                 }
-            }
+        }
+    }
+
+    private fun signInWithGoogle() {
+        val googleConf = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+
+        val googleClient = GoogleSignIn.getClient(this, googleConf)
+        googleClient.signOut()
+
+        resultLauncher.launch(googleClient.signInIntent)
     }
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -121,8 +152,7 @@ class LoginActivity : AppCompatActivity() {
                             updateUI(user)
 
                             // Go to the next activity
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
+                           intentToMainActivity()
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -135,5 +165,11 @@ class LoginActivity : AppCompatActivity() {
                 updateUI(null)
             }
         }
+    }
+
+    private fun intentToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".authModule.registerModule.RegisterActivity"
-    android:layout_margin="16dp"
+    android:padding="@dimen/common_padding_default"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -204,10 +204,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnSignUp"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="@dimen/common_margin_default"
+        android:layout_marginTop="26dp"
         app:cornerRadius="8dp"
         android:text="Registrarse" />
 

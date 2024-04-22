@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,9 +93,19 @@ class SearchGroupsFragment : Fragment() {
                 val group = getItem(position)
 
                 with(holder) {
-                    binding.tvGroupName.text = group.name.toString().replaceFirstChar { it.uppercase() }
+                    binding.tvGroupName.text =
+                        group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
                     binding.tvLocation.text = group.location
+
+                    // Check if I am a member of the group with the uid of the current user
+                    if (group.users != null) {
+                        if ((activity as MainActivity).getUidUser() in group.users!!) {
+                            binding.ivCheck.visibility = View.VISIBLE
+                        } else {
+                            binding.ivCheck.visibility = View.GONE
+                        }
+                    }
 
                     setListener(group)
                 }

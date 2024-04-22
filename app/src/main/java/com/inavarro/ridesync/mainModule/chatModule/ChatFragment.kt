@@ -23,6 +23,7 @@ import com.inavarro.ridesync.databinding.FragmentChatBinding
 import com.inavarro.ridesync.databinding.ItemMessageBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
 
 class ChatFragment : Fragment() {
@@ -138,8 +139,17 @@ class ChatFragment : Fragment() {
                     binding.messengerTextView.text = message.name
 
                     val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                    val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val dayHourFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+
+                    val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
                     val date = Timestamp(message.sendTime!!, 0).toDate()
-                    binding.dateTextView.text = hourFormat.format(date)
+
+                    if (dayFormat.format(dateDayFormat) == dayFormat.format(Date())) {
+                        binding.dateTextView.text = hourFormat.format(date)
+                    } else {
+                        binding.dateTextView.text = dayHourFormat.format(date)
+                    }
 
                     if (message.name == FirebaseAuth.getInstance().currentUser?.displayName) {
                         binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_blue)
