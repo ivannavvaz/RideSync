@@ -1,15 +1,12 @@
-package com.inavarro.ridesync.mainModule.chatsModule
+package com.inavarro.ridesync.mainModule.groupsModule.myGroups
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -20,25 +17,24 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.Message
-import com.inavarro.ridesync.databinding.FragmentChatsBinding
+import com.inavarro.ridesync.databinding.FragmentMyGroupsBinding
 import com.inavarro.ridesync.databinding.ItemGroupBinding
 import com.inavarro.ridesync.mainModule.MainActivity
+import com.inavarro.ridesync.mainModule.groupsModule.GroupsFragmentDirections
 import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
 
-open class ChatsFragment : Fragment() {
+open class MyGroupsFragment : Fragment() {
 
-    private lateinit var mBinding: FragmentChatsBinding
+    private lateinit var mBinding: FragmentMyGroupsBinding
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
@@ -57,7 +53,7 @@ open class ChatsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        mBinding = FragmentChatsBinding.inflate(layoutInflater)
+        mBinding = FragmentMyGroupsBinding.inflate(layoutInflater)
 
         setupSearchView()
 
@@ -144,7 +140,7 @@ open class ChatsFragment : Fragment() {
                             }
                         }
 
-                        findNavController().navigate(ChatsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
+                        findNavController().navigate(GroupsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
                     }
                 }
             }

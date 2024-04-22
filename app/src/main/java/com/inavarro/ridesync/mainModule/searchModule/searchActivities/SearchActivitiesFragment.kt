@@ -19,11 +19,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Activity
-import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.databinding.FragmentSearchActivitiesBinding
 import com.inavarro.ridesync.databinding.ItemActivityForSearchBinding
 import com.inavarro.ridesync.mainModule.MainActivity
-import com.inavarro.ridesync.mainModule.searchModule.searchGroups.SearchGroupsFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
 

@@ -22,16 +22,4 @@ class SearchFragment : Fragment() {
 
         return mBinding.root
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        mBinding.viewPager.adapter = ViewPagerAdapter(this)
-        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
-            when(position){
-                0 -> tab.text = "Actividades"
-                1 -> tab.text = "Grupos"
-            }
-        }.attach()
-    }
 }

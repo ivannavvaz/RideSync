@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".mainModule.chatModule.ChatFragment"
+    tools:context=".mainModule.groupModule.ChatFragment"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout

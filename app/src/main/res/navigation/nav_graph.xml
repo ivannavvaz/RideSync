@@ -6,12 +6,12 @@
     app:startDestination="@id/homeFragment">
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.inavarro.ridesync.mainModule.homeModule.HomeFragment"
+        android:name="com.inavarro.ridesync.mainModule.shopModule.ShopFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_shop" >
         <action
             android:id="@+id/action_homeFragment_to_chatsFragment2"
-            app:destination="@id/chatsFragment" />
+            app:destination="@id/GroupsFragment" />
         <action
             android:id="@+id/action_homeFragment_to_findFragment2"
             app:destination="@id/findFragment" />
@@ -29,16 +29,16 @@
             app:destination="@id/profileFragment" />
         <action
             android:id="@+id/action_findFragment_to_chatsFragment2"
-            app:destination="@id/chatsFragment" />
+            app:destination="@id/GroupsFragment" />
         <action
             android:id="@+id/action_findFragment_to_homeFragment2"
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
-        android:id="@+id/chatsFragment"
-        android:name="com.inavarro.ridesync.mainModule.chatsModule.ChatsFragment"
+        android:id="@+id/GroupsFragment"
+        android:name="com.inavarro.ridesync.mainModule.groupsModule.GroupsFragment"
         android:label="fragment_chats"
-        tools:layout="@layout/fragment_chats" >
+        tools:layout="@layout/fragment_groups" >
         <action
             android:id="@+id/action_chatsFragment_to_findFragment2"
             app:destination="@id/findFragment" />
@@ -62,19 +62,19 @@
             app:destination="@id/findFragment" />
         <action
             android:id="@+id/action_profileFragment_to_chatsFragment2"
-            app:destination="@id/chatsFragment" />
+            app:destination="@id/GroupsFragment" />
         <action
             android:id="@+id/action_profileFragment_to_homeFragment2"
             app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.inavarro.ridesync.mainModule.chatModule.ChatFragment"
+        android:name="com.inavarro.ridesync.mainModule.groupModule.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" >
         <action
             android:id="@+id/action_chatFragment_to_chatsFragment"
-            app:destination="@id/chatsFragment" />
+            app:destination="@id/GroupsFragment" />
         <argument
             android:name="idGroup"
             app:argType="string"

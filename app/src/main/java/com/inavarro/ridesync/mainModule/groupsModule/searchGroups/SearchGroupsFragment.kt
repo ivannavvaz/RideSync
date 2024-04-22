@@ -1,21 +1,17 @@
-package com.inavarro.ridesync.mainModule.searchModule.searchGroups
+package com.inavarro.ridesync.mainModule.groupsModule.searchGroups
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,7 +21,6 @@ import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.databinding.FragmentSearchGroupsBinding
 import com.inavarro.ridesync.databinding.ItemGroupForSearchBinding
 import com.inavarro.ridesync.mainModule.MainActivity
-
 
 class SearchGroupsFragment : Fragment() {
 
@@ -37,13 +32,13 @@ class SearchGroupsFragment : Fragment() {
 
     inner class GroupHolder(view: View):
         RecyclerView.ViewHolder(view) {
-            val binding = ItemGroupForSearchBinding.bind(view)
+        val binding = ItemGroupForSearchBinding.bind(view)
 
-            fun setListener(group: Group) {
-            }
+        fun setListener(group: Group) {
         }
+    }
 
-    class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) : ItemDecoration() {
+    class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) : RecyclerView.ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect, view: View, parent: RecyclerView,
             state: RecyclerView.State
@@ -97,15 +92,6 @@ class SearchGroupsFragment : Fragment() {
                         group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
                     binding.tvLocation.text = group.location
-
-                    // Check if I am a member of the group with the uid of the current user
-                    if (group.users != null) {
-                        if ((activity as MainActivity).getUidUser() in group.users!!) {
-                            binding.ivCheck.visibility = View.VISIBLE
-                        } else {
-                            binding.ivCheck.visibility = View.GONE
-                        }
-                    }
 
                     setListener(group)
                 }

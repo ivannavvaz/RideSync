@@ -1,4 +1,4 @@
-package com.inavarro.ridesync.mainModule.chatModule
+package com.inavarro.ridesync.mainModule.groupModule
 
 import android.content.Context
 import android.os.Bundle
