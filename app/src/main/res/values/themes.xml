@@ -1,4 +1,3 @@
-
 <resources>
     <style name="RideSyncTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>

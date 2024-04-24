@@ -1,4 +1,4 @@
-package com.inavarro.ridesync.mainModule.groupModule
+package com.inavarro.ridesync.mainModule.chatModule
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -136,7 +137,7 @@ class ChatFragment : Fragment() {
                     setListener(message)
 
                     binding.messageTextView.text = message.text
-                    binding.messengerTextView.text = message.name
+                    binding.messengerTextView.text = message.name!!.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
 
                     val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
                     val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

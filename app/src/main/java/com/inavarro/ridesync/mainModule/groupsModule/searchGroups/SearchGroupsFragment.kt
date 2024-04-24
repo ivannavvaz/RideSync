@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.inavarro.ridesync.R
@@ -64,8 +65,7 @@ class SearchGroupsFragment : Fragment() {
 
         mLayoutManager = LinearLayoutManager(context)
 
-        val query = FirebaseFirestore.getInstance()
-            .collection("groups")
+        val query = FirebaseFirestore.getInstance().collection("groups")
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
             .setQuery(query, Group::class.java)

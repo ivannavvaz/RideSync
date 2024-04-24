@@ -69,7 +69,7 @@
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.inavarro.ridesync.mainModule.groupModule.ChatFragment"
+        android:name="com.inavarro.ridesync.mainModule.chatModule.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" >
         <action

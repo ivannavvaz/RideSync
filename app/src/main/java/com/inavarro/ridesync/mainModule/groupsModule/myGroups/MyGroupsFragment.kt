@@ -67,6 +67,7 @@ open class MyGroupsFragment : Fragment() {
 
         val query = FirebaseFirestore.getInstance()
             .collection("groups")
+            .whereArrayContains("users", FirebaseAuth.getInstance().currentUser?.uid!!)
             .orderBy("lastMessageTime", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
@@ -171,6 +172,7 @@ open class MyGroupsFragment : Fragment() {
 
         val query = FirebaseFirestore.getInstance()
             .collection("groups")
+            .whereArrayContains("users", FirebaseAuth.getInstance().currentUser?.uid!!)
             .orderBy("lastMessageTime", Query.Direction.DESCENDING)
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
@@ -211,6 +213,7 @@ open class MyGroupsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     val query = FirebaseFirestore.getInstance().collection("groups")
+                        .whereArrayContains("users", FirebaseAuth.getInstance().currentUser?.uid!!)
                         .orderBy("name")
                         .startAt(newText.lowercase())
                         .endAt(newText.lowercase() + "\uf8ff")
