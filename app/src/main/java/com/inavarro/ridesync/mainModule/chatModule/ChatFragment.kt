@@ -68,6 +68,7 @@ class ChatFragment : Fragment() {
             if (mBinding.etMessage.text.toString().isNotEmpty()) {
                 val message = Message(
                     mBinding.etMessage.text.toString(),
+                    FirebaseAuth.getInstance().currentUser?.uid ?: "Unknown",
                     FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
                     Timestamp.now().seconds
                 )
@@ -137,7 +138,7 @@ class ChatFragment : Fragment() {
                     setListener(message)
 
                     binding.messageTextView.text = message.text
-                    binding.messengerTextView.text = message.name!!.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
+                    binding.messengerTextView.text = message.senderName!!.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
 
                     val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
                     val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -152,7 +153,7 @@ class ChatFragment : Fragment() {
                         binding.dateTextView.text = dayHourFormat.format(date)
                     }
 
-                    if (message.name == FirebaseAuth.getInstance().currentUser?.displayName) {
+                    if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
                         binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_blue)
                     }
                 }

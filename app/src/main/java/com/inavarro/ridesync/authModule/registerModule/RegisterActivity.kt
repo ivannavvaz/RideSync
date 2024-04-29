@@ -37,7 +37,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         mBinding.btnSignUp.setOnClickListener {
-            val fullName = mBinding.etFullName.text.toString().trim().lowercase()
+            val fullName = mBinding.etFullName.text.toString().lowercase().trim()
             val email = mBinding.etEmail.text.toString().trim()
             val password = mBinding.etPassword.text.toString().trim()
             val confirmPassword = mBinding.etConfirmPassword.text.toString().trim()

@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.adapters.ViewGroupBindingAdapter.setListener
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -81,6 +82,10 @@ class ProfileFragment : Fragment() {
 
         mBinding.btnLogOut.setOnClickListener {
             signOut()
+        }
+
+        mBinding.btnEditProfile.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
         }
 
         mBinding.fabUploadImage.setOnClickListener {
@@ -168,11 +173,10 @@ class ProfileFragment : Fragment() {
         mBinding.tvEmail.text = getEmail()
         mBinding.tvUserName.text = getUserName()
 
-        Glide.with(requireContext())
-            .load(getPhotoUrl())
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .circleCrop()
-            .into(mBinding.ivProfile)
+        val photoUrl = getPhotoUrl()
+        if (photoUrl != null) {
+            loadPhotoProfile(photoUrl)
+        }
     }
 
     private fun getEmail(): String? {
@@ -190,9 +194,17 @@ class ProfileFragment : Fragment() {
         } else "anonymous"
     }
 
-    private fun getPhotoUrl(): String? {
+    private fun getPhotoUrl(): Uri? {
         val user = mAuth.currentUser
-        return user?.photoUrl?.toString()
+        return user?.photoUrl
+    }
+
+    private fun loadPhotoProfile(photoUrl: Uri?) {
+        Glide.with(requireContext())
+            .load(photoUrl)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .circleCrop()
+            .into(mBinding.ivProfile)
     }
 
     private fun signOut() {

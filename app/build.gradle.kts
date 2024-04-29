@@ -48,6 +48,8 @@ dependencies {
     val navVersion = "2.7.7"
     val firebaseUIVersion = "8.0.2"
     val glideVersion = "4.13.2"
+    val playServicesMapVersion = "18.0.1"
+    val playServicesLocationVersion = "19.0.1"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -89,4 +91,8 @@ dependencies {
     // Glide
     implementation("com.github.bumptech.glide:glide:$glideVersion")
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
+
+    // MapFragment
+    implementation("com.google.android.gms:play-services-maps:$playServicesMapVersion")
+    implementation("com.google.android.gms:play-services-location:$playServicesLocationVersion")
 }

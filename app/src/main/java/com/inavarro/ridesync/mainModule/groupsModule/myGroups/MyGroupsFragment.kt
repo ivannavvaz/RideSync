@@ -105,7 +105,7 @@ open class MyGroupsFragment : Fragment() {
                     ref?.get()?.addOnSuccessListener {
                         val message: Message? = it.getValue(Message::class.java)
                         if (message != null) {
-                            if (message.name == FirebaseAuth.getInstance().currentUser?.displayName) {
+                            if (message.senderName == FirebaseAuth.getInstance().currentUser?.displayName) {
                                     if (message.text?.length!! > 20) {
                                         binding.tvLastMessage.text = "You: ${message.text?.substring(0, 20)}..."
                                     } else {

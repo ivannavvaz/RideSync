@@ -66,6 +66,9 @@
         <action
             android:id="@+id/action_profileFragment_to_homeFragment2"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
@@ -82,5 +85,55 @@
         <argument android:name="nameGroup"
             app:argType="string"
             android:defaultValue='""' />
+    </fragment>
+    <fragment
+        android:id="@+id/myGroupsFragment"
+        android:name="com.inavarro.ridesync.mainModule.groupsModule.myGroups.MyGroupsFragment"
+        android:label="fragment_my_groups"
+        tools:layout="@layout/fragment_my_groups" >
+        <action
+            android:id="@+id/action_myGroupsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_myGroupsFragment_to_findFragment"
+            app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_myGroupsFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
+        <action
+            android:id="@+id/action_myGroupsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_myGroupsFragment_to_profileFragment2"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_myGroupsFragment_to_profileFragment3"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchGroupsFragment"
+        android:name="com.inavarro.ridesync.mainModule.groupsModule.searchGroups.SearchGroupsFragment"
+        android:label="SearchGroupsFragment" >
+        <action
+            android:id="@+id/action_searchGroupsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_searchGroupsFragment_to_findFragment"
+            app:destination="@id/findFragment" />
+        <action
+            android:id="@+id/action_searchGroupsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_searchGroupsFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.inavarro.ridesync.mainModule.editProfileModule.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>
