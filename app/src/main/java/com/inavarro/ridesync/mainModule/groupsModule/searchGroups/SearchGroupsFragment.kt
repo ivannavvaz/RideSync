@@ -9,12 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.inavarro.ridesync.R
@@ -36,6 +38,38 @@ class SearchGroupsFragment : Fragment() {
         val binding = ItemGroupForSearchBinding.bind(view)
 
         fun setListener(group: Group) {
+            binding.root.setOnClickListener {
+                val builder = AlertDialog.Builder(requireContext())
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+
+                builder.setTitle("Confirmacion")
+                builder.setMessage("¿Quieres unirte al grupo?")
+                builder.setPositiveButton("Aceptar") { _, _ ->
+                    if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
+                        Toast.makeText(context, "Ya perteneces al grupo", Toast.LENGTH_SHORT).show()
+                    } else {
+                        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+                        groupRef.document(group.id!!).update(
+                            "users",
+                            FieldValue.arrayUnion(FirebaseAuth.getInstance().currentUser?.uid)
+                        )
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Group joined", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                    alertDialog.dismiss()
+                }
+                builder.setNegativeButton("Cancelar") { _, _ ->
+                    alertDialog.dismiss()
+                }
+
+                builder.show()
+            }
         }
     }
 
@@ -44,6 +78,7 @@ class SearchGroupsFragment : Fragment() {
             outRect: Rect, view: View, parent: RecyclerView,
             state: RecyclerView.State
         ) {
+            outRect.top = verticalSpaceHeight
             outRect.bottom = verticalSpaceHeight
         }
     }
@@ -91,7 +126,12 @@ class SearchGroupsFragment : Fragment() {
                     binding.tvGroupName.text =
                         group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
-                    binding.tvLocation.text = group.location
+
+                    if (group.users != null && group.users!!.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
+                        binding.ivCheck.visibility = View.VISIBLE
+                    } else {
+                        binding.ivCheck.visibility = View.GONE
+                    }
 
                     setListener(group)
                 }
