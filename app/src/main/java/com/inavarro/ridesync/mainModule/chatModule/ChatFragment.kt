@@ -38,9 +38,6 @@ class ChatFragment : Fragment() {
     inner class MessageHolder(view: View):
         RecyclerView.ViewHolder(view) {
         val binding = ItemMessageBinding.bind(view)
-
-        fun setListener(message: Message) {
-        }
     }
 
     override fun onCreateView(
@@ -66,37 +63,7 @@ class ChatFragment : Fragment() {
 
         mBinding.ivSend.setOnClickListener {
             if (mBinding.etMessage.text.toString().isNotEmpty()) {
-                val message = Message(
-                    mBinding.etMessage.text.toString(),
-                    FirebaseAuth.getInstance().currentUser?.uid ?: "Unknown",
-                    FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
-                    Timestamp.now().seconds
-                )
-
-                val ref = FirebaseDatabase
-                    .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .reference
-                    .child("groups")
-                    .child(arguments?.getString("idGroup")!!)
-                    .child("messages")
-                    .push()
-
-                ref.setValue(message)
-                    .addOnSuccessListener {
-                        mBinding.etMessage.setText("")
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                    }
-
-                val db = FirebaseFirestore.getInstance()
-                db.collection("groups")
-                    .document(arguments?.getString("idGroup")!!)
-                    .update("lastMessageRef", db.collection("groups").document(arguments?.getString("idGroup")!!).collection("messages").document(ref.key!!))
-
-                db.collection("groups")
-                    .document(arguments?.getString("idGroup")!!)
-                    .update("lastMessageTime", Timestamp.now().seconds)
+                sendMessage(mBinding.etMessage.text.toString())
             }
         }
 
@@ -135,8 +102,6 @@ class ChatFragment : Fragment() {
                 val message = getItem(position)
 
                 with(holder) {
-                    setListener(message)
-
                     binding.messageTextView.text = message.text
                     binding.messengerTextView.text = message.senderName!!.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
 
@@ -155,6 +120,8 @@ class ChatFragment : Fragment() {
 
                     if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
                         binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_blue)
+                    } else {
+                        binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_gray)
                     }
                 }
             }
@@ -190,5 +157,39 @@ class ChatFragment : Fragment() {
         super.onStop()
 
         mFirebaseAdapter.stopListening()
+    }
+
+    private fun sendMessage(message: String) {
+        val message = Message(
+            mBinding.etMessage.text.toString(),
+            FirebaseAuth.getInstance().currentUser?.uid ?: "Unknown",
+            FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
+            Timestamp.now().seconds
+        )
+
+        val ref = FirebaseDatabase
+            .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
+            .reference
+            .child("groups")
+            .child(arguments?.getString("idGroup")!!)
+            .child("messages")
+            .push()
+
+        ref.setValue(message)
+            .addOnSuccessListener {
+                mBinding.etMessage.setText("")
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+            }
+
+        val db = FirebaseFirestore.getInstance()
+        db.collection("groups")
+            .document(arguments?.getString("idGroup")!!)
+            .update("lastMessageRef", db.collection("groups").document(arguments?.getString("idGroup")!!).collection("messages").document(ref.key!!))
+
+        db.collection("groups")
+            .document(arguments?.getString("idGroup")!!)
+            .update("lastMessageTime", Timestamp.now().seconds)
     }
 }

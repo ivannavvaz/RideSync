@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -17,6 +18,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
@@ -45,6 +47,37 @@ open class MyGroupsFragment : Fragment() {
             val binding = ItemGroupBinding.bind(view)
 
             fun setListener(group: Group) {
+                binding.root.setOnClickListener {
+                    mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                        if (hasFocus) {
+                            (activity as? MainActivity)?.hideBottomNav()
+                        }
+                    }
+
+                    findNavController().navigate(GroupsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
+                }
+
+                binding.root.setOnLongClickListener {
+                    val builder = AlertDialog.Builder(requireContext())
+
+                    val alertDialog = builder.create()
+                    alertDialog.show()
+
+                    builder.setTitle("Confirmación")
+                    builder.setMessage("¿Quieres salir del grupo?")
+                    builder.setPositiveButton("Aceptar") { _, _ ->
+                        leaveGroup(group)
+                        alertDialog.dismiss()
+                    }
+                    builder.setNegativeButton("Cancel") { _, _ ->
+                        alertDialog.dismiss()
+                    }
+
+                    builder.show()
+                    alertDialog.dismiss()
+
+                    true
+                }
             }
         }
 
@@ -132,17 +165,6 @@ open class MyGroupsFragment : Fragment() {
                             }
                         }
                     }
-
-                    binding.root.setOnClickListener {
-
-                        mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
-                            if (hasFocus) {
-                                (activity as? MainActivity)?.hideBottomNav()
-                            }
-                        }
-
-                        findNavController().navigate(GroupsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
-                    }
                 }
             }
 
@@ -227,5 +249,19 @@ open class MyGroupsFragment : Fragment() {
                 return false
             }
         })
+    }
+
+    private fun leaveGroup(group: Group) {
+        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+        groupRef.document(group.id!!).update(
+            "users",
+            FieldValue.arrayRemove(FirebaseAuth.getInstance().currentUser?.uid)
+        )
+            .addOnSuccessListener {
+                Toast.makeText(context, "Has abandonado el grupo", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
     }
 }

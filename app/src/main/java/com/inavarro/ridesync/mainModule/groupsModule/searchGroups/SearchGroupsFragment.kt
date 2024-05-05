@@ -44,31 +44,30 @@ class SearchGroupsFragment : Fragment() {
                 val alertDialog = builder.create()
                 alertDialog.show()
 
-                builder.setTitle("Confirmacion")
-                builder.setMessage("¿Quieres unirte al grupo?")
-                builder.setPositiveButton("Aceptar") { _, _ ->
-                    if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
-                        Toast.makeText(context, "Ya perteneces al grupo", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val groupRef = FirebaseFirestore.getInstance().collection("groups")
-                        groupRef.document(group.id!!).update(
-                            "users",
-                            FieldValue.arrayUnion(FirebaseAuth.getInstance().currentUser?.uid)
-                        )
-                            .addOnSuccessListener {
-                                Toast.makeText(context, "Group joined", Toast.LENGTH_SHORT).show()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
-                            }
+                if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
+                    builder.setTitle("Ya perteneces al grupo")
+                    builder.setMessage("¿Quieres salir del grupo?")
+                    builder.setPositiveButton("Aceptar") { _, _ ->
+                        leaveGroup(group)
+                        alertDialog.dismiss()
                     }
-                    alertDialog.dismiss()
-                }
-                builder.setNegativeButton("Cancelar") { _, _ ->
-                    alertDialog.dismiss()
+                    builder.setNegativeButton("Cancelar") { _, _ ->
+                        alertDialog.dismiss()
+                    }
+                } else {
+                    builder.setTitle("Confirmacion")
+                    builder.setMessage("¿Quieres unirte al grupo?")
+                    builder.setPositiveButton("Aceptar") { _, _ ->
+                        joinGroup(group)
+                        alertDialog.dismiss()
+                    }
+                    builder.setNegativeButton("Cancelar") { _, _ ->
+                        alertDialog.dismiss()
+                    }
                 }
 
                 builder.show()
+                alertDialog.dismiss()
             }
         }
     }
@@ -203,5 +202,35 @@ class SearchGroupsFragment : Fragment() {
                 return false
             }
         })
+    }
+
+    private fun leaveGroup(group: Group) {
+        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+        groupRef.document(group.id!!).update(
+            "users",
+            FieldValue.arrayRemove(FirebaseAuth.getInstance().currentUser?.uid)
+        )
+            .addOnSuccessListener {
+                Toast.makeText(context, "Has abandonado el grupo", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun joinGroup(group: Group) {
+        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+        groupRef.document(group.id!!).update(
+            "users",
+            FieldValue.arrayUnion(FirebaseAuth.getInstance().currentUser?.uid)
+        )
+            .addOnSuccessListener {
+                Toast.makeText(context, "Te has unido", Toast.LENGTH_SHORT)
+                    .show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+
     }
 }
