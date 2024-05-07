@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".mainModule.chatModule.ChatFragment"
-    android:orientation="vertical">
+    tools:context=".mainModule.chatModule.ChatFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolBar"
@@ -23,18 +22,37 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingStart="@dimen/common_margin_default" />
+            android:layout_marginStart="@dimen/common_margin_default" />
+
+        <ImageView
+            android:id="@+id/ivImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintStart_toEndOf="@id/ivBack"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/common_margin_default" />
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/ivBack"
+            app:layout_constraintStart_toEndOf="@id/ivImage"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:paddingStart="@dimen/common_margin_default" />
+            android:layout_marginStart="@dimen/common_margin_default"
+            android:text="Name"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/ivInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="@dimen/common_margin_default"
+            android:src="@drawable/ic_info"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

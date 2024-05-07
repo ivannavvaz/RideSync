@@ -55,6 +55,12 @@ class ChatFragment : Fragment() {
             findNavController().navigateUp()
         }
 
+        mBinding.ivInfo.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("idGroup", arguments?.getString("idGroup"))
+            findNavController().navigate(R.id.action_chatFragment_to_infoChatFragment, bundle)
+        }
+
         mBinding.etMessage.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 mBinding.rvMessages.scrollToPosition(mFirebaseAdapter.itemCount - 1)

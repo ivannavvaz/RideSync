@@ -85,6 +85,9 @@
         <argument android:name="nameGroup"
             app:argType="string"
             android:defaultValue='""' />
+        <action
+            android:id="@+id/action_chatFragment_to_infoChatFragment"
+            app:destination="@id/infoChatFragment" />
     </fragment>
     <fragment
         android:id="@+id/myGroupsFragment"
@@ -135,5 +138,21 @@
         <action
             android:id="@+id/action_editProfileFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/infoChatFragment"
+        android:name="com.inavarro.ridesync.mainModule.infoChatModule.InfoChatFragment"
+        android:label="fragment_info_chat"
+        tools:layout="@layout/fragment_info_chat" >
+        <action
+            android:id="@+id/action_infoChatFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <argument
+            android:name="idGroup"
+            app:argType="string"
+            android:defaultValue="0" />
+        <action
+            android:id="@+id/action_infoChatFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
     </fragment>
 </navigation>
