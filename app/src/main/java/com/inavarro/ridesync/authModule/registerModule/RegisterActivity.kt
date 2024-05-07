@@ -15,7 +15,9 @@ import com.google.android.play.core.integrity.r
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ActivityRegisterBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 
@@ -39,11 +41,12 @@ class RegisterActivity : AppCompatActivity() {
         mBinding.btnSignUp.setOnClickListener {
             val fullName = mBinding.etFullName.text.toString().lowercase().trim()
             val email = mBinding.etEmail.text.toString().trim()
+            val username = mBinding.etEmail.text.toString().lowercase().trim().substringBefore("@")
             val password = mBinding.etPassword.text.toString().trim()
             val confirmPassword = mBinding.etConfirmPassword.text.toString().trim()
 
             if (validateFields(fullName, email, password, confirmPassword)) {
-                signUpWithEmail(email, password, fullName)
+                signUpWithEmail(fullName, email, username, password)
             }
         }
     }
@@ -88,7 +91,7 @@ class RegisterActivity : AppCompatActivity() {
         return false
     }
 
-    private fun signUpWithEmail(email: String, password: String, fullName: String) {
+    private fun signUpWithEmail(fullName: String, email: String, username: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -98,12 +101,24 @@ class RegisterActivity : AppCompatActivity() {
                     val user = mAuth.currentUser
                     updateUI(user)
 
-                    // Update name of the user
+                    // Update username of the user
                     val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
-                        .setDisplayName(fullName)
+                        .setDisplayName(username)
                         .build()
 
                     user!!.updateProfile(profileUpdates)
+
+                    // Insert user in Firestore
+                    val userDB = User(
+                        user.uid,
+                        fullName,
+                        email,
+                        username,
+                        null
+                    )
+
+                    val userRef = FirebaseFirestore.getInstance().collection("users")
+                    userRef.document(user.uid).set(userDB)
 
                     // Go to the next activity
                     intentToMainActivity()
@@ -132,14 +147,6 @@ class RegisterActivity : AppCompatActivity() {
         resultLauncher.launch(googleClient.signInIntent)
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        if (user != null) {
-            Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Credenciales incorrectas.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
@@ -158,6 +165,33 @@ class RegisterActivity : AppCompatActivity() {
                             val user = mAuth.currentUser
                             updateUI(user)
 
+                            // Check if user exists in Firestore
+                            val userRef = FirebaseFirestore.getInstance().collection("users")
+                            userRef.document(user!!.uid).get().addOnSuccessListener { document ->
+                                if (!document.exists()) {
+                                    val username = user.email?.lowercase()?.substringBefore("@")
+
+                                    // Update username of the user
+                                    val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                                        .setDisplayName(username)
+                                        .build()
+
+                                    user.updateProfile(profileUpdates)
+
+
+                                    // Insert user in Firestore
+                                    val userDB = User(
+                                        user.uid,
+                                        user.displayName,
+                                        user.email,
+                                        username,
+                                        user.photoUrl.toString()
+                                    )
+
+                                    userRef.document(user.uid).set(userDB)
+                                }
+                            }
+
                             // Go to the next activity
                             intentToMainActivity()
                         } else {
@@ -171,6 +205,14 @@ class RegisterActivity : AppCompatActivity() {
                 Log.w(ContentValues.TAG, "Google sign in failed", e)
                 updateUI(null)
             }
+        }
+    }
+
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Credenciales incorrectas.", Toast.LENGTH_SHORT).show()
         }
     }
 

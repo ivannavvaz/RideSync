@@ -32,7 +32,7 @@ class InfoChatListAdapter():
             val user = getItem(position)
 
             with(holder as ViewHolder) {
-                binding.tvUserName.text = user.name
+                binding.tvUserName.text = user.username
             }
         }
 

@@ -16,9 +16,11 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.registerModule.RegisterActivity
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
@@ -150,6 +152,33 @@ class LoginActivity : AppCompatActivity() {
 
                             val user = mAuth.currentUser
                             updateUI(user)
+
+                            // Check if user exists in Firestore
+                            val userRef = FirebaseFirestore.getInstance().collection("users")
+                            userRef.document(user!!.uid).get().addOnSuccessListener { document ->
+                                if (!document.exists()) {
+                                    val username = user.email?.lowercase()?.substringBefore("@")
+
+                                    // Update username of the user
+                                    val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                                        .setDisplayName(username)
+                                        .build()
+
+                                    user.updateProfile(profileUpdates)
+
+
+                                    // Insert user in Firestore
+                                    val userDB = User(
+                                        user.uid,
+                                        user.displayName,
+                                        user.email,
+                                        username,
+                                        user.photoUrl.toString()
+                                    )
+
+                                    userRef.document(user.uid).set(userDB)
+                                }
+                            }
 
                             // Go to the next activity
                            intentToMainActivity()

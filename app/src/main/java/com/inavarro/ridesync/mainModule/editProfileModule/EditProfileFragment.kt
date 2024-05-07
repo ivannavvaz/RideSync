@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.databinding.FragmentEditProfileBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.util.Locale
@@ -27,7 +28,11 @@ class EditProfileFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
 
+    private lateinit var mFullName: String
+
     private var mPhotoProfileUri: Uri? = null
+
+    private var mPhotoProfileChanged = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,8 +48,7 @@ class EditProfileFragment : Fragment() {
         setupProfile()
 
         mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-            (activity as? MainActivity)?.showBottomNav()
+            goBack()
         }
 
         mBinding.btnEditImageProfile.setOnClickListener {
@@ -52,8 +56,7 @@ class EditProfileFragment : Fragment() {
         }
 
         mBinding.btnCancel.setOnClickListener {
-            findNavController().navigateUp()
-            (activity as? MainActivity)?.showBottomNav()
+            goBack()
         }
 
         mBinding.btnAccept.setOnClickListener {
@@ -64,13 +67,13 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun setupProfile() {
-        mBinding.etUserName.setText(getUserName())
+        getFullName()
         loadPhotoProfile(getPhotoUrl())
     }
 
     private fun loadPhotoProfile(photoUrl: Uri?) {
         if (photoUrl != null) {
-            mPhotoProfileUri = photoUrl!!
+            mPhotoProfileUri = photoUrl
 
             Glide.with(requireContext())
                 .load(photoUrl)
@@ -80,13 +83,16 @@ class EditProfileFragment : Fragment() {
         }
     }
 
-    private fun getUserName(): String? {
-        val user = mAuth.currentUser
-        return if (user != null) {
-            // First letter in uppercase
-            user.displayName?.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(
-                Locale.ROOT) else it.toString() } }
-        } else "anonymous"
+    private fun getFullName() {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
+        userRef.get().addOnSuccessListener { document ->
+            if (document != null) {
+                mFullName = document.getString("fullName")!!.split(" ").joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(
+                    Locale.ROOT) else it.toString() } }
+
+                mBinding.etFullName.setText(mFullName)
+            }
+        }
     }
 
     private fun getPhotoUrl(): Uri? {
@@ -107,40 +113,61 @@ class EditProfileFragment : Fragment() {
             result: ActivityResult ->
         if (result.resultCode == Activity.RESULT_OK) {
             if ((result.data != null)) {
+                mPhotoProfileChanged = true
                 loadPhotoProfile(result.data?.data)
             }
         }
     }
 
     private fun updateProfile() {
-        if (validateUserName()) {
+        if (validateFullName()) {
             val user = mAuth.currentUser
-            val profileUpdates = userProfileChangeRequest {
-                displayName = mBinding.etUserName.text.toString().lowercase().trim()
-                if (mPhotoProfileUri != null) {
-                    photoUri = mPhotoProfileUri
-                }
+
+            // Update user in Firestore
+            val userRef = FirebaseFirestore.getInstance().collection("users").document(user?.uid!!)
+
+            if (mFullName != mBinding.etFullName.text.toString().trim().lowercase()) {
+                userRef.update("fullName", mBinding.etFullName.text.toString().trim().lowercase())
             }
 
-            user?.updateProfile(profileUpdates)
-                ?.addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        findNavController().navigateUp()
-                        (activity as? MainActivity)?.showBottomNav()
+            if (mPhotoProfileChanged) {
+                userRef.update("image", mPhotoProfileUri.toString())
+            }
+
+            // Update user in Firebase Auth
+            if (mPhotoProfileChanged) {
+                val profileUpdates = userProfileChangeRequest {
+                    if (mPhotoProfileUri != null) {
+                        photoUri = mPhotoProfileUri
                     }
                 }
+
+                user.updateProfile(profileUpdates)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            goBack()
+                        }
+                    }
+            } else {
+                goBack()
+            }
         } else {
             Toast.makeText(this.context, "Nombre completo inválido.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun validateUserName(): Boolean {
-        val userName = mBinding.etUserName.text.toString().trim()
+    private fun validateFullName(): Boolean {
+        val userName = mBinding.etFullName.text.toString().trim()
 
         return if (userName.isEmpty()) {
             false
         } else {
             userName.matches(Regex("^[a-zA-Z ]+\$"))
         }
+    }
+
+    private fun goBack() {
+        findNavController().navigateUp()
+        (activity as? MainActivity)?.showBottomNav()
     }
 }

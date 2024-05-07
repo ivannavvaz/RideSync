@@ -56,20 +56,20 @@
         android:textColor="@color/md_theme_light_secondary"/>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilUserName"
+        android:id="@+id/tilFullName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
         android:layout_marginTop="48dp"
-        android:hint="Nombre de usuario">
+        android:hint="Nombre de completo">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etUserName"
+            android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
-            android:text="Nombre de usuario" />
+            android:text="Nombre completo" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
