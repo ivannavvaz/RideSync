@@ -141,6 +141,8 @@ class ProfileFragment : Fragment() {
                 super.onDataChanged()
 
                 notifyDataSetChanged()
+
+                emptyList()
             }
 
             override fun onError(e: FirebaseFirestoreException) {
@@ -171,6 +173,8 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
+        emptyList()
 
         (activity as? MainActivity)?.showBottomNav()
         (activity as? MainActivity)?.hideFragmentContainerViewActivity()
@@ -298,5 +302,10 @@ class ProfileFragment : Fragment() {
                     "No se ha podido borrar, inténtalo más tarde",
                     Snackbar.LENGTH_SHORT).show()
             }
+    }
+
+    private fun emptyList() {
+        mBinding.ivEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        mBinding.tvEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 }

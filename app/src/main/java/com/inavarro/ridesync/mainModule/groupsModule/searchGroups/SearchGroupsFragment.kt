@@ -13,6 +13,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -122,6 +124,8 @@ class SearchGroupsFragment : Fragment() {
                 val group = getItem(position)
 
                 with(holder) {
+                    setListener(group)
+
                     binding.tvGroupName.text =
                         group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
@@ -132,7 +136,19 @@ class SearchGroupsFragment : Fragment() {
                         binding.ivCheck.visibility = View.GONE
                     }
 
-                    setListener(group)
+                    if (group.photo != null) {
+                        Glide.with(context)
+                            .load(group.photo)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .circleCrop()
+                            .into(binding.ivGroupPhoto)
+                    } else {
+                        Glide.with(context)
+                            .load(R.drawable.ic_group)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .circleCrop()
+                            .into(binding.ivGroupPhoto)
+                    }
                 }
             }
 

@@ -16,7 +16,7 @@
         android:minHeight="112dp">
 
         <ImageView
-            android:id="@+id/ivGroupImage"
+            android:id="@+id/ivGroupPhoto"
             android:layout_width="64dp"
             android:layout_height="64dp"
             app:layout_constraintTop_toTopOf="parent"
@@ -30,8 +30,8 @@
             android:id="@+id/tvGroupName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@+id/ivGroupImage"
-            app:layout_constraintStart_toEndOf="@+id/ivGroupImage"
+            app:layout_constraintTop_toTopOf="@+id/ivGroupPhoto"
+            app:layout_constraintStart_toEndOf="@+id/ivGroupPhoto"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textSize="18sp"
