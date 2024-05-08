@@ -202,12 +202,13 @@ open class MyGroupsFragment : Fragment() {
             .build()
 
         mFirestoreAdapter.updateOptions(options)
+
+        (activity as? MainActivity)?.showBottomNav()
     }
 
     override fun onStart() {
         super.onStart()
 
-        (activity as? MainActivity)?.showBottomNav()
         mFirestoreAdapter.startListening()
     }
 

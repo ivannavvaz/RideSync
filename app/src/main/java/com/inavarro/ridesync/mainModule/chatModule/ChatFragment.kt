@@ -109,7 +109,7 @@ class ChatFragment : Fragment() {
 
                 with(holder) {
                     binding.messageTextView.text = message.text
-                    binding.messengerTextView.text = message.senderName!!.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
+                    binding.messengerTextView.text = message.senderName!!
 
                     val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
                     val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())

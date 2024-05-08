@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentGroupsBinding
+import com.inavarro.ridesync.mainModule.MainActivity
 
 class GroupsFragment : Fragment() {
 
@@ -33,5 +34,11 @@ class GroupsFragment : Fragment() {
                 1 -> tab.text = "Explorar"
             }
         }.attach()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 }

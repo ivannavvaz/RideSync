@@ -29,13 +29,14 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
+import com.inavarro.ridesync.mainModule.MainActivity
+import com.inavarro.ridesync.mainModule.activityModule.ActivityFragment
 
 class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mBinding: FragmentSearchBinding
 
     private lateinit var mGoogleMap: GoogleMap
-
 
     companion object {
         const val REQUEST_CODE_LOCATION = 0
@@ -70,11 +71,26 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         query.get().addOnSuccessListener { result ->
             for (document in result) {
                 val location = document.getGeoPoint("location")
-                val title = document.getString("title")
-                if (location != null && title != null) {
-                    addMarker(LatLng(location.latitude, location.longitude), title)
+                val id = document.id
+                if (location != null) {
+                    addMarker(LatLng(location.latitude, location.longitude), id)
                 }
             }
+        }
+
+        mGoogleMap.setOnMarkerClickListener { marker ->
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 10f))
+
+            // Load the activity fragment
+            val fragment = ActivityFragment()
+            val bundle = Bundle()
+            bundle.putString("id", marker.title)
+            fragment.arguments = bundle
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainerViewActivity, fragment)
+                .addToBackStack(null)
+                .commit()
+            true
         }
     }
 
@@ -146,6 +162,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 Toast.LENGTH_SHORT
             ).show()
         }
+
+        (activity as MainActivity).showFragmentContainerViewActivity()
     }
 
     private fun moveCameraSpain() {
@@ -153,11 +171,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5f))
     }
 
-    private fun addMarker(latLng: LatLng, title: String) {
+    private fun addMarker(latLng: LatLng, id: String) {
         mGoogleMap.addMarker(
             MarkerOptions()
                 .position(latLng)
-                .title(title)
+                .title(id)
                 .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_location))
         )
     }

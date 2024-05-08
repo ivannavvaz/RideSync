@@ -57,6 +57,14 @@ class MainActivity : AppCompatActivity() {
         mBinding.bottomNavigationView.visibility = View.VISIBLE
     }
 
+    fun hideFragmentContainerViewActivity() {
+        mBinding.fragmentContainerViewActivity.visibility = View.GONE
+    }
+
+    fun showFragmentContainerViewActivity() {
+        mBinding.fragmentContainerViewActivity.visibility = View.VISIBLE
+    }
+
     fun getUidUser(): String {
         return mAuth.currentUser?.uid ?: ""
     }

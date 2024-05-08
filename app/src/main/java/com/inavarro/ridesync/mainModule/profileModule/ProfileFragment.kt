@@ -160,7 +160,6 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        (activity as? MainActivity)?.showBottomNav()
         mFirebaseAdapter.startListening()
     }
 
@@ -168,6 +167,13 @@ class ProfileFragment : Fragment() {
         super.onStop()
 
         mFirebaseAdapter.stopListening()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        (activity as? MainActivity)?.showBottomNav()
+        (activity as? MainActivity)?.hideFragmentContainerViewActivity()
     }
 
     private fun setupProfile() {
