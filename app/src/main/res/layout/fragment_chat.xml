@@ -25,7 +25,7 @@
             android:layout_marginStart="@dimen/common_margin_default" />
 
         <ImageView
-            android:id="@+id/ivImage"
+            android:id="@+id/ivPhotoGroup"
             android:layout_width="30dp"
             android:layout_height="30dp"
             app:layout_constraintStart_toEndOf="@id/ivBack"
@@ -37,7 +37,7 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/ivImage"
+            app:layout_constraintStart_toEndOf="@id/ivPhotoGroup"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="@dimen/common_margin_default"

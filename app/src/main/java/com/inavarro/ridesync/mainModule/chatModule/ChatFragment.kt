@@ -11,6 +11,8 @@ import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.Timestamp
@@ -49,7 +51,27 @@ class ChatFragment : Fragment() {
 
         (activity as? MainActivity)?.hideBottomNav()
 
-        mBinding.tvName.text = arguments?.getString("nameGroup").toString().replaceFirstChar { it.uppercase() }
+        mBinding.tvName.text = arguments?.getString("nameGroup").toString()
+
+        val groupId = arguments?.getString("idGroup")
+        val groupRef = FirebaseFirestore.getInstance().collection("groups").document(groupId!!)
+        groupRef.get().addOnSuccessListener {
+            if (it.exists()) {
+                if (it.getString("photo") != null) {
+                    Glide.with(requireContext())
+                        .load(it.getString("photo"))
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .circleCrop()
+                        .into(mBinding.ivPhotoGroup)
+                } else {
+                    Glide.with(requireContext())
+                        .load(R.drawable.ic_group)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .circleCrop()
+                        .into(mBinding.ivPhotoGroup)
+                }
+            }
+        }
 
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()
@@ -109,7 +131,6 @@ class ChatFragment : Fragment() {
 
                 with(holder) {
                     binding.messageTextView.text = message.text
-                    binding.messengerTextView.text = message.senderName!!
 
                     val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
                     val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -128,6 +149,29 @@ class ChatFragment : Fragment() {
                         binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_blue)
                     } else {
                         binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_gray)
+                    }
+
+                    val ref = FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(message.senderId!!)
+
+                    ref.get().addOnSuccessListener {
+                        if (it.exists()) {
+                            binding.messengerTextView.text = it.getString("username")
+                            if (it.getString("profilePhoto") != null) {
+                                Glide.with(context)
+                                    .load(it.getString("profilePhoto"))
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .circleCrop()
+                                    .into(binding.messengerImageView)
+                            } else {
+                                Glide.with(context)
+                                    .load(R.drawable.ic_person)
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .circleCrop()
+                                    .into(binding.messengerImageView)
+                            }
+                        }
                     }
                 }
             }
@@ -169,7 +213,6 @@ class ChatFragment : Fragment() {
         val message = Message(
             mBinding.etMessage.text.toString(),
             FirebaseAuth.getInstance().currentUser?.uid ?: "Unknown",
-            FirebaseAuth.getInstance().currentUser?.displayName ?: "Unknown",
             Timestamp.now().seconds
         )
 

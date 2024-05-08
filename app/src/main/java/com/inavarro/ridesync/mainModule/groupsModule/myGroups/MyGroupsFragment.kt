@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.Timestamp
@@ -126,7 +128,7 @@ open class MyGroupsFragment : Fragment() {
                 with(holder) {
                     setListener(group)
 
-                    binding.tvGroupName.text = group.name.toString().replaceFirstChar { it.uppercase() }
+                    binding.tvGroupName.text = group.name.toString()
 
                     val ref = group.lastMessageRef?.let {
                         FirebaseDatabase
@@ -138,7 +140,7 @@ open class MyGroupsFragment : Fragment() {
                     ref?.get()?.addOnSuccessListener {
                         val message: Message? = it.getValue(Message::class.java)
                         if (message != null) {
-                            if (message.senderName == FirebaseAuth.getInstance().currentUser?.displayName) {
+                            if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
                                     if (message.text?.length!! > 20) {
                                         binding.tvLastMessage.text = "You: ${message.text?.substring(0, 20)}..."
                                     } else {
@@ -164,6 +166,20 @@ open class MyGroupsFragment : Fragment() {
                                 binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
                             }
                         }
+                    }
+
+                    if (group.photo != null) {
+                        Glide.with(context)
+                            .load(group.photo)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .circleCrop()
+                            .into(binding.ivGroupImage)
+                    } else {
+                        Glide.with(context)
+                            .load(R.drawable.ic_group)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .circleCrop()
+                            .into(binding.ivGroupImage)
                     }
                 }
             }

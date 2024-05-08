@@ -137,11 +137,16 @@ class EditProfileFragment : Fragment() {
             }
 
             if (mPhotoProfileChanged) {
-                userRef.update("profilePhoto", mPhotoProfileUri.toString())
-            }
+                // Up image in Firebase Storage
+                val photoRef = mStorageReference.child(user.uid)
+                photoRef.putFile(mPhotoProfileUri!!)
+                    .addOnSuccessListener { taskSnapshot ->
+                        taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                            userRef.update("profilePhoto", uri)
+                        }
+                    }
 
-            // Update user in Firebase Auth
-            if (mPhotoProfileChanged) {
+                // Update user in Firebase Auth
                 val profileUpdates = userProfileChangeRequest {
                     photoUri = mPhotoProfileUri
                 }
@@ -152,11 +157,6 @@ class EditProfileFragment : Fragment() {
                             goBack()
                         }
                     }
-
-                // Up image in Firebase Storage
-                val photoRef = mStorageReference.child(user.uid)
-                photoRef.putFile(mPhotoProfileUri!!)
-
             } else {
                 goBack()
             }

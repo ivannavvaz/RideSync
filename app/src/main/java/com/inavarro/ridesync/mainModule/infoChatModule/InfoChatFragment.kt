@@ -11,6 +11,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -75,7 +77,22 @@ class InfoChatFragment : Fragment() {
         val query = FirebaseFirestore.getInstance().collection("groups").document(idGroup!!)
         query.get().addOnSuccessListener {
             mGroup = it.toObject(Group::class.java)!!
-            mBinding.tvGroupName.text = mGroup.name.toString().replaceFirstChar { it.uppercase() }
+
+            if (mGroup.photo != null) {
+                Glide.with(requireContext())
+                    .load(mGroup.photo)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .circleCrop()
+                    .into(mBinding.ivPhotoGroup)
+            } else {
+                Glide.with(requireContext())
+                    .load(R.drawable.ic_group)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .circleCrop()
+                    .into(mBinding.ivPhotoGroup)
+            }
+
+            mBinding.tvGroupName.text = mGroup.name.toString()
 
             if (mGroup.description != null) {
                 mBinding.tvDescription.text = mGroup.description
