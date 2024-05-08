@@ -50,7 +50,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
 
-    private lateinit var mStoregeReference: StorageReference
+    private lateinit var mStorageReference: StorageReference
     private lateinit var mFirestoreReference: CollectionReference
 
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Photo, PhotoHolder>
@@ -100,7 +100,7 @@ class ProfileFragment : Fragment() {
 
         mLayoutManager = GridLayoutManager(context, 2)
 
-        mStoregeReference = FirebaseStorage.getInstance()
+        mStorageReference = FirebaseStorage.getInstance()
             .reference.child("photos")
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
@@ -160,6 +160,7 @@ class ProfileFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+        (activity as? MainActivity)?.showBottomNav()
         mFirebaseAdapter.startListening()
     }
 
@@ -249,7 +250,7 @@ class ProfileFragment : Fragment() {
     private fun uploadImage(photoSelectUri: Uri?) {
         val id = mFirestoreReference.document().id
 
-        val storageReference = mStoregeReference.child(id)
+        val storageReference = mStorageReference.child(id)
 
         if (photoSelectUri != null) {
             storageReference.putFile(photoSelectUri)
@@ -279,7 +280,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun deletePhoto(photo: Photo) {
-        val photoRef = mStoregeReference.child(photo.id)
+        val photoRef = mStorageReference.child(photo.id)
 
         photoRef.delete()
             .addOnSuccessListener {

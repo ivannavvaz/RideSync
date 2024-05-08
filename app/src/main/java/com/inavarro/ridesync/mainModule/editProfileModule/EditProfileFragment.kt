@@ -18,6 +18,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.databinding.FragmentEditProfileBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.util.Locale
@@ -33,6 +35,8 @@ class EditProfileFragment : Fragment() {
     private var mPhotoProfileUri: Uri? = null
 
     private var mPhotoProfileChanged = false
+
+    private lateinit var mStorageReference: StorageReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +66,8 @@ class EditProfileFragment : Fragment() {
         mBinding.btnAccept.setOnClickListener {
             updateProfile()
         }
+
+        mStorageReference = FirebaseStorage.getInstance().reference.child("profilePhotos")
 
         return mBinding.root
     }
@@ -131,15 +137,13 @@ class EditProfileFragment : Fragment() {
             }
 
             if (mPhotoProfileChanged) {
-                userRef.update("image", mPhotoProfileUri.toString())
+                userRef.update("profilePhoto", mPhotoProfileUri.toString())
             }
 
             // Update user in Firebase Auth
             if (mPhotoProfileChanged) {
                 val profileUpdates = userProfileChangeRequest {
-                    if (mPhotoProfileUri != null) {
-                        photoUri = mPhotoProfileUri
-                    }
+                    photoUri = mPhotoProfileUri
                 }
 
                 user.updateProfile(profileUpdates)
@@ -148,6 +152,11 @@ class EditProfileFragment : Fragment() {
                             goBack()
                         }
                     }
+
+                // Up image in Firebase Storage
+                val photoRef = mStorageReference.child(user.uid)
+                photoRef.putFile(mPhotoProfileUri!!)
+
             } else {
                 goBack()
             }
@@ -168,6 +177,5 @@ class EditProfileFragment : Fragment() {
 
     private fun goBack() {
         findNavController().navigateUp()
-        (activity as? MainActivity)?.showBottomNav()
     }
 }

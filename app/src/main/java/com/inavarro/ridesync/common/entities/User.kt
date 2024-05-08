@@ -9,6 +9,6 @@ data class User(
     val fullName: String? = null,
     val email: String? = null,
     val username: String? = null,
-    val image: String? = null,
+    val profilePhoto: String? = null,
     //val groups: List<String>? = null
 )
