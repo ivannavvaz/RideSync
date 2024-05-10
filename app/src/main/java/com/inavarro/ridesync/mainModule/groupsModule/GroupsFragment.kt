@@ -21,6 +21,8 @@ class GroupsFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentGroupsBinding.inflate(layoutInflater)
 
+        setupGroupsFragment()
+
         return mBinding.root
     }
 
@@ -36,9 +38,7 @@ class GroupsFragment : Fragment() {
         }.attach()
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    private fun setupGroupsFragment(){
         (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 }

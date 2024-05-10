@@ -47,7 +47,7 @@ class EditProfileFragment : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        (activity as? MainActivity)?.hideBottomNav()
+        setupEditProfileFragment()
 
         setupProfile()
 
@@ -70,6 +70,10 @@ class EditProfileFragment : Fragment() {
         mStorageReference = FirebaseStorage.getInstance().reference.child("profilePhotos")
 
         return mBinding.root
+    }
+
+    private fun setupEditProfileFragment(){
+        (activity as? MainActivity)?.hideBottomNav()
     }
 
     private fun setupProfile() {

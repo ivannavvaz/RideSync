@@ -67,9 +67,10 @@ class ActivityFragment : Fragment() {
     }
 
     private fun openMap() {
-        val uri = Uri.parse("geo:${mActivity.location?.latitude},${mActivity.location?.longitude}")
+        val uri = Uri.parse("geo:0,0?q=${mActivity.location?.latitude},${mActivity.location?.longitude}(${mActivity.title})")
         val intent = Intent(Intent.ACTION_VIEW, uri)
         intent.setPackage("com.google.android.apps.maps")
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }
 }

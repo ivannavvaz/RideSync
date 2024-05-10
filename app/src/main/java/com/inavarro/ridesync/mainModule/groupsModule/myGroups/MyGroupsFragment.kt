@@ -90,6 +90,8 @@ open class MyGroupsFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentMyGroupsBinding.inflate(layoutInflater)
 
+        setupMyGroupsFragment()
+
         setupSearchView()
 
         return mBinding.root
@@ -218,8 +220,6 @@ open class MyGroupsFragment : Fragment() {
             .build()
 
         mFirestoreAdapter.updateOptions(options)
-
-        (activity as? MainActivity)?.showBottomNav()
     }
 
     override fun onStart() {
@@ -233,6 +233,10 @@ open class MyGroupsFragment : Fragment() {
 
         mBinding.svSearch.setQuery(null, false)
         mFirestoreAdapter.stopListening()
+    }
+
+    private fun setupMyGroupsFragment() {
+        ((activity as? MainActivity)?.showBottomNav())
     }
 
     private fun setupSearchView() {

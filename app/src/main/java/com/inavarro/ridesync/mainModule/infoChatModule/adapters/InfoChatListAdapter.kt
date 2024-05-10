@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserBinding
@@ -33,6 +35,24 @@ class InfoChatListAdapter():
 
             with(holder as ViewHolder) {
                 binding.tvUserName.text = user.username
+
+                // Get profile photo
+                if (user.profilePhoto != null) {
+                    Glide.with(context)
+                        .load(user.profilePhoto)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop()
+                        .circleCrop()
+                        .into(binding.ivPhotoProfile)
+                } else {
+                    binding.ivPhotoProfile.setImageResource(R.drawable.ic_person)
+                }
+
+                if (position == itemCount - 1) {
+                    binding.divider.visibility = View.GONE
+                } else {
+                    binding.divider.visibility = View.VISIBLE
+                }
             }
         }
 

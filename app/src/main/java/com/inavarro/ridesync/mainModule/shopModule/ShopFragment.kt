@@ -19,12 +19,12 @@ class ShopFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentShopBinding.inflate(layoutInflater)
 
+        setupShopFragment()
+
         return mBinding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
+    private fun setupShopFragment() {
         (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 }

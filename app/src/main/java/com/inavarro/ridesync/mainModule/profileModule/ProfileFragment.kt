@@ -78,11 +78,9 @@ class ProfileFragment : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        setupProfile()
+        setupProfileFragment()
 
-        mBinding.btnLogOut.setOnClickListener {
-            signOut()
-        }
+        setupProfile()
 
         mBinding.btnEditProfile.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
@@ -157,6 +155,8 @@ class ProfileFragment : Fragment() {
             layoutManager = mLayoutManager
             adapter = mFirebaseAdapter
         }
+
+        emptyList()
     }
 
     override fun onStart() {
@@ -169,15 +169,13 @@ class ProfileFragment : Fragment() {
         super.onStop()
 
         mFirebaseAdapter.stopListening()
+        (activity as? MainActivity)?.hideToolbar()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        emptyList()
-
-        (activity as? MainActivity)?.showBottomNav()
+    private fun setupProfileFragment() {
+        (activity as? MainActivity)?.showToolbar()
         (activity as? MainActivity)?.hideFragmentContainerViewActivity()
+        (activity as? MainActivity)?.showBottomNav()
     }
 
     private fun setupProfile() {
@@ -216,12 +214,6 @@ class ProfileFragment : Fragment() {
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .circleCrop()
             .into(mBinding.ivProfile)
-    }
-
-    private fun signOut() {
-        mAuth.signOut()
-        startActivity(Intent(requireContext(), LoginActivity::class.java))
-        requireActivity().finish()
     }
 
     private fun onLongClick(photo: Photo) {

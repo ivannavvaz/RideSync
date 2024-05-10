@@ -51,7 +51,13 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
         setupMap()
 
+        setupSearchFragment()
+
         return mBinding.root
+    }
+
+    private fun setupSearchFragment(){
+        ((activity as MainActivity).showFragmentContainerViewActivity())
     }
 
     private fun setupMap() {
@@ -162,8 +168,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 Toast.LENGTH_SHORT
             ).show()
         }
-
-        (activity as MainActivity).showFragmentContainerViewActivity()
     }
 
     private fun moveCameraSpain() {
