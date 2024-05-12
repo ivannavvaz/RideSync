@@ -18,7 +18,7 @@ import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding
     private lateinit var mAuth: FirebaseAuth
@@ -41,13 +41,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
         mBinding.bottomNavigationView.setupWithNavController(navController)
-
-        mBinding.navigationView.setNavigationItemSelectedListener(this)
-
-        ActionBarDrawerToggle(this, mBinding.drawerLayout, mBinding.toolbar, R.string.open_drawer, R.string.close_drawer).apply {
-            mBinding.drawerLayout.addDrawerListener(this)
-            syncState()
-        }
     }
 
     public override fun onStart() {
@@ -79,53 +72,5 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun getUidUser(): String {
         return mAuth.currentUser?.uid ?: ""
-    }
-
-    fun hideToolbar() {
-        mBinding.toolbar.visibility = View.GONE
-    }
-
-    fun showToolbar() {
-        mBinding.toolbar.visibility = View.VISIBLE
-    }
-
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-            R.id.nav_logout -> {
-                signOut()
-            }
-            R.id.nav_edit_profile -> {
-                findNavController(R.id.navHostFragment).navigate(R.id.editProfileFragment)
-            }
-        }
-
-        mBinding.drawerLayout.closeDrawers()
-
-        mBinding.drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                // Respond when the drawer's position changes
-            }
-
-            override fun onDrawerOpened(drawerView: View) {
-                // Respond when the drawer is opened
-            }
-
-            override fun onDrawerClosed(drawerView: View) {
-                item.isChecked = false
-            }
-
-            override fun onDrawerStateChanged(newState: Int) {
-                // Respond when the drawer motion state changes
-            }
-        })
-
-        return true
-    }
-
-    private fun signOut() {
-        mAuth.signOut()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
     }
 }

@@ -10,13 +10,20 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.databinding.adapters.ViewGroupBindingAdapter.setListener
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +33,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
@@ -44,7 +52,7 @@ import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.util.Locale
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mBinding: FragmentProfileBinding
 
@@ -79,6 +87,8 @@ class ProfileFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         setupProfileFragment()
+
+        setupNavigationView()
 
         setupProfile()
 
@@ -169,13 +179,40 @@ class ProfileFragment : Fragment() {
         super.onStop()
 
         mFirebaseAdapter.stopListening()
-        (activity as? MainActivity)?.hideToolbar()
     }
 
     private fun setupProfileFragment() {
-        (activity as? MainActivity)?.showToolbar()
         (activity as? MainActivity)?.hideFragmentContainerViewActivity()
         (activity as? MainActivity)?.showBottomNav()
+    }
+
+    private fun setupNavigationView() {
+        mBinding.navigationView.setNavigationItemSelectedListener(this)
+
+        ActionBarDrawerToggle(requireActivity(),
+            mBinding.drawerLayout,
+            mBinding.toolbar,
+            R.string.open_drawer,
+            R.string.close_drawer).apply {
+                mBinding.drawerLayout.addDrawerListener(this)
+                syncState()
+            }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+
+        when (item.itemId) {
+            R.id.nav_logout -> {
+                signOut()
+            }
+            R.id.nav_edit_profile -> {
+                findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+            }
+        }
+
+        mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+
+        return false
     }
 
     private fun setupProfile() {
@@ -299,5 +336,11 @@ class ProfileFragment : Fragment() {
     private fun emptyList() {
         mBinding.ivEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
         mBinding.tvEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
+    }
+
+    private fun signOut() {
+        mAuth.signOut()
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        requireActivity().finish()
     }
 }
