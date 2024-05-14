@@ -101,7 +101,9 @@ class SearchGroupsFragment : Fragment() {
 
         mLayoutManager = LinearLayoutManager(context)
 
-        val query = FirebaseFirestore.getInstance().collection("groups")
+        val query = FirebaseFirestore.getInstance()
+            .collection("groups")
+            .orderBy("name")
 
         val options = FirestoreRecyclerOptions.Builder<Group>()
             .setQuery(query, Group::class.java)

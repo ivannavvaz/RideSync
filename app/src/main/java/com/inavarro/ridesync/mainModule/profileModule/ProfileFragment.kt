@@ -50,6 +50,7 @@ import com.inavarro.ridesync.common.entities.Photo
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
+import com.inavarro.ridesync.mainModule.groupsModule.searchGroups.SearchGroupsFragment
 import java.util.Locale
 
 class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
@@ -91,10 +92,6 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         setupNavigationView()
 
         setupProfile()
-
-        mBinding.btnEditProfile.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
-        }
 
         mBinding.fabUploadImage.setOnClickListener {
             openGallery()
@@ -179,6 +176,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         super.onStop()
 
         mFirebaseAdapter.stopListening()
+        mBinding.drawerLayout.closeDrawer(GravityCompat.START)
     }
 
     private fun setupProfileFragment() {
@@ -194,9 +192,13 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             mBinding.toolbar,
             R.string.open_drawer,
             R.string.close_drawer).apply {
-                mBinding.drawerLayout.addDrawerListener(this)
-                syncState()
-            }
+            mBinding.drawerLayout.addDrawerListener(this)
+            syncState()
+        }
+
+        mBinding.toolbar.setNavigationOnClickListener {
+            mBinding.drawerLayout.openDrawer(GravityCompat.START)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -236,7 +238,8 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         val user = mAuth.currentUser
         return if (user != null) {
             // First letter in uppercase
-            user.displayName?.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
+            user.displayName
+            //.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
         } else "anonymous"
     }
 
@@ -269,6 +272,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             alertDialog.dismiss()
         }
 
+        alertDialog.dismiss()
         builder.show()
     }
 

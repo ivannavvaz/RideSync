@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Activity
@@ -64,6 +65,9 @@ class ActivityFragment : Fragment() {
     private fun setActivity(activity: Activity) {
         mBinding.tvTitle.text = activity.title
         mBinding.tvDescription.text = activity.description
+        if (activity.image != null) {
+            Glide.with(requireContext()).load(activity.image).into(mBinding.ivActivity)
+        }
     }
 
     private fun openMap() {

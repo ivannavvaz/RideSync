@@ -13,8 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp"
-        android:src="@drawable/ic_person" />
+        android:layout_marginStart="16dp" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvGroupName"
@@ -25,7 +24,6 @@
         app:layout_constraintTop_toTopOf="@id/ivGroupImage"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="GroupName"
         android:textSize="18sp"
         android:textStyle="bold"/>
 
@@ -38,7 +36,7 @@
         app:layout_constraintTop_toBottomOf="@id/tvGroupName"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:text="Last message" />
+        android:textColor="@color/md_theme_light_outline" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvLastMessageTime"
@@ -47,18 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tvGroupName"
         android:layout_marginEnd="16dp"
-        android:text="Time"/>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="1dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="?android:attr/dividerVertical"/>
+        android:textColor="@color/md_theme_light_outline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

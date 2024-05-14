@@ -49,6 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_margin_default"
+                android:textStyle="bold"
                 android:textSize="24sp"
                 android:text="Username" />
 
@@ -56,22 +57,14 @@
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/common_margin_default"
+                android:layout_marginTop="8dp"
                 android:text="Email" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnEditProfile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/common_margin_default"
-                android:text="Editar Perfil"
-                android:visibility="gone"/>
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/dividerMyTrips"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginLeft="@dimen/common_margin_default"
                 android:layout_marginRight="@dimen/common_margin_default"
                 android:insetLeft="@dimen/common_margin_default"
@@ -80,8 +73,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/common_margin_default"
-                android:layout_marginBottom="@dimen/common_margin_default"
+                android:layout_marginTop="8dp"
                 android:layout_marginStart="@dimen/common_margin_default"
                 android:layout_marginEnd="@dimen/common_margin_default">
 

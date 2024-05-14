@@ -144,13 +144,13 @@ open class MyGroupsFragment : Fragment() {
                         if (message != null) {
                             if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
                                     if (message.text?.length!! > 20) {
-                                        binding.tvLastMessage.text = "You: ${message.text?.substring(0, 20)}..."
+                                        binding.tvLastMessage.text = "You: ${message.text?.substring(0, 15)}..."
                                     } else {
                                         binding.tvLastMessage.text = "You: ${message.text}"
                                     }
                             } else  {
                                 if (message.text?.length!! > 20) {
-                                    binding.tvLastMessage.text = "${message.text?.substring(0, 20)}..."
+                                    binding.tvLastMessage.text = "${message.text?.substring(0, 15)}..."
                                 } else {
                                     binding.tvLastMessage.text = message.text
                                 }
@@ -167,6 +167,9 @@ open class MyGroupsFragment : Fragment() {
                             } else {
                                 binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
                             }
+                        } else {
+                            binding.tvLastMessage.text = "No hay mensajes"
+                            binding.tvLastMessageTime.text = ""
                         }
                     }
 
