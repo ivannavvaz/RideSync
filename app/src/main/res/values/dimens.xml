@@ -2,4 +2,11 @@
 <resources>
     <dimen name="common_padding_default">16dp</dimen>
     <dimen name="common_margin_default">16dp</dimen>
+    <dimen name="_0dp">0dp</dimen>
+    <dimen name="_32sp">32sp</dimen>
+    <dimen name="_4dp_margin">4dp</dimen>
+    <dimen name="_14sp">14sp</dimen>
+    <dimen name="_32dp_margin">32dp</dimen>
+    <dimen name="_16sp">16sp</dimen>
+    <dimen name="cornerRadius_textInputLayout">8dp</dimen>
 </resources>

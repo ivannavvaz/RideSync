@@ -70,7 +70,6 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         enableLocation()
 
         moveCameraSpain()
-        addMarker(LatLng(40.5, -3.7), "España")
 
         val query = FirebaseFirestore.getInstance().collection("activities")
 

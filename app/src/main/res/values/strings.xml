@@ -6,4 +6,7 @@
     <string name="google_maps_key">***REMOVED***</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
+    <string name="login_title">Bienvenido</string>
+    <string name="login_subtitle">Bienvenido! Porfavor completa los campos.</string>
+    <string name="tvEmail_text">Email</string>
 </resources>

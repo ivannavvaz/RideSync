@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Message
 import com.inavarro.ridesync.databinding.FragmentChatBinding
-import com.inavarro.ridesync.databinding.ItemMessageBinding
+import com.inavarro.ridesync.databinding.ItemReceiverMessageBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -39,7 +38,7 @@ class ChatFragment : Fragment() {
 
     inner class MessageHolder(view: View):
         RecyclerView.ViewHolder(view) {
-        val binding = ItemMessageBinding.bind(view)
+        val binding = ItemReceiverMessageBinding.bind(view)
     }
 
     override fun onCreateView(
@@ -121,7 +120,7 @@ class ChatFragment : Fragment() {
             override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
                 context = parent.context
 
-                val view = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false)
+                val view = LayoutInflater.from(context).inflate(R.layout.item_receiver_message, parent, false)
 
                 return MessageHolder(view)
             }

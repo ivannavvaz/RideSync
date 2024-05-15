@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="@id/tvGroupName"
             app:layout_constraintBottom_toBottomOf="@id/tvGroupName"
             app:layout_constraintStart_toEndOf="@id/tvGroupName"
-            android:layout_marginStart="@dimen/common_margin_default"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_check"
             android:visibility="gone" />
 

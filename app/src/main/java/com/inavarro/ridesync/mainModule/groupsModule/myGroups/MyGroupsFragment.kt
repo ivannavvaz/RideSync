@@ -132,44 +132,53 @@ open class MyGroupsFragment : Fragment() {
 
                     binding.tvGroupName.text = group.name.toString()
 
-                    val ref = group.lastMessageRef?.let {
-                        FirebaseDatabase
-                            .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
-                            .reference
-                            .child(it.path)
-                    }
+                    if (group.lastMessageRef == null) {
+                        binding.tvLastMessage.text = "No hay mensajes"
+                        binding.tvLastMessageTime.text = ""
+                    } else {
 
-                    ref?.get()?.addOnSuccessListener {
-                        val message: Message? = it.getValue(Message::class.java)
-                        if (message != null) {
-                            if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
+                        val ref = group.lastMessageRef.let {
+                            FirebaseDatabase
+                                .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
+                                .reference
+                                .child(it.path)
+                        }
+
+                        ref.get().addOnSuccessListener {
+                            val message: Message? = it.getValue(Message::class.java)
+                            if (message != null) {
+                                if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
                                     if (message.text?.length!! > 20) {
-                                        binding.tvLastMessage.text = "You: ${message.text?.substring(0, 15)}..."
+                                        binding.tvLastMessage.text =
+                                            "You: ${message.text.substring(0, 15)}..."
                                     } else {
                                         binding.tvLastMessage.text = "You: ${message.text}"
                                     }
-                            } else  {
-                                if (message.text?.length!! > 20) {
-                                    binding.tvLastMessage.text = "${message.text?.substring(0, 15)}..."
                                 } else {
-                                    binding.tvLastMessage.text = message.text
+                                    if (message.text?.length!! > 20) {
+                                        binding.tvLastMessage.text =
+                                            "${message.text.substring(0, 15)}..."
+                                    } else {
+                                        binding.tvLastMessage.text = message.text
+                                    }
                                 }
-                            }
 
-                            val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                            val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                                val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                                val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
-                            val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
-                            val dateHourFormat = Timestamp(message.sendTime!!, 0).toDate()
+                                val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
+                                val dateHourFormat = Timestamp(message.sendTime!!, 0).toDate()
 
-                            if (dayFormat.format(dateDayFormat) == dayFormat.format(Date())) {
-                                binding.tvLastMessageTime.text = hourFormat.format(dateHourFormat)
+                                if (dayFormat.format(dateDayFormat) == dayFormat.format(Date())) {
+                                    binding.tvLastMessageTime.text =
+                                        hourFormat.format(dateHourFormat)
+                                } else {
+                                    binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
+                                }
                             } else {
-                                binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
+                                binding.tvLastMessage.text = "No hay mensajes"
+                                binding.tvLastMessageTime.text = ""
                             }
-                        } else {
-                            binding.tvLastMessage.text = "No hay mensajes"
-                            binding.tvLastMessageTime.text = ""
                         }
                     }
 

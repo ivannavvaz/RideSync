@@ -12,8 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_logo"
-        android:layout_gravity="center"
-        android:contentDescription="Logo" />
+        android:layout_gravity="center" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -25,25 +24,25 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Bienvenido"
-            android:textSize="32sp"
+            android:text="@string/login_title"
+            android:textSize="@dimen/_32sp"
             android:textStyle="bold"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvSubTitle"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="4dp"
-            android:text="Bienvenido! Porfavor completa los campos."
-            android:textSize="14sp" />
+            android:layout_marginTop="@dimen/_4dp_margin"
+            android:text="@string/login_subtitle"
+            android:textSize="@dimen/_14sp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEmail"
@@ -51,9 +50,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tvSubTitle"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="32dp"
-            android:text="Email"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/_32dp_margin"
+            android:text="@string/tvEmail_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -64,10 +63,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            app:boxCornerRadiusBottomEnd="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusBottomStart="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusTopEnd="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusTopStart="@dimen/cornerRadius_textInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
@@ -99,10 +98,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="8dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusBottomEnd="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusBottomStart="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusTopEnd="@dimen/cornerRadius_textInputLayout"
+            app:boxCornerRadiusTopStart="@dimen/cornerRadius_textInputLayout"
             app:endIconCheckable="true"
             app:endIconMode="password_toggle">
 
