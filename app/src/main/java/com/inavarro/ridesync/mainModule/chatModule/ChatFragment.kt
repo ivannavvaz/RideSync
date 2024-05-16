@@ -1,6 +1,5 @@
 package com.inavarro.ridesync.mainModule.chatModule
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,21 +11,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Message
+import com.inavarro.ridesync.common.entities.MessagesRecyclerViewItem
 import com.inavarro.ridesync.databinding.FragmentChatBinding
-import com.inavarro.ridesync.databinding.ItemReceiverMessageBinding
 import com.inavarro.ridesync.mainModule.MainActivity
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.inavarro.ridesync.mainModule.chatModule.adapters.MessagesListAdapter
 
 class ChatFragment : Fragment() {
 
@@ -34,12 +31,9 @@ class ChatFragment : Fragment() {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mFirebaseAdapter: FirebaseRecyclerAdapter<Message, ChatFragment.MessageHolder>
-
-    inner class MessageHolder(view: View):
-        RecyclerView.ViewHolder(view) {
-        val binding = ItemReceiverMessageBinding.bind(view)
-    }
+    private lateinit var mListAdapter: MessagesListAdapter
+    private lateinit var mLinearlayout: LinearLayoutManager
+    private lateinit var mItems: MutableList<MessagesRecyclerViewItem>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +43,12 @@ class ChatFragment : Fragment() {
         mBinding = FragmentChatBinding.inflate(layoutInflater)
 
         (activity as? MainActivity)?.hideBottomNav()
+
+        setupRecyclerView()
+
+        mItems = mutableListOf()
+
+        getMessages()
 
         mBinding.tvName.text = arguments?.getString("nameGroup").toString()
 
@@ -82,12 +82,6 @@ class ChatFragment : Fragment() {
             findNavController().navigate(R.id.action_chatFragment_to_infoChatFragment, bundle)
         }
 
-        mBinding.etMessage.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                mBinding.rvMessages.scrollToPosition(mFirebaseAdapter.itemCount - 1)
-            }
-        }
-
         mBinding.ivSend.setOnClickListener {
             if (mBinding.etMessage.text.toString().isNotEmpty()) {
                 sendMessage(mBinding.etMessage.text.toString())
@@ -97,11 +91,20 @@ class ChatFragment : Fragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun setupRecyclerView() {
+        mListAdapter = MessagesListAdapter()
 
-        mLayoutManager = LinearLayoutManager(context)
+        mLinearlayout = LinearLayoutManager(context)
+        mLinearlayout.orientation = LinearLayoutManager.VERTICAL
 
+        mBinding.rvMessages.apply {
+            setHasFixedSize(true)
+            layoutManager = mLinearlayout
+            adapter = mListAdapter
+        }
+    }
+
+    private fun getMessages() {
         val query = FirebaseDatabase
             .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
             .reference
@@ -109,103 +112,30 @@ class ChatFragment : Fragment() {
             .child(arguments?.getString("idGroup")!!)
             .child("messages")
 
-        val options = FirebaseRecyclerOptions.Builder<Message>()
-            .setQuery(query, Message::class.java)
-            .build()
-
-        mFirebaseAdapter = object : FirebaseRecyclerAdapter<Message, MessageHolder>(options) {
-
-            private lateinit var context: Context
-
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
-                context = parent.context
-
-                val view = LayoutInflater.from(context).inflate(R.layout.item_receiver_message, parent, false)
-
-                return MessageHolder(view)
-            }
-
-            override fun onBindViewHolder(holder: MessageHolder, position: Int, model: Message) {
-                val message = getItem(position)
-
-                with(holder) {
-                    binding.messageTextView.text = message.text
-
-                    val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                    val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                    val dayHourFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
-
-                    val dateDayFormat = Timestamp(message.sendTime!!, 0).toDate()
-                    val date = Timestamp(message.sendTime!!, 0).toDate()
-
-                    if (dayFormat.format(dateDayFormat) == dayFormat.format(Date())) {
-                        binding.dateTextView.text = hourFormat.format(date)
-                    } else {
-                        binding.dateTextView.text = dayHourFormat.format(date)
-                    }
-
-                    if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
-                        binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_blue)
-                    } else {
-                        binding.messageTextView.setBackgroundResource(R.drawable.rounded_message_gray)
-                    }
-
-                    val ref = FirebaseFirestore.getInstance()
-                        .collection("users")
-                        .document(message.senderId!!)
-
-                    ref.get().addOnSuccessListener {
-                        if (it.exists()) {
-                            binding.messengerTextView.text = it.getString("username")
-                            if (it.getString("profilePhoto") != null) {
-                                Glide.with(context)
-                                    .load(it.getString("profilePhoto"))
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .circleCrop()
-                                    .into(binding.messengerImageView)
-                            } else {
-                                Glide.with(context)
-                                    .load(R.drawable.ic_person)
-                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                    .circleCrop()
-                                    .into(binding.messengerImageView)
-                            }
+        query.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                mItems.clear()
+                for (message in snapshot.children) {
+                    val message = message.getValue(Message::class.java)
+                    if (message != null) {
+                        val messageWithType: MessagesRecyclerViewItem
+                        if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
+                            messageWithType = MessagesRecyclerViewItem.TransmitterMessage(message.text, message.senderId, message.sendTime)
+                        } else {
+                            messageWithType = MessagesRecyclerViewItem.ReceiverMessage(message.text, message.senderId, message.sendTime)
                         }
+                        mItems.add(messageWithType)
                     }
                 }
+                mListAdapter.submitList(mItems)
+                mBinding.circularProgressIndicator.visibility = View.GONE
+                mBinding.rvMessages.scrollToPosition(mItems.size - 1)
             }
 
-            override fun onDataChanged() {
-                super.onDataChanged()
-
-                mBinding.rvMessages.scrollToPosition(mFirebaseAdapter.itemCount - 1)
-                notifyDataSetChanged()
-            }
-
-            override fun onError(error: DatabaseError) {
-                super.onError(error)
-
+            override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
             }
-        }
-
-        mBinding.rvMessages.apply {
-            setHasFixedSize(true)
-            layoutManager = mLayoutManager
-            adapter = mFirebaseAdapter
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        mFirebaseAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        mFirebaseAdapter.stopListening()
+        })
     }
 
     private fun sendMessage(message: String) {
