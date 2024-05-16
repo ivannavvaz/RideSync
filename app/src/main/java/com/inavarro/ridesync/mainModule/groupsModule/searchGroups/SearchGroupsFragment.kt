@@ -93,6 +93,8 @@ class SearchGroupsFragment : Fragment() {
 
         setupSearchView()
 
+        mBinding.progressBar.visibility = View.VISIBLE
+
         return mBinding.root
     }
 
@@ -159,6 +161,8 @@ class SearchGroupsFragment : Fragment() {
                 super.onDataChanged()
 
                 notifyDataSetChanged()
+
+                mBinding.progressBar.visibility = View.GONE
             }
 
             override fun onError(e: FirebaseFirestoreException) {

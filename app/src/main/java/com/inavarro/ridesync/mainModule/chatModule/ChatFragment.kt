@@ -44,6 +44,8 @@ class ChatFragment : Fragment() {
 
         (activity as? MainActivity)?.hideBottomNav()
 
+        mBinding.progressBar.visibility = View.VISIBLE
+
         setupRecyclerView()
 
         mItems = mutableListOf()
@@ -128,7 +130,7 @@ class ChatFragment : Fragment() {
                     }
                 }
                 mListAdapter.submitList(mItems)
-                mBinding.circularProgressIndicator.visibility = View.GONE
+                mBinding.progressBar.visibility = View.GONE
                 mBinding.rvMessages.scrollToPosition(mItems.size - 1)
             }
 

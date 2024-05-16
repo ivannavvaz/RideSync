@@ -9,4 +9,5 @@
     <dimen name="_32dp_margin">32dp</dimen>
     <dimen name="_16sp">16sp</dimen>
     <dimen name="cornerRadius_textInputLayout">8dp</dimen>
+    <dimen name="common_margin_min">8dp</dimen>
 </resources>

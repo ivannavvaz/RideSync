@@ -147,6 +147,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
                 notifyDataSetChanged()
 
+                mBinding.progressBar.visibility = View.GONE
                 emptyList()
             }
 
@@ -162,8 +163,6 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             layoutManager = mLayoutManager
             adapter = mFirebaseAdapter
         }
-
-        emptyList()
     }
 
     override fun onStart() {
@@ -180,6 +179,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     }
 
     private fun setupProfileFragment() {
+        mBinding.progressBar.visibility = View.VISIBLE
         (activity as? MainActivity)?.hideFragmentContainerViewActivity()
         (activity as? MainActivity)?.showBottomNav()
     }

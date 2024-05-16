@@ -42,7 +42,7 @@ open class MyGroupsFragment : Fragment() {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mFirestoreAdapter: FirestoreRecyclerAdapter<Group, GroupHolder>
+    private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Group, GroupHolder>
 
     inner class GroupHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -111,7 +111,7 @@ open class MyGroupsFragment : Fragment() {
             .setQuery(query, Group::class.java)
             .build()
 
-        mFirestoreAdapter = object : FirestoreRecyclerAdapter<Group, GroupHolder>(options) {
+        mFirebaseAdapter = object : FirestoreRecyclerAdapter<Group, GroupHolder>(options) {
 
             private lateinit var context: Context
 
@@ -203,6 +203,10 @@ open class MyGroupsFragment : Fragment() {
                 super.onDataChanged()
 
                 notifyDataSetChanged()
+
+                mBinding.progressBar.visibility = View.GONE
+
+                emptyList()
             }
 
             override fun onError(e: FirebaseFirestoreException) {
@@ -215,12 +219,12 @@ open class MyGroupsFragment : Fragment() {
         mBinding.rvChats.apply {
             setHasFixedSize(true)
             layoutManager = mLayoutManager
-            adapter = mFirestoreAdapter
+            adapter = mFirebaseAdapter
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         val query = FirebaseFirestore.getInstance()
             .collection("groups")
@@ -231,23 +235,20 @@ open class MyGroupsFragment : Fragment() {
             .setQuery(query, Group::class.java)
             .build()
 
-        mFirestoreAdapter.updateOptions(options)
-    }
+        mFirebaseAdapter.updateOptions(options)
 
-    override fun onStart() {
-        super.onStart()
-
-        mFirestoreAdapter.startListening()
+        mFirebaseAdapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
 
         mBinding.svSearch.setQuery(null, false)
-        mFirestoreAdapter.stopListening()
+        mFirebaseAdapter.stopListening()
     }
 
     private fun setupMyGroupsFragment() {
+        mBinding.progressBar.visibility = View.VISIBLE
         ((activity as? MainActivity)?.showBottomNav())
     }
 
@@ -277,7 +278,7 @@ open class MyGroupsFragment : Fragment() {
                         .setQuery(query, Group::class.java)
                         .build()
 
-                    mFirestoreAdapter.updateOptions(options)
+                    mFirebaseAdapter.updateOptions(options)
                 }
                 return false
             }
@@ -296,5 +297,10 @@ open class MyGroupsFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun emptyList() {
+        mBinding.ivEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
+        mBinding.tvEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
     }
 }
