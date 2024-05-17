@@ -4,10 +4,18 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +31,7 @@ import com.inavarro.ridesync.databinding.FragmentInfoChatBinding
 import com.inavarro.ridesync.databinding.ItemUserBinding
 import com.inavarro.ridesync.mainModule.infoChatModule.adapters.InfoChatListAdapter
 
-class InfoChatFragment : Fragment() {
+class InfoChatFragment : Fragment(), MenuProvider {
 
     private lateinit var mBinding: FragmentInfoChatBinding
 
@@ -40,36 +48,59 @@ class InfoChatFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentInfoChatBinding.inflate(layoutInflater)
 
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        mBinding.progressBar.visibility = View.VISIBLE
+
+        setupToolBar()
 
         setupRecyclerView()
 
         setupGroup()
 
-        mBinding.btnExitGroup.setOnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
+        return mBinding.root
+    }
 
-            val alertDialog = builder.create()
-            alertDialog.show()
+    private fun setupToolBar() {
+        (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 
-            builder.setTitle("Confirmación")
-            builder.setMessage("¿Quieres salir del grupo?")
-            builder.setPositiveButton("Aceptar") { _, _ ->
-                leaveGroup(mGroup)
-                findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
-                alertDialog.dismiss()
-            }
-            builder.setNegativeButton("Cancel") { _, _ ->
-                alertDialog.dismiss()
-            }
+        mBinding.toolBar.title = "Información del grupo"
+        mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
-            builder.show()
-            alertDialog.dismiss()
+        mBinding.toolBar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
 
-        return mBinding.root
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.option_menu_item, menu)
+    }
+
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_exit_group -> {
+                val builder = AlertDialog.Builder(requireContext())
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+
+                builder.setTitle("Confirmación")
+                builder.setMessage("¿Quieres salir del grupo?")
+                builder.setPositiveButton("Aceptar") { _, _ ->
+                    leaveGroup(mGroup)
+                    findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
+                    alertDialog.dismiss()
+                }
+                builder.setNegativeButton("Cancel") { _, _ ->
+                    alertDialog.dismiss()
+                }
+
+                builder.show()
+                alertDialog.dismiss()
+            }
+        }
+        return false
     }
 
     private fun setupGroup() {
@@ -127,6 +158,7 @@ class InfoChatFragment : Fragment() {
                     val user = it.toObject(User::class.java)
                     users.add(user!!)
                     mInfoChatListAdapter.notifyDataSetChanged()
+                    mBinding.progressBar.visibility = View.GONE
                 }
         }
     }

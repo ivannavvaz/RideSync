@@ -14,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Activity
 import com.inavarro.ridesync.databinding.FragmentActivityBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class ActivityFragment : Fragment() {
 
@@ -65,6 +67,15 @@ class ActivityFragment : Fragment() {
     private fun setActivity(activity: Activity) {
         mBinding.tvTitle.text = activity.title
         mBinding.tvDescription.text = activity.description
+
+        if (activity.date != null) {
+            showDate()
+            // Format date
+            val date = activity.date.toDate()
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            mBinding.tvDate.text = dateFormat.format(date)
+        }
+
         if (activity.image != null) {
             Glide.with(requireContext()).load(activity.image).into(mBinding.ivActivity)
         }
@@ -76,5 +87,10 @@ class ActivityFragment : Fragment() {
         intent.setPackage("com.google.android.apps.maps")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
+    }
+
+    private fun showDate() {
+        mBinding.tvDate.visibility = View.VISIBLE
+        mBinding.ivDate.visibility = View.VISIBLE
     }
 }

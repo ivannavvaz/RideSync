@@ -13,8 +13,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
@@ -23,8 +22,7 @@
             app:title="Actividades"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
-            app:titleCentered="true"
-            />
+            app:titleCentered="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -78,7 +78,7 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
                 val location = document.getGeoPoint("location")
                 val id = document.id
                 if (location != null) {
-                    addMarker(LatLng(location.latitude, location.longitude), id)
+                    addMarker(LatLng(location.latitude, location.longitude), id, document.getString("type")!!)
                 }
             }
         }
@@ -174,13 +174,41 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5f))
     }
 
-    private fun addMarker(latLng: LatLng, id: String) {
-        mGoogleMap.addMarker(
-            MarkerOptions()
-                .position(latLng)
-                .title(id)
-                .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_location))
-        )
+    private fun addMarker(latLng: LatLng, id: String, type: String) {
+        when (type) {
+            "meeting" -> {
+                mGoogleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(id)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_groups))
+                )
+            }
+            "restaurant" -> {
+                mGoogleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(id)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_fastfood))
+                )
+            }
+            "route" -> {
+                mGoogleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(id)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_route))
+                )
+            }
+            else -> {
+                mGoogleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title(id)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.ic_location))
+                )
+            }
+        }
     }
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {

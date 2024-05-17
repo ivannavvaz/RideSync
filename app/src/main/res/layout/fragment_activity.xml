@@ -39,23 +39,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvDate"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginEnd="@dimen/common_margin_default"
-                    android:text="Titulo"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="Fecha"
-                    android:textSize="16sp" />
+                    android:text="Titulo"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -65,9 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/common_margin_default"
                 android:layout_marginEnd="@dimen/common_margin_default"
-                android:layout_marginBottom="@dimen/common_margin_default"
+
                 android:text="Descripción"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -75,36 +64,37 @@
                 android:layout_margin="@dimen/common_margin_default">
 
                 <ImageView
-                    android:id="@+id/ivLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_location"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvDirection"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toEndOf="@id/ivLocation"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/ivMap"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Dirección"
-                    android:textSize="16sp" />
-
-                <ImageView
                     android:id="@+id/ivMap"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_map"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/ivDate"
+                    app:layout_constraintBottom_toBottomOf="@id/ivDate"
+                    android:layout_marginStart="8dp" />
+
+                <ImageView
+                    android:id="@+id/ivDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginStart="8dp" />
+                    android:src="@drawable/ic_calendar"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/ivDate"
+                    app:layout_constraintBottom_toBottomOf="@id/ivDate"
+                    app:layout_constraintStart_toEndOf="@id/ivDate"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Fecha"
+                    android:textSize="14sp"
+                    android:visibility="gone"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
