@@ -13,13 +13,19 @@ import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserBinding
 
-class InfoChatListAdapter():
+class InfoChatListAdapter(private val listener: OnClickListener):
     ListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()) {
 
         private lateinit var context: Context
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val binding = ItemUserBinding.bind(view)
+
+            fun setListener(user: User) {
+                with(binding.root) {
+                    setOnClickListener { listener.onClick(user) }
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -34,6 +40,8 @@ class InfoChatListAdapter():
             val user = getItem(position)
 
             with(holder as ViewHolder) {
+                setListener(user)
+
                 binding.tvUserName.text = user.username
 
                 // Get profile photo

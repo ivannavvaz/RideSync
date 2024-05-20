@@ -30,8 +30,9 @@ import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentInfoChatBinding
 import com.inavarro.ridesync.databinding.ItemUserBinding
 import com.inavarro.ridesync.mainModule.infoChatModule.adapters.InfoChatListAdapter
+import com.inavarro.ridesync.mainModule.infoChatModule.adapters.OnClickListener
 
-class InfoChatFragment : Fragment(), MenuProvider {
+class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
     private lateinit var mBinding: FragmentInfoChatBinding
 
@@ -136,7 +137,7 @@ class InfoChatFragment : Fragment(), MenuProvider {
     }
 
     private fun setupRecyclerView() {
-        mInfoChatListAdapter = InfoChatListAdapter()
+        mInfoChatListAdapter = InfoChatListAdapter(this)
 
         mLayoutManager = LinearLayoutManager(this.context)
 
@@ -145,6 +146,14 @@ class InfoChatFragment : Fragment(), MenuProvider {
             layoutManager = mLayoutManager
             adapter = mInfoChatListAdapter
         }
+    }
+
+    override fun onClick(user: User) {
+        findNavController().navigate(
+            InfoChatFragmentDirections.actionInfoChatFragmentToViewProfileFragment(
+                user.id!!
+            )
+        )
     }
 
     @SuppressLint("NotifyDataSetChanged")
