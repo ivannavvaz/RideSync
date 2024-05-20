@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -38,6 +39,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mGoogleMap: GoogleMap
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     companion object {
         const val REQUEST_CODE_LOCATION = 0
     }
@@ -52,6 +55,8 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         setupMap()
 
         setupSearchFragment()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return mBinding.root
     }
@@ -69,7 +74,11 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap = googleMap
         enableLocation()
 
-        moveCameraSpain()
+        if (isLocationPermissionGranted()) {
+            moveCameraToCurrentLocation()
+        } else {
+            moveCameraSpain()
+        }
 
         val query = FirebaseFirestore.getInstance().collection("activities")
 
@@ -172,6 +181,17 @@ class SearchFragment : Fragment(), OnMapReadyCallback {
     private fun moveCameraSpain() {
         val latLng = LatLng(40.5, -3.7)
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5f))
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun moveCameraToCurrentLocation() {
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location ->
+                if (location != null) {
+                    val currentLatLng = LatLng(location.latitude, location.longitude)
+                    mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 10f))
+                }
+            }
     }
 
     private fun addMarker(latLng: LatLng, id: String, type: String) {

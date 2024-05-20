@@ -163,9 +163,10 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
         mGroup.users?.forEach { userId ->
             FirebaseFirestore.getInstance().collection("users").document(userId).get()
-                .addOnSuccessListener {
+                .addOnSuccessListener { it ->
                     val user = it.toObject(User::class.java)
                     users.add(user!!)
+                    users.sortBy { it.username }
                     mInfoChatListAdapter.notifyDataSetChanged()
                     mBinding.progressBar.visibility = View.GONE
                 }
