@@ -204,11 +204,14 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
-            R.id.nav_logout -> {
-                signOut()
+            R.id.nav_share -> {
+                openShare()
             }
             R.id.nav_edit_profile -> {
                 findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+            }
+            R.id.nav_logout -> {
+                signOut()
             }
         }
 
@@ -279,6 +282,13 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startForResult.launch(intent)
+    }
+
+    private fun openShare() {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, "¡Mira mi perfil en RideSync! ${mAuth.currentUser?.displayName}")
+        startActivity(Intent.createChooser(intent, "Compartir"))
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

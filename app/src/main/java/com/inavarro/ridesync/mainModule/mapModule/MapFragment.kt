@@ -1,4 +1,4 @@
-package com.inavarro.ridesync.mainModule.activityModule
+package com.inavarro.ridesync.mainModule.mapModule
 
 import android.content.Intent
 import android.net.Uri
@@ -8,10 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
-import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Activity
 import com.inavarro.ridesync.databinding.FragmentActivityBinding
 import java.text.SimpleDateFormat
