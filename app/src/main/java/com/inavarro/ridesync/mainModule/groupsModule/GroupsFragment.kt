@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentGroupsBinding
@@ -22,6 +23,10 @@ class GroupsFragment : Fragment() {
         mBinding = FragmentGroupsBinding.inflate(layoutInflater)
 
         setupGroupsFragment()
+
+        mBinding.fabCreateGroup.setOnClickListener {
+            findNavController().navigate(R.id.action_GroupsFragment_to_createGroupFragment  )
+        }
 
         return mBinding.root
     }

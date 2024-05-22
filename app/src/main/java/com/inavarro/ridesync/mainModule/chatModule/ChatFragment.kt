@@ -42,7 +42,7 @@ class ChatFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentChatBinding.inflate(layoutInflater)
 
-        (activity as? MainActivity)?.hideBottomNav()
+        setupChatFragment()
 
         mBinding.progressBar.visibility = View.VISIBLE
 
@@ -91,6 +91,10 @@ class ChatFragment : Fragment() {
         }
 
         return mBinding.root
+    }
+
+    private fun setupChatFragment(){
+        (activity as? MainActivity)?.hideBottomNav()
     }
 
     private fun setupRecyclerView() {

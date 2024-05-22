@@ -56,7 +56,7 @@ open class MyGroupsFragment : Fragment() {
                         }
                     }
 
-                    findNavController().navigate(GroupsFragmentDirections.actionChatsFragmentToChatFragment(group.id!!, group.name!!))
+                    findNavController().navigate(GroupsFragmentDirections.actionGroupsFragmentToChatFragment(group.id!!, group.name!!))
                 }
 
                 binding.root.setOnLongClickListener {

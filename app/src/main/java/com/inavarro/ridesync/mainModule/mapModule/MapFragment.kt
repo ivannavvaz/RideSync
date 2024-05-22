@@ -93,14 +93,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 10f))
 
             // Load the activity fragment
-            val fragment = ActivityFragment()
+            val activityFragment = ActivityFragment()
             val bundle = Bundle()
             bundle.putString("id", marker.title)
-            fragment.arguments = bundle
+            activityFragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerViewActivity, fragment)
+                .replace(R.id.fragmentContainerViewActivity, activityFragment)
                 .addToBackStack(null)
                 .commit()
+
             true
         }
     }

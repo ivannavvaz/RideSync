@@ -66,6 +66,7 @@ class InfoChatListAdapter(private val listener: OnClickListener, private val mGr
 
                 if (mGroup.admin == user.id) {
                     binding.tvAdmin.visibility = View.VISIBLE
+                    binding.tvMe.visibility = View.GONE
                 } else {
                     binding.tvAdmin.visibility = View.GONE
                     if (user.id == FirebaseAuth.getInstance().currentUser?.uid) {

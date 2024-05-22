@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentActivitiesBinding
+import com.inavarro.ridesync.mainModule.MainActivity
 
 class ActivitiesFragment : Fragment() {
 
@@ -19,6 +20,12 @@ class ActivitiesFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentActivitiesBinding.inflate(layoutInflater)
 
+        setupActivitiesFragment()
+
         return mBinding.root
+    }
+
+    private fun setupActivitiesFragment(){
+        (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 }
