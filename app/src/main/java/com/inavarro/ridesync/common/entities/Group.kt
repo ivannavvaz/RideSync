@@ -13,5 +13,6 @@ data class Group(
     val users: List<String>? = null,
     val photo: String? = null,
     val lastMessageRef: DocumentReference? = null,
-    val lastMessageTime: Long? = null
+    val lastMessageTime: Long? = null,
+    val private: Boolean? = false
 )

@@ -6,12 +6,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_store"
-        android:title="Tienda" />
+        android:title="Tiendas" />
     <item
-        android:id="@+id/findFragment"
+        android:id="@+id/mapFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:icon="@drawable/ic_map"
+        android:title="Mapa" />
+    <item
+        android:id="@+id/activitiesFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/ic_radar"
         android:title="Actividades" />
     <item
         android:id="@+id/GroupsFragment"

@@ -26,6 +26,17 @@
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_info"
             android:title="Acerca de nosotros"/>
+
+        <item
+            android:id="@+id/nav_promotion_store"
+            android:icon="@drawable/ic_moving"
+            android:title="Promoccionar tienda"/>
+
+        <item
+            android:id="@+id/nav_upgrade_account"
+            android:icon="@drawable/ic_monetization"
+            android:title="Premium"/>
+
     </group>
 
     <item

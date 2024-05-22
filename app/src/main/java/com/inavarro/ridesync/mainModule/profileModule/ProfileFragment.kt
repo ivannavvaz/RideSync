@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -199,6 +200,14 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         mBinding.toolbar.setNavigationOnClickListener {
             mBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
+
+        val menuItem = mBinding.navigationView.menu.findItem(R.id.nav_upgrade_account)
+
+        if (isPremium()) {
+            menuItem.isVisible = false
+        } else {
+            menuItem.isVisible = true
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -249,6 +258,21 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private fun getPhotoUrl(): Uri? {
         val user = mAuth.currentUser
         return user?.photoUrl
+    }
+
+    private fun isPremium(): Boolean {
+        var isPremium = false
+
+        val query = FirebaseDatabase.getInstance().reference
+            .child("users")
+            .child(mAuth.currentUser?.uid!!)
+            .child("premium")
+
+        query.get().addOnSuccessListener { isPremiumSnapshot ->
+            isPremium = isPremiumSnapshot.value as Boolean
+        }
+
+        return isPremium
     }
 
     private fun loadPhotoProfile(photoUrl: Uri?) {

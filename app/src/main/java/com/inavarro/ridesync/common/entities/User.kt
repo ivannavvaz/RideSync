@@ -11,4 +11,5 @@ data class User(
     val username: String? = null,
     val profilePhoto: String? = null,
     //val groups: List<String>? = null
+    val premium: Boolean? = false
 )

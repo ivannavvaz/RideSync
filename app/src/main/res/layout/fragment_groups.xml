@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".mainModule.searchModule.SearchFragment">
+    tools:context=".mainModule.mapModule.MapFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -25,6 +25,16 @@
             android:text="Explorar" />
 
     </com.google.android.material.tabs.TabLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabCreateGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        android:layout_marginBottom="@dimen/common_margin_default"
+        android:src="@drawable/ic_add" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
