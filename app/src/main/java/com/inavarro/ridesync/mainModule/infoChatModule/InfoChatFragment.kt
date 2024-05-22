@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.R
@@ -53,8 +54,6 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
         setupToolBar()
 
-        setupRecyclerView()
-
         setupGroup()
 
         return mBinding.root
@@ -76,6 +75,16 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
     override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.option_menu_item, menu)
+
+        val itemExitGroup = menu.findItem(R.id.action_exit_group)
+        val itemDeleteGroup = menu.findItem(R.id.action_delete_group)
+
+        if (::mGroup.isInitialized) {
+            itemExitGroup.isVisible = mGroup.admin != FirebaseAuth.getInstance().currentUser?.uid
+            itemDeleteGroup.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
+        } else {
+            itemExitGroup.isVisible = false
+        }
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
@@ -90,6 +99,26 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                 builder.setMessage("¿Quieres salir del grupo?")
                 builder.setPositiveButton("Aceptar") { _, _ ->
                     leaveGroup(mGroup)
+                    findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
+                    alertDialog.dismiss()
+                }
+                builder.setNegativeButton("Cancel") { _, _ ->
+                    alertDialog.dismiss()
+                }
+
+                builder.show()
+                alertDialog.dismiss()
+            }
+            R.id.action_delete_group -> {
+                val builder = AlertDialog.Builder(requireContext())
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+
+                builder.setTitle("Confirmación")
+                builder.setMessage("¿Quieres eliminar el grupo?")
+                builder.setPositiveButton("Aceptar") { _, _ ->
+                    deleteGroup(mGroup)
                     findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
                     alertDialog.dismiss()
                 }
@@ -132,12 +161,16 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                 mBinding.tvDescription.text = "No hay descripción"
             }
 
+            requireActivity().invalidateOptionsMenu()
+
+            setupRecyclerView()
+
             getMembers()
         }
     }
 
     private fun setupRecyclerView() {
-        mInfoChatListAdapter = InfoChatListAdapter(this)
+        mInfoChatListAdapter = InfoChatListAdapter(this, mGroup)
 
         mLayoutManager = LinearLayoutManager(this.context)
 
@@ -148,12 +181,38 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
         }
     }
 
-    override fun onClick(user: User) {
-        findNavController().navigate(
-            InfoChatFragmentDirections.actionInfoChatFragmentToViewProfileFragment(
-                user.id!!
+    override fun onClick(userEntity: User) {
+        if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
+            findNavController().navigate(
+                InfoChatFragmentDirections.actionInfoChatFragmentToViewProfileFragment(
+                    userEntity.id!!
+                )
             )
-        )
+        }
+    }
+
+    override fun onLongClick(userEntity: User) {
+        if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
+            if (mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid) {
+                val builder = AlertDialog.Builder(requireContext())
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+
+                builder.setTitle("Confirmación")
+                builder.setMessage("¿Quieres eliminar a ${userEntity.username}?")
+                builder.setPositiveButton("Aceptar") { _, _ ->
+                    removeUser(userEntity)
+                    alertDialog.dismiss()
+                }
+                builder.setNegativeButton("Cancel") { _, _ ->
+                    alertDialog.dismiss()
+                }
+
+                builder.show()
+                alertDialog.dismiss()
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -185,5 +244,45 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
             .addOnFailureListener {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun removeUser(user: User) {
+        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+        groupRef.document(mGroup.id!!).update(
+            "users",
+            FieldValue.arrayRemove(user.id)
+        )
+            .addOnSuccessListener {
+                Toast.makeText(context, "Usuario eliminado", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun deleteGroup(group: Group) {
+        val groupRef = FirebaseFirestore.getInstance().collection("groups")
+        groupRef.document(group.id!!).delete()
+            .addOnSuccessListener {
+                Toast.makeText(context, "Grupo eliminado", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+            }
+
+        val messageRef = FirebaseDatabase
+            .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
+            .reference
+            .child("groups")
+            .child(group.id)
+
+        messageRef.removeValue()
+
+        val photoRef = FirebaseFirestore.getInstance().collection("groups").document(group.id).collection("photos")
+        photoRef.get().addOnSuccessListener {
+            for (document in it) {
+                photoRef.document(document.id).delete()
+            }
+        }
     }
 }

@@ -142,7 +142,7 @@ class ChatFragment : Fragment() {
 
     private fun sendMessage(message: String) {
         val message = Message(
-            mBinding.etMessage.text.toString(),
+            message,
             FirebaseAuth.getInstance().currentUser?.uid ?: "Unknown",
             Timestamp.now().seconds
         )

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -48,10 +49,16 @@ import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.common.entities.Photo
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.mainModule.groupsModule.searchGroups.SearchGroupsFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
@@ -201,13 +208,22 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             mBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
 
+        /* Para mostrar o no el item de la navegación Premium
         val menuItem = mBinding.navigationView.menu.findItem(R.id.nav_upgrade_account)
 
-        if (isPremium()) {
-            menuItem.isVisible = false
-        } else {
-            menuItem.isVisible = true
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val isPremium = isPremium()
+            withContext(Dispatchers.Main) {
+                if (isPremium) {
+                    menuItem.isVisible = false
+                } else {
+                    menuItem.isVisible = true
+                }
+            }
         }
+
+         */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -260,19 +276,25 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         return user?.photoUrl
     }
 
-    private fun isPremium(): Boolean {
-        var isPremium = false
+    private suspend fun isPremium(): Boolean {
+        return withContext(Dispatchers.IO) {
+            var isPremium = false
 
-        val query = FirebaseDatabase.getInstance().reference
-            .child("users")
-            .child(mAuth.currentUser?.uid!!)
-            .child("premium")
+            try {
+                val document = FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(mAuth.currentUser?.uid!!)
+                    .get()
+                    .await()
 
-        query.get().addOnSuccessListener { isPremiumSnapshot ->
-            isPremium = isPremiumSnapshot.value as Boolean
+                val user = document.toObject(User::class.java)
+                isPremium = user?.premium ?: false
+            } catch (e: Exception) {
+                Log.e("Error", "Error: ${e.message}")
+            }
+
+            isPremium
         }
-
-        return isPremium
     }
 
     private fun loadPhotoProfile(photoUrl: Uri?) {

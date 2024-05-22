@@ -30,7 +30,7 @@
         <item
             android:id="@+id/nav_promotion_store"
             android:icon="@drawable/ic_moving"
-            android:title="Promoccionar tienda"/>
+            android:title="Promocionar tienda"/>
 
         <item
             android:id="@+id/nav_upgrade_account"

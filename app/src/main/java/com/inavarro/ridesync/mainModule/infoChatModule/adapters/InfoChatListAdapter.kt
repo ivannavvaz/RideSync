@@ -3,17 +3,20 @@ package com.inavarro.ridesync.mainModule.infoChatModule.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.firebase.auth.FirebaseAuth
 import com.inavarro.ridesync.R
+import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserBinding
 
-class InfoChatListAdapter(private val listener: OnClickListener):
+class InfoChatListAdapter(private val listener: OnClickListener, private val mGroup: Group):
     ListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()) {
 
         private lateinit var context: Context
@@ -24,6 +27,11 @@ class InfoChatListAdapter(private val listener: OnClickListener):
             fun setListener(user: User) {
                 with(binding.root) {
                     setOnClickListener { listener.onClick(user) }
+
+                    setOnLongClickListener {
+                        listener.onLongClick(user)
+                        true
+                    }
                 }
             }
         }
@@ -54,6 +62,17 @@ class InfoChatListAdapter(private val listener: OnClickListener):
                         .into(binding.ivPhotoProfile)
                 } else {
                     binding.ivPhotoProfile.setImageResource(R.drawable.ic_person)
+                }
+
+                if (mGroup.admin == user.id) {
+                    binding.tvAdmin.visibility = View.VISIBLE
+                } else {
+                    binding.tvAdmin.visibility = View.GONE
+                    if (user.id == FirebaseAuth.getInstance().currentUser?.uid) {
+                        binding.tvMe.visibility = View.VISIBLE
+                    } else {
+                        binding.tvMe.visibility = View.GONE
+                    }
                 }
 
                 if (position == itemCount - 1) {
