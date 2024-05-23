@@ -76,6 +76,13 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAddParticipants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Añadir participantes" />
+
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/swPrivateGroup"
         android:layout_width="wrap_content"

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="90dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginEnd="@dimen/common_margin_default">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:elevation="1dp"
+            android:src="@drawable/ic_close"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <ImageView
+            android:id="@+id/ivPhotoUser"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="@dimen/common_margin_min"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:src="@drawable/ic_person"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvNameUser"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivPhotoUser"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:layout_marginBottom="@dimen/common_margin_min"
+            android:layout_marginTop="4dp"
+            android:textAlignment="center"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Nombre"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

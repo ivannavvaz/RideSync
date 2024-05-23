@@ -80,10 +80,12 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
         inflater.inflate(R.menu.option_menu_item, menu)
 
         val itemExitGroup = menu.findItem(R.id.action_exit_group)
+        val itemEditGroup = menu.findItem(R.id.action_edit_group)
         val itemDeleteGroup = menu.findItem(R.id.action_delete_group)
 
         if (::mGroup.isInitialized) {
             itemExitGroup.isVisible = mGroup.admin != FirebaseAuth.getInstance().currentUser?.uid
+            itemEditGroup.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
             itemDeleteGroup.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
         } else {
             itemExitGroup.isVisible = false

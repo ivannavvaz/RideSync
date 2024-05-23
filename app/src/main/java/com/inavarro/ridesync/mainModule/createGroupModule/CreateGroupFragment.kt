@@ -28,6 +28,10 @@ class CreateGroupFragment : Fragment() {
 
         setupToolBar()
 
+        mBinding.btnAddParticipants.setOnClickListener {
+            findNavController().navigate(R.id.action_createGroupFragment_to_addUsersGroupFragment)
+        }
+
         return mBinding.root
     }
 

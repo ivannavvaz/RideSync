@@ -242,6 +242,9 @@
         <action
             android:id="@+id/action_createGroupFragment_to_GroupsFragment"
             app:destination="@id/GroupsFragment" />
+        <action
+            android:id="@+id/action_createGroupFragment_to_addUsersGroupFragment"
+            app:destination="@id/addUsersGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/shopFragment"
@@ -265,5 +268,14 @@
             android:name="idActivity"
             app:argType="string"
             android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/addUsersGroupFragment"
+        android:name="com.inavarro.ridesync.mainModule.addUsersGroupModule.AddUsersGroupFragment"
+        android:label="fragment_add_users_group"
+        tools:layout="@layout/fragment_add_users_group" >
+        <action
+            android:id="@+id/action_addUsersGroupFragment_to_createGroupFragment"
+            app:destination="@id/createGroupFragment" />
     </fragment>
 </navigation>
