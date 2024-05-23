@@ -40,8 +40,8 @@
             android:id="@+id/action_mapFragment_to_shopsFragment"
             app:destination="@id/shopsFragment" />
         <action
-            android:id="@+id/action_mapFragment_to_activityFragment"
-            app:destination="@id/activityFragment" />
+            android:id="@+id/action_mapFragment_to_activityMapFragment"
+            app:destination="@id/activityMapFragment" />
         <action
             android:id="@+id/action_mapFragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
@@ -193,24 +193,24 @@
             android:defaultValue="0" />
     </fragment>
     <fragment
-        android:id="@+id/activityFragment"
-        android:name="com.inavarro.ridesync.mainModule.activityModule.ActivityFragment"
+        android:id="@+id/activityMapFragment"
+        android:name="com.inavarro.ridesync.mainModule.activityMapModule.ActivityMapFragment"
         android:label="fragment_activity"
-        tools:layout="@layout/fragment_activity" >
+        tools:layout="@layout/fragment_activity_map" >
         <action
-            android:id="@+id/action_activityFragment_to_shopsFragment"
+            android:id="@+id/action_activityMapFragment_to_shopsFragment"
             app:destination="@id/shopsFragment" />
         <action
-            android:id="@+id/action_activityFragment_to_mapFragment"
+            android:id="@+id/action_activityMapFragment_to_mapFragment"
             app:destination="@id/mapFragment" />
         <action
-            android:id="@+id/action_activityFragment_to_GroupsFragment"
+            android:id="@+id/action_activityMapFragment_to_GroupsFragment"
             app:destination="@id/GroupsFragment" />
         <action
-            android:id="@+id/action_activityFragment_to_profileFragment"
+            android:id="@+id/action_activityMapFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
         <action
-            android:id="@+id/action_activityFragment_to_activitiesFragment"
+            android:id="@+id/action_activityMapFragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
     </fragment>
     <fragment
@@ -230,6 +230,9 @@
         <action
             android:id="@+id/action_activitiesFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_activitiesFragment_to_activityFragment"
+            app:destination="@id/activityFragment" />
     </fragment>
     <fragment
         android:id="@+id/createGroupFragment"
@@ -248,6 +251,19 @@
             android:id="@+id/action_shopFragment_to_shopsFragment"
             app:destination="@id/shopsFragment" />
         <argument android:name="idShop"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/activityFragment"
+        android:name="com.inavarro.ridesync.mainModule.activityModule.ActivityFragment"
+        android:label="ActivityFragment" >
+        <action
+            android:id="@+id/action_activityFragment_to_activitiesFragment"
+            app:destination="@id/activitiesFragment" />
+        <argument
+            android:name="idActivity"
+            app:argType="string"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

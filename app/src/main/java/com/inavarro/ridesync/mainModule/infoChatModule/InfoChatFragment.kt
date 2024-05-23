@@ -1,7 +1,9 @@
 package com.inavarro.ridesync.mainModule.infoChatModule
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
@@ -228,6 +230,34 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                     users.sortBy { it.username }
                     mInfoChatListAdapter.notifyDataSetChanged()
                     mBinding.progressBar.visibility = View.GONE
+                }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun getMembers2() {
+        val users = mutableListOf<User>()
+        mInfoChatListAdapter.submitList(users)
+
+        mGroup.users?.forEach { userId ->
+            FirebaseFirestore.getInstance().collection("users").document(userId)
+                .addSnapshotListener { snapshot, error ->
+                    if (error != null) {
+                        Log.w(ContentValues.TAG, "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        val user = snapshot.toObject(User::class.java)
+                        users.add(user!!)
+                    } else {
+                        users.removeIf { it.id == userId }
+                    }
+
+                    users.sortBy { it.username }
+                    mInfoChatListAdapter.notifyDataSetChanged()
+                    mBinding.progressBar.visibility = View.GONE
+
                 }
         }
     }

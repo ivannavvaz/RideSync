@@ -5,16 +5,16 @@ import com.google.firebase.firestore.GeoPoint
 
 data class Shop(
     @DocumentId
-    val id: String = "",
+    val id: String? = null,
 
-    val name: String = "",
-    val description: String = "",
-    val city: String = "",
-    val address: String = "",
-    val phone: String = "",
-    val email: String = "",
-    val web: String = "",
-    val photo: String = "",
+    val name: String? = null,
+    val description: String? = null,
+    val city: String? = null,
+    val address: String? = null,
+    val phone: String? = null,
+    val email: String? = null,
+    val web: String? = null,
+    val photo: String? = null,
     val location: GeoPoint? = null,
-    val type: String = "",
+    val type: String? = null,
 )

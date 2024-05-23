@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.mainModule.MainActivity
-import com.inavarro.ridesync.mainModule.activityModule.ActivityFragment
+import com.inavarro.ridesync.mainModule.activityMapModule.ActivityMapFragment
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
@@ -93,12 +93,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, 10f))
 
             // Load the activity fragment
-            val activityFragment = ActivityFragment()
+            val activityMapFragment = ActivityMapFragment()
             val bundle = Bundle()
             bundle.putString("id", marker.title)
-            activityFragment.arguments = bundle
+            activityMapFragment.arguments = bundle
             requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerViewActivity, activityFragment)
+                .replace(R.id.fragmentContainerViewActivity, activityMapFragment)
                 .addToBackStack(null)
                 .commit()
 

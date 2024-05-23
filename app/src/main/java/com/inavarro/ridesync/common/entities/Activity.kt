@@ -14,6 +14,7 @@ data class Activity(
     val date: Timestamp? = null,
     val location: GeoPoint? = null,
     val direction: String? = null,
+    val city: String? = null,
     val type: String? = null,
     val image: String? = null,
 )

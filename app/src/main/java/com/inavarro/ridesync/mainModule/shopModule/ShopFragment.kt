@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.chip.Chip
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentShopBinding
 import com.inavarro.ridesync.mainModule.MainActivity
@@ -16,6 +17,8 @@ import com.inavarro.ridesync.mainModule.MainActivity
 class ShopFragment : Fragment() {
 
     private lateinit var mBinding: FragmentShopBinding
+
+    private lateinit var mSelectedChip: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,12 +39,12 @@ class ShopFragment : Fragment() {
     }
 
     private fun setupToolBar() {
-        (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
+        (activity as AppCompatActivity).setSupportActionBar(mBinding.toolbar)
 
-        mBinding.toolBar.title = ""
-        mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
+        mBinding.toolbar.title = ""
+        mBinding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
 
-        mBinding.toolBar.setNavigationOnClickListener {
+        mBinding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
         }
     }

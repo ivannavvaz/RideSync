@@ -65,6 +65,8 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupSharedPreferences() {
         mSharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
+        mSharedPreferences.edit().putInt("activitiesChipSelected", R.id.chipAll).apply()
+        mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipAll).apply()
         if (mSharedPreferences.getBoolean("session", false)) {
             val email = mSharedPreferences.getString("email", "")
             val password = mSharedPreferences.getString("password", "")

@@ -2,7 +2,9 @@ package com.inavarro.ridesync.mainModule.shopsModule
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +17,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.chip.Chip
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Shop
 import com.inavarro.ridesync.databinding.FragmentShopsBinding
@@ -31,20 +35,22 @@ class ShopsFragment : Fragment() {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mFirestoreReference: CollectionReference
+    private lateinit var mQuery: Query
 
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Shop, ShopHolder>
+
+    private lateinit var mSharedPreferences: SharedPreferences
 
     inner class ShopHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemShopBinding.bind(view)
 
         fun setListener(shop: Shop) {
             binding.root.setOnClickListener {
-                openShop(shop.id)
+                openShop(shop.id!!)
             }
 
             binding.btnShop.setOnClickListener {
-                openShop(shop.id)
+                openShop(shop.id!!)
             }
         }
     }
@@ -62,6 +68,8 @@ class ShopsFragment : Fragment() {
 
         setupClicks()
 
+        mSharedPreferences = requireActivity().getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
+
         return mBinding.root
     }
 
@@ -70,10 +78,60 @@ class ShopsFragment : Fragment() {
 
         mLayoutManager = GridLayoutManager(context, 2)
 
-        mFirestoreReference = FirebaseFirestore.getInstance().collection("shops")
+        val chipSelected = mSharedPreferences.getInt("shopsChipSelected", R.id.chipAll)
+
+        when (chipSelected) {
+            R.id.chipAll -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+            }
+            R.id.chipITV -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "itv")
+            }
+            R.id.chipTires -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "tires")
+            }
+            R.id.chipDetailing -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "detailing")
+            }
+            R.id.chipMechanics -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "mechanic")
+            }
+            R.id.chipBodywork -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "bodywork")
+            }
+            R.id.chipWrap -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "wrap")
+            }
+            R.id.chipTuning -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "tuning")
+            }
+            R.id.chipSpareParts -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "spareParts")
+            }
+            R.id.chipOthers -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+                    .whereEqualTo("type", "others")
+            }
+            else -> {
+                mQuery = FirebaseFirestore.getInstance().collection("shops")
+            }
+        }
+
+        mQuery.get().addOnSuccessListener {
+            val numItems = it.size()
+            emptyList(numItems)
+        }
 
         val options = FirestoreRecyclerOptions.Builder<Shop>()
-            .setQuery(mFirestoreReference, Shop::class.java)
+            .setQuery(mQuery, Shop::class.java)
             .build()
 
         mFirebaseAdapter = object : FirestoreRecyclerAdapter<Shop, ShopHolder>(options) {
@@ -133,7 +191,6 @@ class ShopsFragment : Fragment() {
                 notifyDataSetChanged()
 
                 mBinding.progressBar.visibility = View.GONE
-                emptyList()
             }
 
             override fun onError(e: FirebaseFirestoreException) {
@@ -162,24 +219,58 @@ class ShopsFragment : Fragment() {
         mFirebaseAdapter.stopListening()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        scrollToAndSelectSelectedChip()
+    }
+
+    private fun scrollToAndSelectSelectedChip() {
+        val selectedChip = mBinding.chipGroup.findViewById<Chip>(mSharedPreferences.getInt("shopsChipSelected", R.id.chipAll))
+
+        selectedChip.isChecked = true
+
+        // Desplaza el HorizontalScrollView a la posición del chip seleccionado
+        mBinding.horizontalScrollView.post {
+            // Calcula la posición X del chip seleccionado
+            val scrollX = selectedChip.left - (mBinding.horizontalScrollView.width / 2) + (selectedChip.width / 2)
+
+            mBinding.horizontalScrollView.smoothScrollTo(scrollX, 0)
+        }
+    }
+
     private fun setupShopFragment() {
         ((activity as? MainActivity)?.showBottomNav())
     }
 
     private fun setupClicks() {
         mBinding.chipAll.setOnClickListener {
-            mFirestoreReference = FirebaseFirestore.getInstance().collection("shops")
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipAll).apply()
+
+            val query = FirebaseFirestore.getInstance().collection("shops")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
-                .setQuery(mFirestoreReference, Shop::class.java)
+                .setQuery(query, Shop::class.java)
                 .build()
 
             mFirebaseAdapter.updateOptions(options)
         }
 
         mBinding.chipITV.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipITV).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "itv")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -189,8 +280,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipTires.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipTires).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "tires")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -200,8 +298,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipDetailing.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipDetailing).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "detailing")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -211,8 +316,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipMechanics.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipMechanics).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "mechanic")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -222,8 +334,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipBodywork.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipBodywork).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "bodywork")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -233,8 +352,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipWrap.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipWrap).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "wrap")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -244,8 +370,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipTuning.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipTuning).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "tuning")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -255,8 +388,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipSpareParts.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipSpareParts).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "spareParts")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -266,8 +406,15 @@ class ShopsFragment : Fragment() {
         }
 
         mBinding.chipOthers.setOnClickListener {
+            mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipOthers).apply()
+
             val query = FirebaseFirestore.getInstance().collection("shops")
                 .whereEqualTo("type", "others")
+
+            query.get().addOnSuccessListener {
+                val numItems = it.size()
+                emptyList(numItems)
+            }
 
             val options = FirestoreRecyclerOptions.Builder<Shop>()
                 .setQuery(query, Shop::class.java)
@@ -277,17 +424,14 @@ class ShopsFragment : Fragment() {
         }
     }
 
-    private fun emptyList() {
-        if (mFirebaseAdapter.itemCount == 0) {
-            mBinding.tvEmptyList.visibility = View.VISIBLE
-            mBinding.ivEmptyList.visibility = View.VISIBLE
-        } else {
-            mBinding.tvEmptyList.visibility = View.GONE
-            mBinding.ivEmptyList.visibility = View.GONE
-        }
+    private fun emptyList(itemCount: Int = 0) {
+        mBinding.ivEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
+        mBinding.tvEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
     }
 
     private fun openShop(shopId: String) {
-        findNavController().navigate(ShopsFragmentDirections.actionShopsFragmentToShopFragment(shopId))
+        findNavController().navigate(
+            ShopsFragmentDirections.actionShopsFragmentToShopFragment(shopId)
+        )
     }
 }

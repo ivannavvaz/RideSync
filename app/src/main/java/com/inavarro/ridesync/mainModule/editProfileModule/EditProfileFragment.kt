@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,6 +21,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.inavarro.ridesync.R
 import com.inavarro.ridesync.databinding.FragmentEditProfileBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.util.Locale
@@ -49,11 +51,9 @@ class EditProfileFragment : Fragment() {
 
         setupEditProfileFragment()
 
-        setupProfile()
+        setupToolBar()
 
-        mBinding.ivBack.setOnClickListener {
-            goBack()
-        }
+        setupProfile()
 
         mBinding.btnEditImageProfile.setOnClickListener {
             openGallery()
@@ -74,6 +74,17 @@ class EditProfileFragment : Fragment() {
 
     private fun setupEditProfileFragment(){
         (activity as? MainActivity)?.hideBottomNav()
+    }
+
+    private fun setupToolBar() {
+        (activity as AppCompatActivity).setSupportActionBar(mBinding.toolbar)
+
+        mBinding.toolbar.title = "Editar perfil"
+        mBinding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+
+        mBinding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun setupProfile() {
