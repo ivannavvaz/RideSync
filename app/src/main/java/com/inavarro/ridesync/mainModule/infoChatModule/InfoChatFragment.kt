@@ -2,6 +2,7 @@ package com.inavarro.ridesync.mainModule.infoChatModule
 
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -217,12 +218,31 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun getMembers() {
         val users = mutableListOf<User>()
         mInfoChatListAdapter.submitList(users)
 
-        mGroup.users?.forEach { userId ->
+        FirebaseFirestore.getInstance().collection("groups").document(mGroup.id!!)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.w(TAG, "Listen failed.", error)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val group = snapshot.toObject(Group::class.java)
+                    updateUsersList(group!!.users!!, users)
+                }
+            }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateUsersList(userIds: List<String>, users: MutableList<User>) {
+        // Clear the current users list
+        users.clear()
+
+        // Fetch the updated users
+        userIds.forEach { userId ->
             FirebaseFirestore.getInstance().collection("users").document(userId).get()
                 .addOnSuccessListener { it ->
                     val user = it.toObject(User::class.java)
@@ -230,34 +250,6 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                     users.sortBy { it.username }
                     mInfoChatListAdapter.notifyDataSetChanged()
                     mBinding.progressBar.visibility = View.GONE
-                }
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getMembers2() {
-        val users = mutableListOf<User>()
-        mInfoChatListAdapter.submitList(users)
-
-        mGroup.users?.forEach { userId ->
-            FirebaseFirestore.getInstance().collection("users").document(userId)
-                .addSnapshotListener { snapshot, error ->
-                    if (error != null) {
-                        Log.w(ContentValues.TAG, "Listen failed.", error)
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-                        val user = snapshot.toObject(User::class.java)
-                        users.add(user!!)
-                    } else {
-                        users.removeIf { it.id == userId }
-                    }
-
-                    users.sortBy { it.username }
-                    mInfoChatListAdapter.notifyDataSetChanged()
-                    mBinding.progressBar.visibility = View.GONE
-
                 }
         }
     }
