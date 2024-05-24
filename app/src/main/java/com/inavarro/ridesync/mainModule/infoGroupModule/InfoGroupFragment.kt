@@ -60,35 +60,6 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
         return mBinding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val idGroup = arguments?.getString("idGroup")
-
-        val query = FirebaseFirestore.getInstance()
-            .collection("groups")
-            .document(idGroup!!)
-
-        query.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                Log.w(TAG, "Listen failed.", error)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                val group = snapshot.toObject(Group::class.java)
-
-                if (group?.photo != null) {
-                    Glide.with(requireContext())
-                        .load(group.photo)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .circleCrop()
-                        .into(mBinding.ivPhotoGroup)
-                }
-            }
-        }
-    }
-
     private fun setupToolBar() {
         (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 

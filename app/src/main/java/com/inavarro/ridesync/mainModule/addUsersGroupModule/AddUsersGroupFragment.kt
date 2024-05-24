@@ -130,6 +130,10 @@ class AddUsersGroupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (!isAdded) {
+            return
+        }
+
         mLayoutManager = LinearLayoutManager(context)
 
         val query = FirebaseFirestore.getInstance()

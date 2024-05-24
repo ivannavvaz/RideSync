@@ -29,8 +29,6 @@ class ChatFragment : Fragment() {
 
     private lateinit var mBinding: FragmentChatBinding
 
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
-
     private lateinit var mListAdapter: MessagesListAdapter
     private lateinit var mLinearlayout: LinearLayoutManager
     private lateinit var mItems: MutableList<MessagesRecyclerViewItem>
@@ -79,9 +77,7 @@ class ChatFragment : Fragment() {
         }
 
         mBinding.ivInfo.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("idGroup", arguments?.getString("idGroup"))
-            findNavController().navigate(R.id.action_chatFragment_to_infoGroupFragment, bundle)
+            findNavController().navigate(ChatFragmentDirections.actionChatFragmentToInfoGroupFragment(arguments?.getString("idGroup")!!))
         }
 
         mBinding.ivSend.setOnClickListener {

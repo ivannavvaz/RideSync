@@ -61,9 +61,23 @@ class ViewProfileFragment : Fragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
+        if (this::mFirebaseAdapter.isInitialized) {
+            //mFirebaseAdapter.startListening()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        if (this::mFirebaseAdapter.isInitialized) {
+            mFirebaseAdapter.stopListening()
+        }
+    }
+
+    private fun setupRecyclerView() {
         mLayoutManager = GridLayoutManager(context, 2)
 
         mStorageReference = FirebaseStorage.getInstance()
@@ -123,18 +137,8 @@ class ViewProfileFragment : Fragment() {
             layoutManager = mLayoutManager
             adapter = mFirebaseAdapter
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
 
         mFirebaseAdapter.startListening()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        mFirebaseAdapter.stopListening()
     }
 
     private fun setupProfile() {
@@ -160,6 +164,15 @@ class ViewProfileFragment : Fragment() {
                         .into(mBinding.ivProfile)
                 } else {
                     mBinding.ivProfile.setImageResource(R.drawable.ic_person)
+                }
+
+                if (it.getBoolean("publicProfile") == false) {
+                    mBinding.ivPrivateProfile.visibility = View.VISIBLE
+                    mBinding.tvPrivateProfile.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivPrivateProfile.visibility = View.GONE
+                    mBinding.tvPrivateProfile.visibility = View.GONE
+                    setupRecyclerView()
                 }
             }
         }

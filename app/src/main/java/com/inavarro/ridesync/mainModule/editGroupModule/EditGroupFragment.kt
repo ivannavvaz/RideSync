@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -22,6 +23,8 @@ import com.google.firebase.storage.FirebaseStorage
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.databinding.FragmentEditGroupBinding
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class EditGroupFragment : Fragment() {
 
@@ -158,54 +161,56 @@ class EditGroupFragment : Fragment() {
     private fun updateGroup(groupName: String, groupDescription: String, photoUri: Uri?) {
         val idGroup = arguments?.getString("idGroup")
 
-        val query = FirebaseFirestore.getInstance()
-            .collection("groups")
-            .document(idGroup!!)
-        
-        if (mPhotoGroupChanged) {
-            uploadPhotoGroup(idGroup, photoUri)
-
-        }
-
-        query.update(
-            mapOf(
-                "name" to groupName,
-                "description" to groupDescription
-            )
-        ).addOnSuccessListener {
-            Toast.makeText(
-                requireContext(),
-                "Grupo actualizado correctamente",
-                Toast.LENGTH_SHORT
-            ).show()
-            findNavController().navigateUp()
-        }.addOnFailureListener {
-            Toast.makeText(requireContext(), "Error al actualizar el grupo", Toast.LENGTH_SHORT)
-                .show()
+        if (mPhotoGroupChanged && photoUri != null) {
+            uploadPhotoGroup(idGroup!!, groupName, groupDescription, photoUri)
+        } else {
+            updateGroupDetails(idGroup!!, groupName, groupDescription, null)
         }
     }
 
-    private fun uploadPhotoGroup(idGroup: String, photoUri: Uri?) {
+    private fun uploadPhotoGroup(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri) {
         val storageRef = FirebaseStorage
             .getInstance()
             .reference
             .child("groupPhotos")
             .child(idGroup)
 
-        storageRef.putFile(photoUri!!)
-            .addOnSuccessListener { taskSnapshot ->
-                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                    updatePhotoGroup(idGroup, uri)
+        lifecycleScope.launch {
+            storageRef.putFile(photoUri)
+                .addOnSuccessListener { taskSnapshot ->
+                    taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                        updateGroupDetails(idGroup, groupName, groupDescription, uri)
+                    }
                 }
-            }
+                .await()
+        }
     }
 
-    private fun updatePhotoGroup(idGroup: String, photoUri: Uri) {
-        val firestoreRef = FirebaseFirestore
-            .getInstance()
+    private fun updateGroupDetails(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri?) {
+        val query = FirebaseFirestore.getInstance()
             .collection("groups")
             .document(idGroup)
 
-        firestoreRef.update("photo", photoUri.toString())
+        val groupData = mutableMapOf(
+            "name" to groupName,
+            "description" to groupDescription
+        )
+
+        if (photoUri != null) {
+            groupData["photo"] = photoUri.toString()
+        }
+
+        query.update(groupData as Map<String, Any>)
+            .addOnSuccessListener {
+                Toast.makeText(
+                    requireContext(),
+                    "Grupo actualizado correctamente",
+                    Toast.LENGTH_SHORT
+                ).show()
+                findNavController().navigateUp()
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Error al actualizar el grupo", Toast.LENGTH_SHORT)
+                    .show()
+            }
     }
 }
