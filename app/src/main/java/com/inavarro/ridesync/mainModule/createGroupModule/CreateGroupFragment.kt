@@ -131,7 +131,7 @@ class CreateGroupFragment : Fragment() {
     }
 
     private fun validateGroupName(groupName: String): Boolean {
-        val maxLength = 10
+        val maxLength = 20
 
         return when {
             groupName.isEmpty() -> {

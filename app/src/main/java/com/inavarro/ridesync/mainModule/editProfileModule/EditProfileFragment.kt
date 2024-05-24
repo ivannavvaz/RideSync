@@ -92,18 +92,6 @@ class EditProfileFragment : Fragment() {
         loadPhotoProfile(getPhotoUrl())
     }
 
-    private fun loadPhotoProfile(photoUrl: Uri?) {
-        if (photoUrl != null) {
-            mPhotoProfileUri = photoUrl
-
-            Glide.with(requireContext())
-                .load(photoUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .circleCrop()
-                .into(mBinding.ivProfile)
-        }
-    }
-
     private fun getFullName() {
         val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
         userRef.get().addOnSuccessListener { document ->
@@ -113,6 +101,18 @@ class EditProfileFragment : Fragment() {
 
                 mBinding.etFullName.setText(mFullName)
             }
+        }
+    }
+
+    private fun loadPhotoProfile(photoUrl: Uri?) {
+        if (photoUrl != null) {
+            mPhotoProfileUri = photoUrl
+
+            Glide.with(requireContext())
+                .load(photoUrl)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .circleCrop()
+                .into(mBinding.ivProfile)
         }
     }
 

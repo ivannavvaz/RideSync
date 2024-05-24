@@ -291,5 +291,9 @@
         <action
             android:id="@+id/action_editGroupFragment_to_infoGroupFragment"
             app:destination="@id/infoGroupFragment" />
+        <argument
+            android:name="idGroup"
+            app:argType="string"
+            android:defaultValue="0" />
     </fragment>
 </navigation>

@@ -60,6 +60,35 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
         return mBinding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val idGroup = arguments?.getString("idGroup")
+
+        val query = FirebaseFirestore.getInstance()
+            .collection("groups")
+            .document(idGroup!!)
+
+        query.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.w(TAG, "Listen failed.", error)
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                val group = snapshot.toObject(Group::class.java)
+
+                if (group?.photo != null) {
+                    Glide.with(requireContext())
+                        .load(group.photo)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .circleCrop()
+                        .into(mBinding.ivPhotoGroup)
+                }
+            }
+        }
+    }
+
     private fun setupToolBar() {
         (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 
@@ -78,11 +107,13 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
         inflater.inflate(R.menu.option_menu_item, menu)
 
         val itemExitGroup = menu.findItem(R.id.action_exit_group)
+        val itemAddUsers = menu.findItem(R.id.action_add_users)
         val itemEditGroup = menu.findItem(R.id.action_edit_group)
         val itemDeleteGroup = menu.findItem(R.id.action_delete_group)
 
         if (::mGroup.isInitialized) {
             itemExitGroup.isVisible = mGroup.admin != FirebaseAuth.getInstance().currentUser?.uid
+            itemAddUsers.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
             itemEditGroup.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
             itemDeleteGroup.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
         } else {
@@ -113,7 +144,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 alertDialog.dismiss()
             }
             R.id.action_edit_group -> {
-                findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment())
+                findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment(mGroup.id!!))
             }
             R.id.action_delete_group -> {
                 val builder = AlertDialog.Builder(requireContext())

@@ -99,7 +99,7 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             app:cornerRadius="8dp"
-            android:text="Crear grupo" />
+            android:text="Editar grupo" />
 
     </LinearLayout>
 

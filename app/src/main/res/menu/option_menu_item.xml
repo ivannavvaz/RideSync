@@ -9,6 +9,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_add_users"
+        android:icon="@drawable/ic_add"
+        android:title="Añadir participantes"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_edit_group"
         android:icon="@drawable/ic_edit"
         android:title="Editar grupo"
