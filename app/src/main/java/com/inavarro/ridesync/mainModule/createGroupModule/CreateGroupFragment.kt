@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.inavarro.ridesync.R
@@ -184,6 +185,7 @@ class CreateGroupFragment : Fragment() {
 
         groupRef.set(group)
             .addOnSuccessListener {
+                updateUsersGroups(groupRef.id)
                 uploadPhotoGroup(groupRef.id)
 
                 Toast.makeText(requireContext(), "Grupo creado correctamente", Toast.LENGTH_SHORT).show()
@@ -192,6 +194,13 @@ class CreateGroupFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(requireContext(), "Error al crear el grupo", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun updateUsersGroups(groupId: String) {
+        mAddedUsersIdList.forEach { userId ->
+            FirebaseFirestore.getInstance().collection("users").document(userId)
+                .update("groups", FieldValue.arrayUnion(groupId))
+        }
     }
 
     private fun uploadPhotoGroup(groupRefId: String) {

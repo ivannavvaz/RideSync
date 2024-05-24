@@ -260,6 +260,12 @@ class SearchGroupsFragment : Fragment() {
             .addOnFailureListener {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
+
+        val userRef = FirebaseFirestore.getInstance().collection("users")
+        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
+            "groups",
+            FieldValue.arrayRemove(group.id)
+        )
     }
 
     private fun joinGroup(group: Group) {
@@ -276,5 +282,10 @@ class SearchGroupsFragment : Fragment() {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
 
+        val userRef = FirebaseFirestore.getInstance().collection("users")
+        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
+            "groups",
+            FieldValue.arrayUnion(group.id)
+        )
     }
 }

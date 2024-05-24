@@ -1,8 +1,10 @@
 package com.inavarro.ridesync.mainModule.addUsersGroupModule
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +45,10 @@ class AddUsersGroupFragment : Fragment() {
 
     private var mAddedUsersList: ArrayList<User> = ArrayList()
 
+    private var mAlreadyGroup: Boolean = false
+
+    private lateinit var mGroupId: String
+
     inner class UserHolder(view: View) : RecyclerView.ViewHolder(view) {
         val binding = ItemUserBinding.bind(view)
 
@@ -50,8 +56,10 @@ class AddUsersGroupFragment : Fragment() {
         fun setListener(user: User) {
             binding.root.setOnClickListener {
                 if (mAddedUsersList.contains(user)) {
+                    binding.ivCheck.visibility = View.GONE
                     mAddedUsersList.remove(user)
                 } else {
+                    binding.ivCheck.visibility = View.VISIBLE
                     mAddedUsersList.add(user)
                 }
 
@@ -61,6 +69,7 @@ class AddUsersGroupFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,7 +77,44 @@ class AddUsersGroupFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentAddUsersGroupBinding.inflate(inflater, container, false)
 
-        (activity as? MainActivity)?.hideBottomNav()
+        mAlreadyGroup = arguments?.getBoolean("alreadyGroup") ?: false
+
+        if (!mAlreadyGroup) {
+            (activity as? MainActivity)?.hideBottomNav()
+        } else {
+            mGroupId = arguments?.getString("groupId") ?: ""
+
+            // Get users from group
+            val query = FirebaseFirestore.getInstance()
+                .collection("groups")
+                .document(mGroupId)
+
+            query.get().addOnSuccessListener { document ->
+                val group = document.toObject(Group::class.java)
+
+                if (group != null) {
+                    for (userId in group.users!!) {
+                        val userRef =
+                            FirebaseFirestore.getInstance().collection("users").document(userId)
+
+                        userRef.get().addOnSuccessListener { document ->
+                            val user = document.toObject(User::class.java)
+
+                            if (user != null) {
+                                mAddedUsersList.add(user)
+                            }
+                        }.addOnCompleteListener {
+                            mAddedUsersList.removeIf { user -> user.id == FirebaseAuth.getInstance().currentUser?.uid }
+
+                            mAddedUsersAdapter.notifyDataSetChanged()
+                            mAddedUsersAdapter.submitList(mAddedUsersList)
+
+                            mFirebaseAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+        }
 
         setupToolBar()
 
@@ -127,6 +173,12 @@ class AddUsersGroupFragment : Fragment() {
                     } else {
                         binding.ivPhotoProfile.setImageResource(R.drawable.ic_person)
                     }
+
+                    if (mAddedUsersList.contains(user)) {
+                        binding.ivCheck.visibility = View.VISIBLE
+                    } else {
+                        binding.ivCheck.visibility = View.GONE
+                    }
                 }
             }
 
@@ -168,7 +220,12 @@ class AddUsersGroupFragment : Fragment() {
     private fun setupToolBar() {
         (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 
-        mBinding.toolBar.title = "Crear grupo"
+        if (mAlreadyGroup) {
+            mBinding.toolBar.title = "Añadir usuarios"
+            mBinding.tvAddUsersTitle.visibility = View.GONE
+        } else {
+            mBinding.toolBar.title = "Crear grupo"
+        }
         mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolBar.setNavigationOnClickListener {
@@ -176,12 +233,24 @@ class AddUsersGroupFragment : Fragment() {
         }
 
         mBinding.ivCheck.setOnClickListener {
-            // Pasar lista de usuarios a array de ids
-            val usersIdList = mAddedUsersList.map { user -> user.id }
+            if (mAlreadyGroup) {
+                mAddedUsersList.add(User(FirebaseAuth.getInstance().currentUser?.uid!!))
 
-            findNavController().navigate(R.id.action_addUsersGroupFragment_to_createGroupFragment, Bundle().apply {
-                putStringArrayList("usersIdList", ArrayList(usersIdList))
-            })
+                val groupRef = FirebaseFirestore.getInstance().collection("groups").document(mGroupId)
+                groupRef.update("users", mAddedUsersList.map { user -> user.id })
+                    .addOnSuccessListener {
+                        findNavController().navigateUp()
+                    }
+            } else {
+                // Pasar lista de usuarios a array de ids
+                val usersIdList = mAddedUsersList.map { user -> user.id }
+
+                findNavController().navigate(
+                    R.id.action_addUsersGroupFragment_to_createGroupFragment,
+                    Bundle().apply {
+                        putStringArrayList("usersIdList", ArrayList(usersIdList))
+                    })
+            }
         }
     }
 

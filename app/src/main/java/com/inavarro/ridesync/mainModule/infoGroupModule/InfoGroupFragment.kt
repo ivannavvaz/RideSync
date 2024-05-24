@@ -143,6 +143,9 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 builder.show()
                 alertDialog.dismiss()
             }
+            R.id.action_add_users -> {
+                findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToAddUsersGroupFragment(mGroup.id!!, true))
+            }
             R.id.action_edit_group -> {
                 findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment(mGroup.id!!))
             }
@@ -300,6 +303,12 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
             .addOnFailureListener {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
             }
+
+        val userRef = FirebaseFirestore.getInstance().collection("users")
+        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
+            "groups",
+            FieldValue.arrayRemove(group.id)
+        )
     }
 
     private fun removeUser(user: User) {

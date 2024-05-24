@@ -181,6 +181,9 @@
         <action
             android:id="@+id/action_infoGroupFragment_to_editGroupFragment"
             app:destination="@id/editGroupFragment" />
+        <action
+            android:id="@+id/action_infoGroupFragment_to_addUsersGroupFragment"
+            app:destination="@id/addUsersGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewProfileFragment"
@@ -283,6 +286,13 @@
         <action
             android:id="@+id/action_addUsersGroupFragment_to_GroupsFragment"
             app:destination="@id/GroupsFragment" />
+        <argument
+            android:name="alreadyGroup"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/editGroupFragment"
