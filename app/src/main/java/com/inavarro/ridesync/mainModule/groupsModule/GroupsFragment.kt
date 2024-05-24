@@ -25,7 +25,7 @@ class GroupsFragment : Fragment() {
         setupGroupsFragment()
 
         mBinding.fabCreateGroup.setOnClickListener {
-            findNavController().navigate(R.id.action_GroupsFragment_to_createGroupFragment  )
+            findNavController().navigate(R.id.action_GroupsFragment_to_addUsersGroupFragment  )
         }
 
         return mBinding.root

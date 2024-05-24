@@ -67,8 +67,8 @@
             android:id="@+id/action_GroupsFragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
         <action
-            android:id="@+id/action_GroupsFragment_to_createGroupFragment"
-            app:destination="@id/createGroupFragment" />
+            android:id="@+id/action_GroupsFragment_to_addUsersGroupFragment"
+            app:destination="@id/addUsersGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -178,6 +178,9 @@
         <action
             android:id="@+id/action_infoChatFragment_to_viewProfileFragment"
             app:destination="@id/viewProfileFragment" />
+        <action
+            android:id="@+id/action_infoChatFragment_to_editGroupFragment"
+            app:destination="@id/editGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/viewProfileFragment"
@@ -240,11 +243,11 @@
         android:label="fragment_create_group"
         tools:layout="@layout/fragment_create_group" >
         <action
-            android:id="@+id/action_createGroupFragment_to_GroupsFragment"
-            app:destination="@id/GroupsFragment" />
-        <action
             android:id="@+id/action_createGroupFragment_to_addUsersGroupFragment"
             app:destination="@id/addUsersGroupFragment" />
+        <action
+            android:id="@+id/action_createGroupFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
     </fragment>
     <fragment
         android:id="@+id/shopFragment"
@@ -277,5 +280,16 @@
         <action
             android:id="@+id/action_addUsersGroupFragment_to_createGroupFragment"
             app:destination="@id/createGroupFragment" />
+        <action
+            android:id="@+id/action_addUsersGroupFragment_to_GroupsFragment"
+            app:destination="@id/GroupsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGroupFragment"
+        android:name="com.inavarro.ridesync.mainModule.editGroupModule.EditGroupFragment"
+        android:label="EditGroupFragment" >
+        <action
+            android:id="@+id/action_editGroupFragment_to_infoChatFragment"
+            app:destination="@id/infoChatFragment" />
     </fragment>
 </navigation>

@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentSearchGroupsBinding
 import com.inavarro.ridesync.databinding.ItemGroupForSearchBinding
 import com.inavarro.ridesync.mainModule.MainActivity
@@ -41,35 +42,50 @@ class SearchGroupsFragment : Fragment() {
 
         fun setListener(group: Group) {
             binding.root.setOnClickListener {
-                val builder = AlertDialog.Builder(requireContext())
+                val userRef = FirebaseFirestore.getInstance().collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                    .get()
 
-                val alertDialog = builder.create()
-                alertDialog.show()
+                userRef.addOnSuccessListener {
+                    val user = it.toObject(User::class.java)
 
-                if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
-                    builder.setTitle("Ya perteneces al grupo")
-                    builder.setMessage("¿Quieres salir del grupo?")
-                    builder.setPositiveButton("Aceptar") { _, _ ->
-                        leaveGroup(group)
-                        alertDialog.dismiss()
-                    }
-                    builder.setNegativeButton("Cancelar") { _, _ ->
-                        alertDialog.dismiss()
-                    }
-                } else {
-                    builder.setTitle("Confirmacion")
-                    builder.setMessage("¿Quieres unirte al grupo?")
-                    builder.setPositiveButton("Aceptar") { _, _ ->
-                        joinGroup(group)
-                        alertDialog.dismiss()
-                    }
-                    builder.setNegativeButton("Cancelar") { _, _ ->
+                    if (group.private == true && user?.premium == false) {
+                        Toast.makeText(context, "Grupo privado", Toast.LENGTH_SHORT).show()
+                    } else if (group.admin == FirebaseAuth.getInstance().currentUser?.uid) {
+                        Toast.makeText(context, "Eres el administrador", Toast.LENGTH_SHORT).show()
+                    } else {
+
+                        val builder = AlertDialog.Builder(requireContext())
+
+                        val alertDialog = builder.create()
+                        alertDialog.show()
+
+                        if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
+                            builder.setTitle("Ya perteneces al grupo")
+                            builder.setMessage("¿Quieres salir del grupo?")
+                            builder.setPositiveButton("Aceptar") { _, _ ->
+                                leaveGroup(group)
+                                alertDialog.dismiss()
+                            }
+                            builder.setNegativeButton("Cancelar") { _, _ ->
+                                alertDialog.dismiss()
+                            }
+                        } else {
+                            builder.setTitle("Confirmacion")
+                            builder.setMessage("¿Quieres unirte al grupo?")
+                            builder.setPositiveButton("Aceptar") { _, _ ->
+                                joinGroup(group)
+                                alertDialog.dismiss()
+                            }
+                            builder.setNegativeButton("Cancelar") { _, _ ->
+                                alertDialog.dismiss()
+                            }
+                        }
+
+                        builder.show()
                         alertDialog.dismiss()
                     }
                 }
-
-                builder.show()
-                alertDialog.dismiss()
             }
         }
     }
@@ -133,6 +149,12 @@ class SearchGroupsFragment : Fragment() {
                     binding.tvGroupName.text =
                         group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
+
+                    if (group.private == true) {
+                        binding.ivPrivate.visibility = View.VISIBLE
+                    } else {
+                        binding.ivPrivate.visibility = View.GONE
+                    }
 
                     if (group.users != null && group.users!!.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
                         binding.ivCheck.visibility = View.VISIBLE

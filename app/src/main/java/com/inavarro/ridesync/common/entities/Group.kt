@@ -9,11 +9,10 @@ data class Group(
 
     val name: String? = null,
     val description: String? = null,
-    val location: String? = null,
     val admin: String? = null,
     val users: List<String>? = null,
     val photo: String? = null,
     val lastMessageRef: DocumentReference? = null,
     val lastMessageTime: Long? = null,
-    val private: Boolean? = false
+    val private: Boolean? = null
 )

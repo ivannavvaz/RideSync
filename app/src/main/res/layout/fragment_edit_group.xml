@@ -18,7 +18,7 @@
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Crear grupo"
+            app:title="Editar grupo"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             android:theme="@style/MyThemeOverlay_Toolbar"
@@ -75,41 +75,6 @@
             android:inputType="textMultiLine" />
 
     </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/swPrivateGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:layout_marginTop="16dp"
-        app:switchPadding="4dp"
-        android:text="Grupo privado"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:id="@+id/llInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_default"
-        android:layout_marginStart="@dimen/common_margin_default"
-        android:layout_marginEnd="@dimen/common_margin_default"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/ivInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_info" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tvInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Los grupos privados solo pueden ser creados por usuarios premium"
-            android:textSize="16sp"
-            android:layout_marginStart="8dp"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"

@@ -68,11 +68,15 @@ class AddUsersGroupFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentAddUsersGroupBinding.inflate(inflater, container, false)
 
+        (activity as? MainActivity)?.hideBottomNav()
+
         setupToolBar()
 
         setupRecyclerViewUsersAdded()
 
         setupSearchView()
+
+        mAddedUsersAdapter.submitList(mAddedUsersList)
 
         return mBinding.root
     }
@@ -85,6 +89,8 @@ class AddUsersGroupFragment : Fragment() {
         val query = FirebaseFirestore.getInstance()
             .collection("users")
             .whereEqualTo("publicProfile", true)
+            .whereNotEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+            .orderBy("username")
 
         val options = FirestoreRecyclerOptions.Builder<User>()
             .setQuery(query, User::class.java)
@@ -162,7 +168,7 @@ class AddUsersGroupFragment : Fragment() {
     private fun setupToolBar() {
         (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 
-        mBinding.toolBar.title = "Añadir participantes"
+        mBinding.toolBar.title = "Crear grupo"
         mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolBar.setNavigationOnClickListener {
@@ -192,7 +198,6 @@ class AddUsersGroupFragment : Fragment() {
     }
 
     private fun setupSearchView() {
-        /*
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 (activity as? MainActivity)?.hideBottomNav()
@@ -208,14 +213,16 @@ class AddUsersGroupFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
-                    val query = FirebaseFirestore.getInstance().collection("groups")
-                        .whereArrayContains("users", FirebaseAuth.getInstance().currentUser?.uid!!)
-                        .orderBy("name")
+                    val query = FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .whereEqualTo("publicProfile", true)
+                        .whereNotEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+                        .orderBy("username")
                         .startAt(newText.lowercase())
                         .endAt(newText.lowercase() + "\uf8ff")
 
-                    val options = FirestoreRecyclerOptions.Builder<Group>()
-                        .setQuery(query, Group::class.java)
+                    val options = FirestoreRecyclerOptions.Builder<User>()
+                        .setQuery(query, User::class.java)
                         .build()
 
                     mFirebaseAdapter.updateOptions(options)
@@ -223,6 +230,5 @@ class AddUsersGroupFragment : Fragment() {
                 return false
             }
         })
-         */
     }
 }

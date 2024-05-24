@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.User
@@ -113,6 +114,9 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
                 builder.show()
                 alertDialog.dismiss()
+            }
+            R.id.action_edit_group -> {
+                findNavController().navigate(InfoChatFragmentDirections.actionInfoChatFragmentToEditGroupFragment())
             }
             R.id.action_delete_group -> {
                 val builder = AlertDialog.Builder(requireContext())
@@ -302,11 +306,12 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
         messageRef.removeValue()
 
-        val photoRef = FirebaseFirestore.getInstance().collection("groups").document(group.id).collection("photos")
-        photoRef.get().addOnSuccessListener {
-            for (document in it) {
-                photoRef.document(document.id).delete()
-            }
-        }
+        val photoRef = FirebaseStorage
+            .getInstance()
+            .reference
+            .child("groupPhotos")
+            .child(group.id)
+
+        photoRef.delete()
     }
 }
