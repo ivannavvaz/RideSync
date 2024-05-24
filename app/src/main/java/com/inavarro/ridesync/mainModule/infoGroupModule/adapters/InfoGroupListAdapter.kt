@@ -1,9 +1,8 @@
-package com.inavarro.ridesync.mainModule.infoChatModule.adapters
+package com.inavarro.ridesync.mainModule.infoGroupModule.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -16,7 +15,7 @@ import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserBinding
 
-class InfoChatListAdapter(private val listener: OnClickListener, private val mGroup: Group):
+class InfoGroupListAdapter(private val listener: OnClickListener, private val mGroup: Group):
     ListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()) {
 
         private lateinit var context: Context

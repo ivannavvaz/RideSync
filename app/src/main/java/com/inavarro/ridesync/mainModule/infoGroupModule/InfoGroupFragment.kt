@@ -1,7 +1,6 @@
-package com.inavarro.ridesync.mainModule.infoChatModule
+package com.inavarro.ridesync.mainModule.infoGroupModule
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,27 +30,26 @@ import com.google.firebase.storage.FirebaseStorage
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
 import com.inavarro.ridesync.common.entities.User
-import com.inavarro.ridesync.databinding.FragmentInfoChatBinding
-import com.inavarro.ridesync.databinding.ItemUserBinding
-import com.inavarro.ridesync.mainModule.infoChatModule.adapters.InfoChatListAdapter
-import com.inavarro.ridesync.mainModule.infoChatModule.adapters.OnClickListener
+import com.inavarro.ridesync.databinding.FragmentInfoGroupBinding
+import com.inavarro.ridesync.mainModule.infoGroupModule.adapters.InfoGroupListAdapter
+import com.inavarro.ridesync.mainModule.infoGroupModule.adapters.OnClickListener
 
-class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
+class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
 
-    private lateinit var mBinding: FragmentInfoChatBinding
+    private lateinit var mBinding: FragmentInfoGroupBinding
 
     private lateinit var mGroup: Group
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mInfoChatListAdapter: InfoChatListAdapter
+    private lateinit var mInfoGroupListAdapter: InfoGroupListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        mBinding = FragmentInfoChatBinding.inflate(layoutInflater)
+        mBinding = FragmentInfoGroupBinding.inflate(layoutInflater)
 
         mBinding.progressBar.visibility = View.VISIBLE
 
@@ -105,7 +102,7 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                 builder.setMessage("¿Quieres salir del grupo?")
                 builder.setPositiveButton("Aceptar") { _, _ ->
                     leaveGroup(mGroup)
-                    findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
+                    findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
                     alertDialog.dismiss()
                 }
                 builder.setNegativeButton("Cancel") { _, _ ->
@@ -116,7 +113,7 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                 alertDialog.dismiss()
             }
             R.id.action_edit_group -> {
-                findNavController().navigate(InfoChatFragmentDirections.actionInfoChatFragmentToEditGroupFragment())
+                findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment())
             }
             R.id.action_delete_group -> {
                 val builder = AlertDialog.Builder(requireContext())
@@ -128,7 +125,7 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                 builder.setMessage("¿Quieres eliminar el grupo?")
                 builder.setPositiveButton("Aceptar") { _, _ ->
                     deleteGroup(mGroup)
-                    findNavController().navigate(R.id.action_infoChatFragment_to_GroupsFragment)
+                    findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
                     alertDialog.dismiss()
                 }
                 builder.setNegativeButton("Cancel") { _, _ ->
@@ -179,21 +176,21 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     private fun setupRecyclerView() {
-        mInfoChatListAdapter = InfoChatListAdapter(this, mGroup)
+        mInfoGroupListAdapter = InfoGroupListAdapter(this, mGroup)
 
         mLayoutManager = LinearLayoutManager(this.context)
 
         mBinding.rvMembers.apply {
             setHasFixedSize(true)
             layoutManager = mLayoutManager
-            adapter = mInfoChatListAdapter
+            adapter = mInfoGroupListAdapter
         }
     }
 
     override fun onClick(userEntity: User) {
         if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
             findNavController().navigate(
-                InfoChatFragmentDirections.actionInfoChatFragmentToViewProfileFragment(
+                InfoGroupFragmentDirections.actionInfoGroupFragmentToViewProfileFragment(
                     userEntity.id!!
                 )
             )
@@ -226,7 +223,7 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
 
     private fun getMembers() {
         val users = mutableListOf<User>()
-        mInfoChatListAdapter.submitList(users)
+        mInfoGroupListAdapter.submitList(users)
 
         FirebaseFirestore.getInstance().collection("groups").document(mGroup.id!!)
             .addSnapshotListener { snapshot, error ->
@@ -254,7 +251,7 @@ class InfoChatFragment : Fragment(), MenuProvider, OnClickListener {
                     val user = it.toObject(User::class.java)
                     users.add(user!!)
                     users.sortBy { it.username }
-                    mInfoChatListAdapter.notifyDataSetChanged()
+                    mInfoGroupListAdapter.notifyDataSetChanged()
                     mBinding.progressBar.visibility = View.GONE
                 }
         }

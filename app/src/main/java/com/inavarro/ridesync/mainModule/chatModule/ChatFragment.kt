@@ -81,7 +81,7 @@ class ChatFragment : Fragment() {
         mBinding.ivInfo.setOnClickListener {
             val bundle = Bundle()
             bundle.putString("idGroup", arguments?.getString("idGroup"))
-            findNavController().navigate(R.id.action_chatFragment_to_infoChatFragment, bundle)
+            findNavController().navigate(R.id.action_chatFragment_to_infoGroupFragment, bundle)
         }
 
         mBinding.ivSend.setOnClickListener {

@@ -107,8 +107,8 @@
             app:argType="string"
             android:defaultValue='""' />
         <action
-            android:id="@+id/action_chatFragment_to_infoChatFragment"
-            app:destination="@id/infoChatFragment" />
+            android:id="@+id/action_chatFragment_to_infoGroupFragment"
+            app:destination="@id/infoGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/myGroupsFragment"
@@ -161,25 +161,25 @@
             app:destination="@id/profileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/infoChatFragment"
-        android:name="com.inavarro.ridesync.mainModule.infoChatModule.InfoChatFragment"
-        android:label="fragment_info_chat"
-        tools:layout="@layout/fragment_info_chat" >
+        android:id="@+id/infoGroupFragment"
+        android:name="com.inavarro.ridesync.mainModule.infoGroupModule.InfoGroupFragment"
+        android:label="fragment_info_group"
+        tools:layout="@layout/fragment_info_group" >
         <action
-            android:id="@+id/action_infoChatFragment_to_chatFragment"
+            android:id="@+id/action_infoGroupFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
         <argument
             android:name="idGroup"
             app:argType="string"
             android:defaultValue="0" />
         <action
-            android:id="@+id/action_infoChatFragment_to_GroupsFragment"
+            android:id="@+id/action_infoGroupFragment_to_GroupsFragment"
             app:destination="@id/GroupsFragment" />
         <action
-            android:id="@+id/action_infoChatFragment_to_viewProfileFragment"
+            android:id="@+id/action_infoGroupFragment_to_viewProfileFragment"
             app:destination="@id/viewProfileFragment" />
         <action
-            android:id="@+id/action_infoChatFragment_to_editGroupFragment"
+            android:id="@+id/action_infoGroupFragment_to_editGroupFragment"
             app:destination="@id/editGroupFragment" />
     </fragment>
     <fragment
@@ -188,8 +188,8 @@
         android:label="fragment_view_profile"
         tools:layout="@layout/fragment_view_profile" >
         <action
-            android:id="@+id/action_viewProfileFragment_to_infoChatFragment"
-            app:destination="@id/infoChatFragment" />
+            android:id="@+id/action_viewProfileFragment_to_infoGroupFragment"
+            app:destination="@id/infoGroupFragment" />
         <argument
             android:name="idUser"
             app:argType="string"
@@ -289,7 +289,7 @@
         android:name="com.inavarro.ridesync.mainModule.editGroupModule.EditGroupFragment"
         android:label="EditGroupFragment" >
         <action
-            android:id="@+id/action_editGroupFragment_to_infoChatFragment"
-            app:destination="@id/infoChatFragment" />
+            android:id="@+id/action_editGroupFragment_to_infoGroupFragment"
+            app:destination="@id/infoGroupFragment" />
     </fragment>
 </navigation>

@@ -1,4 +1,4 @@
-package com.inavarro.ridesync.mainModule.infoChatModule.adapters
+package com.inavarro.ridesync.mainModule.infoGroupModule.adapters
 
 import com.inavarro.ridesync.common.entities.User
 

@@ -13,7 +13,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserAddedBinding
-import com.inavarro.ridesync.mainModule.infoChatModule.adapters.InfoChatListAdapter
 
 class AddedUsersListAdapter(private val usersList: ArrayList<User>):
     ListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()){
