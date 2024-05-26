@@ -79,7 +79,7 @@ class CreateGroupFragment : Fragment() {
             val user = document.toObject(User::class.java)
 
             if (user?.premium == true) {
-                mBinding.swPrivateGroup.visibility = View.VISIBLE
+                mBinding.llPrivateGroup.visibility = View.VISIBLE
                 mBinding.ivInfo.visibility = View.GONE
                 mBinding.tvInfo.visibility = View.GONE
             }

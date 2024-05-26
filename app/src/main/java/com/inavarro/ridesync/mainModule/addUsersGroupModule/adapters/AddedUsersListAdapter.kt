@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ItemUserAddedBinding
+import com.inavarro.ridesync.mainModule.addUsersGroupModule.AddUsersGroupFragment
 
-class AddedUsersListAdapter(private val usersList: ArrayList<User>):
+class AddedUsersListAdapter(private val usersList: ArrayList<User>, private val listener: OnUserRemovedListener):
     ListAdapter<User, RecyclerView.ViewHolder>(UserDiffCallback()){
 
         private lateinit var context: Context
@@ -29,6 +31,8 @@ class AddedUsersListAdapter(private val usersList: ArrayList<User>):
 
                     submitList(usersList)
                     notifyDataSetChanged()
+
+                    listener.onUserRemoved(user)
                 }
             }
         }

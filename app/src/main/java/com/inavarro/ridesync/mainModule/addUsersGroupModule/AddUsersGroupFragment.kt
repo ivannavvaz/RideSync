@@ -12,6 +12,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,8 +33,9 @@ import com.inavarro.ridesync.databinding.FragmentAddUsersGroupBinding
 import com.inavarro.ridesync.databinding.ItemUserBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.mainModule.addUsersGroupModule.adapters.AddedUsersListAdapter
+import com.inavarro.ridesync.mainModule.addUsersGroupModule.adapters.OnUserRemovedListener
 
-class AddUsersGroupFragment : Fragment() {
+class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
 
     private lateinit var mBinding: FragmentAddUsersGroupBinding
 
@@ -44,6 +48,8 @@ class AddUsersGroupFragment : Fragment() {
     private lateinit var mAddedUsersAdapter: AddedUsersListAdapter
 
     private var mAddedUsersList: ArrayList<User> = ArrayList()
+
+    private val maddedUsersListLiveData: LiveData<ArrayList<User>> = MutableLiveData(mAddedUsersList)
 
     private var mAlreadyGroup: Boolean = false
 
@@ -123,6 +129,10 @@ class AddUsersGroupFragment : Fragment() {
         setupSearchView()
 
         mAddedUsersAdapter.submitList(mAddedUsersList)
+
+        maddedUsersListLiveData.observe(viewLifecycleOwner, Observer { users ->
+            Log.d(ContentValues.TAG, "Users: $users")
+        })
 
         return mBinding.root
     }
@@ -221,6 +231,20 @@ class AddUsersGroupFragment : Fragment() {
         mFirebaseAdapter.stopListening()
     }
 
+    override fun onUserRemoved(user: User) {
+        val query = FirebaseFirestore.getInstance()
+            .collection("users")
+            .whereEqualTo("publicProfile", true)
+            .whereNotEqualTo("email", FirebaseAuth.getInstance().currentUser?.email)
+            .orderBy("username")
+
+        val options = FirestoreRecyclerOptions.Builder<User>()
+            .setQuery(query, User::class.java)
+            .build()
+
+        mFirebaseAdapter.updateOptions(options)
+    }
+
     private fun setupToolBar() {
         (activity as AppCompatActivity).setSupportActionBar(mBinding.toolBar)
 
@@ -230,6 +254,7 @@ class AddUsersGroupFragment : Fragment() {
         } else {
             mBinding.toolBar.title = "Crear grupo"
         }
+
         mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolBar.setNavigationOnClickListener {
@@ -259,7 +284,7 @@ class AddUsersGroupFragment : Fragment() {
     }
 
     private fun setupRecyclerViewUsersAdded() {
-        mAddedUsersAdapter = AddedUsersListAdapter(mAddedUsersList)
+        mAddedUsersAdapter = AddedUsersListAdapter(mAddedUsersList, this)
 
         mLayoutManager2 = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 

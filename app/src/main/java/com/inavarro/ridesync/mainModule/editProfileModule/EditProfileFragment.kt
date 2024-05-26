@@ -34,6 +34,8 @@ class EditProfileFragment : Fragment() {
 
     private lateinit var mFullName: String
 
+    private var mPublicProfile: Boolean = false
+
     private var mPhotoProfileUri: Uri? = null
 
     private var mPhotoProfileChanged = false
@@ -89,6 +91,7 @@ class EditProfileFragment : Fragment() {
 
     private fun setupProfile() {
         getFullName()
+        setupSwitchPublicProfile()
         loadPhotoProfile(getPhotoUrl())
     }
 
@@ -100,6 +103,17 @@ class EditProfileFragment : Fragment() {
                     Locale.ROOT) else it.toString() } }
 
                 mBinding.etFullName.setText(mFullName)
+            }
+        }
+    }
+
+    private fun setupSwitchPublicProfile() {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
+        userRef.get().addOnSuccessListener { document ->
+            if (document != null) {
+                mPublicProfile = document.getBoolean("publicProfile")!!
+
+                mBinding.swPublicProfile.isChecked = mPublicProfile
             }
         }
     }
@@ -149,6 +163,10 @@ class EditProfileFragment : Fragment() {
 
             if (mFullName != mBinding.etFullName.text.toString().trim().lowercase()) {
                 userRef.update("fullName", mBinding.etFullName.text.toString().trim().lowercase())
+            }
+
+            if (mPublicProfile != mBinding.swPublicProfile.isChecked) {
+                userRef.update("publicProfile", mBinding.swPublicProfile.isChecked)
             }
 
             if (mPhotoProfileChanged) {

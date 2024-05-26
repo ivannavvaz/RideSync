@@ -76,15 +76,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/swPrivateGroup"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/llPrivateGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checked="false"
-        android:layout_marginTop="16dp"
-        app:switchPadding="4dp"
-        android:text="Grupo privado"
-        android:visibility="gone"/>
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPrivateGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Grupo privado"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swPrivateGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/llInfo"
