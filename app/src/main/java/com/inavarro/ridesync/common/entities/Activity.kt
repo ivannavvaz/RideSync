@@ -13,7 +13,7 @@ data class Activity(
     val description: String? = null,
     val date: Timestamp? = null,
     val location: GeoPoint? = null,
-    val direction: String? = null,
+    val address: String? = null,
     val city: String? = null,
     val type: String? = null,
     val image: String? = null,

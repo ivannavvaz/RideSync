@@ -32,7 +32,7 @@
         app:cardElevation="6dp">
 
         <ImageView
-            android:id="@+id/ivPhoto"
+            android:id="@+id/ivImage"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:scaleType="centerCrop" />
@@ -45,15 +45,15 @@
         android:layout_margin="@dimen/common_margin_default">
 
         <TextView
-            android:id="@+id/tvName"
+            android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Nombre"
-            android:textSize="16sp"
+            android:text="Titulo"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -64,7 +64,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-
         android:text="Descripción"
         android:textSize="14sp" />
 
@@ -101,6 +100,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
@@ -108,57 +108,25 @@
         android:layout_marginTop="@dimen/common_margin_default">
 
         <ImageView
-            android:id="@+id/ivPhone"
+            android:id="@+id/ivDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/ic_phone"
+            android:src="@drawable/ic_calendar"
             android:visibility="visible"/>
 
         <TextView
-            android:id="@+id/tvPhone"
+            android:id="@+id/tvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/ivPhone"
-            app:layout_constraintBottom_toBottomOf="@id/ivPhone"
-            app:layout_constraintStart_toEndOf="@id/ivPhone"
+            app:layout_constraintTop_toTopOf="@id/ivDate"
+            app:layout_constraintBottom_toBottomOf="@id/ivDate"
+            app:layout_constraintStart_toEndOf="@id/ivDate"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:text="Teléfono"
-            android:textSize="14sp"
-            android:visibility="visible"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/common_margin_default"
-        android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="@dimen/common_margin_default">
-
-        <ImageView
-            android:id="@+id/ivEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/ic_email"
-            android:visibility="visible"/>
-
-        <TextView
-            android:id="@+id/tvEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="@id/ivEmail"
-            app:layout_constraintBottom_toBottomOf="@id/ivEmail"
-            app:layout_constraintStart_toEndOf="@id/ivEmail"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Email"
+            android:text="Date"
             android:textSize="14sp"
             android:visibility="visible"/>
 
@@ -206,31 +174,5 @@
             android:layout_marginStart="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/common_margin_default">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="@dimen/common_margin_min"
-            android:backgroundTint="@color/md_theme_light_outline"
-            android:text="Llamar"
-            app:cornerRadius="8dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnVisit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Visitar web"
-            app:cornerRadius="8dp" />
-
-    </LinearLayout>
 
 </LinearLayout>

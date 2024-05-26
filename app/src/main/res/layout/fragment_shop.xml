@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="Nombre"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
