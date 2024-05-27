@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.LiveData
@@ -20,9 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -41,15 +40,15 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<User, UserHolder>
-
     private lateinit var mLayoutManager2: RecyclerView.LayoutManager
+
+    private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<User, UserHolder>
 
     private lateinit var mAddedUsersAdapter: AddedUsersListAdapter
 
     private var mAddedUsersList: ArrayList<User> = ArrayList()
 
-    private val maddedUsersListLiveData: LiveData<ArrayList<User>> = MutableLiveData(mAddedUsersList)
+    private val mAddedUsersListLiveData: LiveData<ArrayList<User>> = MutableLiveData(mAddedUsersList)
 
     private var mAlreadyGroup: Boolean = false
 
@@ -130,10 +129,6 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
 
         mAddedUsersAdapter.submitList(mAddedUsersList)
 
-        maddedUsersListLiveData.observe(viewLifecycleOwner, Observer { users ->
-            Log.d(ContentValues.TAG, "Users: $users")
-        })
-
         return mBinding.root
     }
 
@@ -208,7 +203,7 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 

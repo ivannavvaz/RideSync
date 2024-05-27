@@ -11,7 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.play.core.integrity.r
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -24,6 +24,7 @@ import com.inavarro.ridesync.mainModule.MainActivity
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityRegisterBinding
+
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,29 +55,29 @@ class RegisterActivity : AppCompatActivity() {
     private fun validateFields(fullName: String, email: String, password: String, confirmPassword: String): Boolean {
 
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            Toast.makeText(this, "Completa todos los campos.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Completa todos los campos.", Snackbar.LENGTH_SHORT).show()
         } else {
             // Only letters and spaces
             if (!fullName.matches(Regex("^[a-zA-Z ]+\$"))) {
-                Toast.makeText(this, "Nombre completo inválido.", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Nombre completo inválido.", Snackbar.LENGTH_SHORT).show()
             } else {
                 // Validate email
                 if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    Toast.makeText(this, "Correo electrónico inválido.", Toast.LENGTH_SHORT).show()
+                    Snackbar.make(mBinding.root, "Correo electrónico inválido.", Snackbar.LENGTH_SHORT).show()
                 } else {
                     // Validate password
                     if (password.length < 6) {
-                        Toast.makeText(
-                            this,
+                        Snackbar.make(
+                            mBinding.root,
                             "La contraseña debe tener al menos 6 caracteres.",
-                            Toast.LENGTH_SHORT
+                            Snackbar.LENGTH_SHORT
                         ).show()
                     } else {
                         return if (password != confirmPassword) {
-                            Toast.makeText(
-                                this,
+                            Snackbar.make(
+                                mBinding.root,
                                 "Las contraseñas no coinciden.",
-                                Toast.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT
                             ).show()
 
                             false
@@ -212,7 +213,7 @@ class RegisterActivity : AppCompatActivity() {
         if (user != null) {
             Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Credenciales incorrectas.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Credenciales incorrectas.", Snackbar.LENGTH_SHORT).show()
         }
     }
 

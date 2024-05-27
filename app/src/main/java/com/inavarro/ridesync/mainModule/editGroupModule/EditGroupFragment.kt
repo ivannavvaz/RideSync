@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -18,10 +19,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Group
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentEditGroupBinding
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -41,6 +45,8 @@ class EditGroupFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentEditGroupBinding.inflate(layoutInflater)
 
+        setupEditGroupFragment()
+
         setupToolBar()
 
         setupGroup()
@@ -49,20 +55,21 @@ class EditGroupFragment : Fragment() {
             openGallery()
         }
 
-        mBinding.btnCancel.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        return mBinding.root
+    }
 
-        mBinding.btnAccept.setOnClickListener {
-            val groupName = mBinding.etGroupName.text.toString()
-            val groupDescription = mBinding.etGroupDescription.text.toString()
+    private fun setupEditGroupFragment() {
+        val query = FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(FirebaseAuth.getInstance().currentUser!!.uid)
 
-            if (validateGroupName(groupName) && validateGroupDescription(groupDescription)) {
-                updateGroup(groupName, groupDescription, mPhotoGroupUri)
+        query.get().addOnSuccessListener { document ->
+            val user = document.toObject(User::class.java)
+
+            if (user?.premium == true) {
+                mBinding.llPrivateGroup.visibility = View.VISIBLE
             }
         }
-
-        return mBinding.root
     }
 
     private fun setupToolBar() {
@@ -73,6 +80,20 @@ class EditGroupFragment : Fragment() {
 
         mBinding.toolBar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        mBinding.ivCheck.setOnClickListener {
+            // Hide the keyboard
+            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+
+            val groupName = mBinding.etGroupName.text.toString()
+            val groupDescription = mBinding.etGroupDescription.text.toString()
+            val groupPrivate = mBinding.swPrivateGroup.isChecked
+
+            if (validateGroupName(groupName) && validateGroupDescription(groupDescription)) {
+                updateGroup(groupName, groupDescription, mPhotoGroupUri, groupPrivate)
+            }
         }
     }
 
@@ -88,8 +109,9 @@ class EditGroupFragment : Fragment() {
 
             mBinding.etGroupName.setText(group?.name)
             mBinding.etGroupDescription.setText(group?.description)
+            mBinding.swPrivateGroup.isChecked = group?.private!!
 
-            if (group?.photo != null) {
+            if (group.photo != null) {
                 loadPhoto(group.photo.toUri())
             }
         }
@@ -127,15 +149,15 @@ class EditGroupFragment : Fragment() {
 
         return when {
             groupName.isEmpty() -> {
-                Toast.makeText(requireContext(), "El nombre del grupo no puede estar vacío", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo no puede estar vacío", Snackbar.LENGTH_SHORT).show()
                 false
             }
             groupName.length > maxLength -> {
-                Toast.makeText(requireContext(), "El nombre del grupo no puede exceder los $maxLength caracteres", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
             !groupName.matches(Regex("^[a-zA-Z0-9]+$")) -> {
-                Toast.makeText(requireContext(), "El nombre del grupo solo puede contener letras y números", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo solo puede contener letras y números", Snackbar.LENGTH_SHORT).show()
                 false
             }
             else -> true
@@ -147,28 +169,28 @@ class EditGroupFragment : Fragment() {
 
         return when {
             description.isEmpty() -> {
-                Toast.makeText(requireContext(), "La descripción del grupo no puede estar vacía", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "La descripción del grupo no puede estar vacía", Snackbar.LENGTH_SHORT).show()
                 false
             }
             description.length > maxLength -> {
-                Toast.makeText(requireContext(), "La descripción del grupo no puede exceder los $maxLength caracteres", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "La descripción del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
             else -> true
         }
     }
 
-    private fun updateGroup(groupName: String, groupDescription: String, photoUri: Uri?) {
+    private fun updateGroup(groupName: String, groupDescription: String, photoUri: Uri?, groupPrivate: Boolean) {
         val idGroup = arguments?.getString("idGroup")
 
         if (mPhotoGroupChanged && photoUri != null) {
-            uploadPhotoGroup(idGroup!!, groupName, groupDescription, photoUri)
+            uploadPhotoGroup(idGroup!!, groupName, groupDescription, photoUri, groupPrivate)
         } else {
-            updateGroupDetails(idGroup!!, groupName, groupDescription, null)
+            updateGroupDetails(idGroup!!, groupName, groupDescription, null, groupPrivate)
         }
     }
 
-    private fun uploadPhotoGroup(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri) {
+    private fun uploadPhotoGroup(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri, groupPrivate: Boolean) {
         val storageRef = FirebaseStorage
             .getInstance()
             .reference
@@ -179,21 +201,22 @@ class EditGroupFragment : Fragment() {
             storageRef.putFile(photoUri)
                 .addOnSuccessListener { taskSnapshot ->
                     taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                        updateGroupDetails(idGroup, groupName, groupDescription, uri)
+                        updateGroupDetails(idGroup, groupName, groupDescription, uri, groupPrivate)
                     }
                 }
                 .await()
         }
     }
 
-    private fun updateGroupDetails(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri?) {
+    private fun updateGroupDetails(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri?, groupPrivate: Boolean) {
         val query = FirebaseFirestore.getInstance()
             .collection("groups")
             .document(idGroup)
 
         val groupData = mutableMapOf(
             "name" to groupName,
-            "description" to groupDescription
+            "description" to groupDescription,
+            "private" to groupPrivate
         )
 
         if (photoUri != null) {
@@ -204,12 +227,12 @@ class EditGroupFragment : Fragment() {
             .addOnSuccessListener {
                 Toast.makeText(
                     requireContext(),
-                    "Grupo actualizado correctamente",
+                    "Grupo actualizado",
                     Toast.LENGTH_SHORT
                 ).show()
                 findNavController().navigateUp()
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Error al actualizar el grupo", Toast.LENGTH_SHORT)
+                Snackbar.make(mBinding.root, "Error al actualizar el grupo", Snackbar.LENGTH_SHORT)
                     .show()
             }
     }

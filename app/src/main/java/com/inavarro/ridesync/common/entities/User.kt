@@ -10,7 +10,7 @@ data class User(
     val email: String? = null,
     val username: String? = null,
     val profilePhoto: String? = null,
-    val groups: List<String>? = null,
+    //val groups: List<String>? = null,
     val premium: Boolean? = false,
     val publicProfile: Boolean? = false
 )

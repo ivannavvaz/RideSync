@@ -8,10 +8,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -20,27 +18,16 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
-import androidx.databinding.adapters.ViewGroupBindingAdapter.setListener
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -49,17 +36,9 @@ import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.common.entities.Photo
-import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
-import com.inavarro.ridesync.mainModule.groupsModule.searchGroups.SearchGroupsFragment
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.util.Locale
 
 class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -67,12 +46,13 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
     private lateinit var mAuth: FirebaseAuth
 
-    private lateinit var mStorageReference: StorageReference
-    private lateinit var mFirestoreReference: CollectionReference
+    private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Photo, PhotoHolder>
 
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
+    private lateinit var mStorageReference: StorageReference
+
+    private lateinit var mFirestoreReference: CollectionReference
 
     inner class PhotoHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -80,7 +60,24 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
             fun setListener(photo: Photo) {
                 binding.root.setOnLongClickListener {
-                    onLongClick(photo)
+                    val builder = AlertDialog.Builder(requireContext())
+
+                    val alertDialog = builder.create()
+                    alertDialog.show()
+
+                    builder.setTitle("Confirmacion")
+                    builder.setMessage("¿Quieres eliminar la foto?")
+                    builder.setPositiveButton("Eliminar") { _, _ ->
+                        deletePhoto(photo)
+                        alertDialog.dismiss()
+                    }
+                    builder.setNegativeButton("Cancelar") { _, _ ->
+                        alertDialog.dismiss()
+                    }
+
+                    alertDialog.dismiss()
+                    builder.show()
+
                     true
                 }
             }
@@ -162,7 +159,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(mContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -207,33 +204,19 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         mBinding.toolbar.setNavigationOnClickListener {
             mBinding.drawerLayout.openDrawer(GravityCompat.START)
         }
-
-        /* Para mostrar o no el item de la navegación Premium
-        val menuItem = mBinding.navigationView.menu.findItem(R.id.nav_upgrade_account)
-
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            val isPremium = isPremium()
-            withContext(Dispatchers.Main) {
-                if (isPremium) {
-                    menuItem.isVisible = false
-                } else {
-                    menuItem.isVisible = true
-                }
-            }
-        }
-
-         */
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
         when (item.itemId) {
+            R.id.nav_edit_profile -> {
+                findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+            }
             R.id.nav_share -> {
                 openShare()
             }
-            R.id.nav_edit_profile -> {
-                findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+            R.id.nav_about -> {
+                findNavController().navigate(R.id.action_profileFragment_to_aboutFragment)
             }
             R.id.nav_logout -> {
                 signOut()
@@ -267,7 +250,6 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         return if (user != null) {
             // First letter in uppercase
             user.displayName
-            //.split(" ")?.joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() } }
         } else "anonymous"
     }
 
@@ -276,53 +258,12 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         return user?.photoUrl
     }
 
-    private suspend fun isPremium(): Boolean {
-        return withContext(Dispatchers.IO) {
-            var isPremium = false
-
-            try {
-                val document = FirebaseFirestore.getInstance()
-                    .collection("users")
-                    .document(mAuth.currentUser?.uid!!)
-                    .get()
-                    .await()
-
-                val user = document.toObject(User::class.java)
-                isPremium = user?.premium ?: false
-            } catch (e: Exception) {
-                Log.e("Error", "Error: ${e.message}")
-            }
-
-            isPremium
-        }
-    }
-
     private fun loadPhotoProfile(photoUrl: Uri?) {
         Glide.with(requireContext())
             .load(photoUrl)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .circleCrop()
             .into(mBinding.ivProfile)
-    }
-
-    private fun onLongClick(photo: Photo) {
-        val builder = AlertDialog.Builder(requireContext())
-
-        val alertDialog = builder.create()
-        alertDialog.show()
-
-        builder.setTitle("Confirmacion")
-        builder.setMessage("¿Quieres eliminar la foto?")
-        builder.setPositiveButton("Eliminar") { _, _ ->
-            deletePhoto(photo)
-            alertDialog.dismiss()
-        }
-        builder.setNegativeButton("Cancelar") { _, _ ->
-            alertDialog.dismiss()
-        }
-
-        alertDialog.dismiss()
-        builder.show()
     }
 
     private fun openGallery() {
@@ -354,10 +295,10 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         if (photoSelectUri != null) {
             storageReference.putFile(photoSelectUri)
                 .addOnSuccessListener {
-                    Snackbar.make(
-                        mBinding.root,
+                    Toast.makeText(
+                        requireContext(),
                         "Imagen publicada",
-                        Snackbar.LENGTH_SHORT).show()
+                        Toast.LENGTH_SHORT).show()
 
                     // Save image in firestore
                     it.storage.downloadUrl.addOnSuccessListener { uri ->
@@ -384,6 +325,11 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         photoRef.delete()
             .addOnSuccessListener {
                 mFirestoreReference.document(photo.id).delete()
+
+                Toast.makeText(
+                    requireContext(),
+                    "Imagen eliminada",
+                    Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
                 Snackbar.make(

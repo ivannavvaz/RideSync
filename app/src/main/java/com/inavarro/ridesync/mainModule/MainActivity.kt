@@ -21,6 +21,7 @@ import com.inavarro.ridesync.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityMainBinding
+
     private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,9 +69,5 @@ class MainActivity : AppCompatActivity() {
 
     fun showFragmentContainerViewActivity() {
         mBinding.fragmentContainerViewActivity.visibility = View.VISIBLE
-    }
-
-    fun getUidUser(): String {
-        return mAuth.currentUser?.uid ?: ""
     }
 }

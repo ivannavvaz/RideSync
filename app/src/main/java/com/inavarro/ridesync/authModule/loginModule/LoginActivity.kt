@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -26,7 +27,9 @@ import com.inavarro.ridesync.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var mBinding: ActivityLoginBinding
+
     private lateinit var mAuth: FirebaseAuth
+
     private lateinit var mSharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +83,7 @@ class LoginActivity : AppCompatActivity() {
         if (user != null) {
             Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "Credenciales incorrectas.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Credenciales incorrectas.", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -90,7 +93,7 @@ class LoginActivity : AppCompatActivity() {
         val password = mBinding.etPassword.text.toString().trim()
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Completa todos los campos.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Completa todos los campos.", Snackbar.LENGTH_SHORT).show()
         } else {
             mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->

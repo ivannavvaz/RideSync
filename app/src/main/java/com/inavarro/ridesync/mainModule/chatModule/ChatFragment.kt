@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -29,8 +29,10 @@ class ChatFragment : Fragment() {
 
     private lateinit var mBinding: FragmentChatBinding
 
-    private lateinit var mListAdapter: MessagesListAdapter
     private lateinit var mLinearlayout: LinearLayoutManager
+
+    private lateinit var mListAdapter: MessagesListAdapter
+
     private lateinit var mItems: MutableList<MessagesRecyclerViewItem>
 
     override fun onCreateView(
@@ -135,7 +137,7 @@ class ChatFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, error.message, Snackbar.LENGTH_SHORT).show()
             }
         })
     }
@@ -160,7 +162,7 @@ class ChatFragment : Fragment() {
                 mBinding.etMessage.setText("")
             }
             .addOnFailureListener {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, it.message.toString(), Snackbar.LENGTH_SHORT).show()
             }
 
         val db = FirebaseFirestore.getInstance()

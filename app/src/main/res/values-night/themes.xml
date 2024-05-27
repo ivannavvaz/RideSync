@@ -32,4 +32,9 @@
         <!-- color used by navigation icon and overflow icon -->
         <item name="colorOnPrimary">@color/md_theme_dark_scrim</item>
     </style>
+
+    <style name="CustomTextPopupMenu" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+        <!-- color used by navigation icon and overflow icon -->
+        <item name="android:textColor">@color/md_theme_dark_scrim</item>
+    </style>
 </resources>

@@ -18,7 +18,8 @@
         android:textColor="@android:color/black"
         app:layout_constraintEnd_toStartOf="@id/messengerImageView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="This is a message" />
+        tools:text="This is a message"
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/dateTextView"
@@ -28,7 +29,8 @@
         app:layout_constraintTop_toBottomOf="@id/messageTextView"
         android:paddingHorizontal="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:text="12:00" />
+        tools:text="12:00"
+        android:textSize="12sp"/>
 
     <ImageView
         android:id="@+id/messengerImageView"

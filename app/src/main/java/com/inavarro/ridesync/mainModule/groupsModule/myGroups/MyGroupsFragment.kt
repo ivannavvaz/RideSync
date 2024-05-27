@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -60,23 +61,25 @@ open class MyGroupsFragment : Fragment() {
                 }
 
                 binding.root.setOnLongClickListener {
-                    val builder = AlertDialog.Builder(requireContext())
+                    if (group.admin != FirebaseAuth.getInstance().currentUser?.uid) {
+                        val builder = AlertDialog.Builder(requireContext())
 
-                    val alertDialog = builder.create()
-                    alertDialog.show()
+                        val alertDialog = builder.create()
+                        alertDialog.show()
 
-                    builder.setTitle("Confirmación")
-                    builder.setMessage("¿Quieres salir del grupo?")
-                    builder.setPositiveButton("Aceptar") { _, _ ->
-                        leaveGroup(group)
+                        builder.setTitle("Confirmación")
+                        builder.setMessage("¿Quieres salir del grupo?")
+                        builder.setPositiveButton("Aceptar") { _, _ ->
+                            leaveGroup(group)
+                            alertDialog.dismiss()
+                        }
+                        builder.setNegativeButton("Cancel") { _, _ ->
+                            alertDialog.dismiss()
+                        }
+
+                        builder.show()
                         alertDialog.dismiss()
                     }
-                    builder.setNegativeButton("Cancel") { _, _ ->
-                        alertDialog.dismiss()
-                    }
-
-                    builder.show()
-                    alertDialog.dismiss()
 
                     true
                 }
@@ -212,7 +215,7 @@ open class MyGroupsFragment : Fragment() {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -295,14 +298,8 @@ open class MyGroupsFragment : Fragment() {
                 Toast.makeText(context, "Has abandonado el grupo", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al abandonar el grupo", Snackbar.LENGTH_SHORT).show()
             }
-
-        val userRef = FirebaseFirestore.getInstance().collection("users")
-        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
-            "groups",
-            FieldValue.arrayRemove(group.id)
-        )
     }
 
     private fun emptyList() {

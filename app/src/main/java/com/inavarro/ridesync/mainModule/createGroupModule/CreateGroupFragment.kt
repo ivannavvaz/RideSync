@@ -19,6 +19,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -101,8 +102,6 @@ class CreateGroupFragment : Fragment() {
         val bundle = arguments
         mAddedUsersIdList = bundle!!.getStringArrayList("usersIdList") as ArrayList<String>
         mAddedUsersIdList.add(FirebaseAuth.getInstance().currentUser!!.uid)
-
-        Log.d("CreateGroupFragment", mAddedUsersIdList.toString())
     }
 
     private fun openGallery() {
@@ -136,15 +135,15 @@ class CreateGroupFragment : Fragment() {
 
         return when {
             groupName.isEmpty() -> {
-                Toast.makeText(requireContext(), "El nombre del grupo no puede estar vacío", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo no puede estar vacío", Snackbar.LENGTH_SHORT).show()
                 false
             }
             groupName.length > maxLength -> {
-                Toast.makeText(requireContext(), "El nombre del grupo no puede exceder los $maxLength caracteres", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
             !groupName.matches(Regex("^[a-zA-Z0-9]+$")) -> {
-                Toast.makeText(requireContext(), "El nombre del grupo solo puede contener letras y números", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "El nombre del grupo solo puede contener letras y números", Snackbar.LENGTH_SHORT).show()
                 false
             }
             else -> true
@@ -156,11 +155,11 @@ class CreateGroupFragment : Fragment() {
 
         return when {
             description.isEmpty() -> {
-                Toast.makeText(requireContext(), "La descripción del grupo no puede estar vacía", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "La descripción del grupo no puede estar vacía", Snackbar.LENGTH_SHORT).show()
                 false
             }
             description.length > maxLength -> {
-                Toast.makeText(requireContext(), "La descripción del grupo no puede exceder los $maxLength caracteres", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "La descripción del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
             else -> true
@@ -192,7 +191,7 @@ class CreateGroupFragment : Fragment() {
                 findNavController().navigate(R.id.action_createGroupFragment_to_GroupsFragment)
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Error al crear el grupo", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al crear el grupo", Snackbar.LENGTH_SHORT).show()
             }
     }
 

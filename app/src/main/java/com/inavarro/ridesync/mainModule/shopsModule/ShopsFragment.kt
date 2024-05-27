@@ -4,12 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
-import com.google.firebase.firestore.CollectionReference
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
@@ -27,7 +25,6 @@ import com.inavarro.ridesync.common.entities.Shop
 import com.inavarro.ridesync.databinding.FragmentShopsBinding
 import com.inavarro.ridesync.databinding.ItemShopBinding
 import com.inavarro.ridesync.mainModule.MainActivity
-import com.inavarro.ridesync.mainModule.shopModule.ShopFragment
 
 class ShopsFragment : Fragment() {
 
@@ -35,9 +32,9 @@ class ShopsFragment : Fragment() {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mQuery: Query
-
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Shop, ShopHolder>
+
+    private lateinit var mQuery: Query
 
     private lateinit var mSharedPreferences: SharedPreferences
 
@@ -196,7 +193,7 @@ class ShopsFragment : Fragment() {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -223,20 +220,6 @@ class ShopsFragment : Fragment() {
         super.onResume()
 
         scrollToAndSelectSelectedChip()
-    }
-
-    private fun scrollToAndSelectSelectedChip() {
-        val selectedChip = mBinding.chipGroup.findViewById<Chip>(mSharedPreferences.getInt("shopsChipSelected", R.id.chipAll))
-
-        selectedChip.isChecked = true
-
-        // Desplaza el HorizontalScrollView a la posición del chip seleccionado
-        mBinding.horizontalScrollView.post {
-            // Calcula la posición X del chip seleccionado
-            val scrollX = selectedChip.left - (mBinding.horizontalScrollView.width / 2) + (selectedChip.width / 2)
-
-            mBinding.horizontalScrollView.smoothScrollTo(scrollX, 0)
-        }
     }
 
     private fun setupShopFragment() {
@@ -424,14 +407,28 @@ class ShopsFragment : Fragment() {
         }
     }
 
-    private fun emptyList(itemCount: Int = 0) {
-        mBinding.ivEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
-        mBinding.tvEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
-    }
-
     private fun openShop(shopId: String) {
         findNavController().navigate(
             ShopsFragmentDirections.actionShopsFragmentToShopFragment(shopId)
         )
+    }
+
+    private fun scrollToAndSelectSelectedChip() {
+        val selectedChip = mBinding.chipGroup.findViewById<Chip>(mSharedPreferences.getInt("shopsChipSelected", R.id.chipAll))
+
+        selectedChip.isChecked = true
+
+        // Desplaza el HorizontalScrollView a la posición del chip seleccionado
+        mBinding.horizontalScrollView.post {
+            // Calcula la posición X del chip seleccionado
+            val scrollX = selectedChip.left - (mBinding.horizontalScrollView.width / 2) + (selectedChip.width / 2)
+
+            mBinding.horizontalScrollView.smoothScrollTo(scrollX, 0)
+        }
+    }
+
+    private fun emptyList(itemCount: Int = 0) {
+        mBinding.ivEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
+        mBinding.tvEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
     }
 }

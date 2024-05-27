@@ -7,8 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.auth.FirebaseAuth
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
@@ -26,19 +24,19 @@ import com.inavarro.ridesync.R
 import com.inavarro.ridesync.common.entities.Photo
 import com.inavarro.ridesync.databinding.FragmentViewProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
-import com.inavarro.ridesync.mainModule.profileModule.ProfileFragment
 import java.util.Locale
 
 class ViewProfileFragment : Fragment() {
 
     private lateinit var mBinding: FragmentViewProfileBinding
 
-    private lateinit var mStorageReference: StorageReference
-    private lateinit var mFirestoreReference: CollectionReference
+    private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Photo, ViewProfileFragment.PhotoHolder>
 
-    private lateinit var mLayoutManager: RecyclerView.LayoutManager
+    private lateinit var mStorageReference: StorageReference
+
+    private lateinit var mFirestoreReference: CollectionReference
 
     inner class PhotoHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -65,7 +63,7 @@ class ViewProfileFragment : Fragment() {
         super.onStart()
 
         if (this::mFirebaseAdapter.isInitialized) {
-            //mFirebaseAdapter.startListening()
+            mFirebaseAdapter.startListening()
         }
     }
 
@@ -128,7 +126,7 @@ class ViewProfileFragment : Fragment() {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(mContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 

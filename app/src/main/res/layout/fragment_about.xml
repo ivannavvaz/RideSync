@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".mainModule.aboutModule.AboutFragment"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="Acerca de RideSync"
+            app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            app:titleTextColor="@color/md_theme_light_shadow"
+            app:titleCentered="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:src="@mipmap/ic_logo"
+        android:layout_gravity="center" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tvDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        android:text="En RideSync, hemos identificado una necesidad significativa dentro de la comunidad motociclista: la falta de una plataforma dedicada exclusivamente a conectar a los entusiastas de las motocicletas. Con mi vasta experiencia en el mundo de las motos, he sido testigo de las dificultades que enfrentan los motociclistas al intentar organizar eventos, coordinar salidas y compartir experiencias de manera eficiente y centralizada. \n\n
+
+RideSync nace de esta observación y de la pasión por el motociclismo. Nuestra plataforma está diseñada para servir como un punto de encuentro digital para los motociclistas de todo el mundo. Queremos facilitar la formación de grupos, fomentar la comunicación entre compañeros y promover la organización de eventos y salidas."
+        android:textSize="@dimen/_16sp" />
+
+</LinearLayout>

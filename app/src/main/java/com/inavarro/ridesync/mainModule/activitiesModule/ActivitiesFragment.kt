@@ -17,6 +17,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.chip.Chip
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
@@ -32,9 +33,9 @@ class ActivitiesFragment : Fragment() {
 
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
-    private lateinit var mQuery: Query
-
     private lateinit var mFirebaseAdapter: FirestoreRecyclerAdapter<Activity, ActivityHolder>
+
+    private lateinit var mQuery: Query
 
     private lateinit var mSharedPreferences: SharedPreferences
 
@@ -178,7 +179,7 @@ class ActivitiesFragment : Fragment() {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 

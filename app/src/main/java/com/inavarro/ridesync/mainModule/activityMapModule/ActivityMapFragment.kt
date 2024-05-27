@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.common.entities.Activity
 import com.inavarro.ridesync.databinding.FragmentActivityMapBinding
@@ -54,11 +55,11 @@ class ActivityMapFragment : Fragment() {
                       mActivity = document.toObject(Activity::class.java)!!
                       setActivity(mActivity)
                  } else {
-                      Toast.makeText(requireContext(), "No such activity", Toast.LENGTH_SHORT).show()
+                     Snackbar.make(mBinding.root, "No such activity", Snackbar.LENGTH_SHORT).show()
                  }
                 }
                 .addOnFailureListener { exception ->
-                 Toast.makeText(requireContext(), "Error getting activity: $exception", Toast.LENGTH_SHORT).show()
+                 Snackbar.make(mBinding.root, "Error getting activity: $exception", Snackbar.LENGTH_SHORT).show()
                 }
     }
 

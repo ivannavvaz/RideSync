@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
@@ -61,14 +63,6 @@ class EditProfileFragment : Fragment() {
             openGallery()
         }
 
-        mBinding.btnCancel.setOnClickListener {
-            goBack()
-        }
-
-        mBinding.btnAccept.setOnClickListener {
-            updateProfile()
-        }
-
         mStorageReference = FirebaseStorage.getInstance().reference.child("profilePhotos")
 
         return mBinding.root
@@ -86,6 +80,14 @@ class EditProfileFragment : Fragment() {
 
         mBinding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
+        }
+
+        mBinding.ivCheck.setOnClickListener {
+            // Hide the keyboard
+            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+
+            updateProfile()
         }
     }
 
@@ -188,13 +190,17 @@ class EditProfileFragment : Fragment() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             goBack()
+
+                            Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
                 goBack()
+
+                Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
             }
         } else {
-            Toast.makeText(this.context, "Nombre completo inválido.", Toast.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Nombre completo inválido.", Snackbar.LENGTH_SHORT).show()
         }
     }
 

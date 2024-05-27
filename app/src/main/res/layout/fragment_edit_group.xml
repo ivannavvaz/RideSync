@@ -22,7 +22,17 @@
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             android:theme="@style/MyThemeOverlay_Toolbar"
-            app:titleCentered="true" />
+            app:titleCentered="true" >
+
+            <ImageView
+                android:id="@+id/ivCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="16dp"
+                android:src="@drawable/ic_check_line" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -30,7 +40,7 @@
         android:id="@+id/ivPhotoGroup"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop" />
 
@@ -77,29 +87,29 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/llPrivateGroup"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
         android:layout_marginStart="@dimen/common_margin_default"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:visibility="gone">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            android:layout_width="160dp"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvPrivateGroup"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/md_theme_light_outline"
-            app:cornerRadius="8dp"
-            android:text="Cancelar" />
+            android:layout_weight="1"
+            android:text="Grupo privado"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAccept"
-            android:layout_width="160dp"
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swPrivateGroup"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cornerRadius="8dp"
-            android:text="Editar grupo" />
+            android:checked="false" />
 
     </LinearLayout>
 

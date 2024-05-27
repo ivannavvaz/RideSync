@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -190,7 +191,7 @@ class SearchGroupsFragment : Fragment() {
             override fun onError(e: FirebaseFirestoreException) {
                 super.onError(e)
 
-                Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -258,14 +259,8 @@ class SearchGroupsFragment : Fragment() {
                 Toast.makeText(context, "Has abandonado el grupo", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al abandonar el grupo", Snackbar.LENGTH_SHORT).show()
             }
-
-        val userRef = FirebaseFirestore.getInstance().collection("users")
-        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
-            "groups",
-            FieldValue.arrayRemove(group.id)
-        )
     }
 
     private fun joinGroup(group: Group) {
@@ -275,17 +270,11 @@ class SearchGroupsFragment : Fragment() {
             FieldValue.arrayUnion(FirebaseAuth.getInstance().currentUser?.uid)
         )
             .addOnSuccessListener {
-                Toast.makeText(context, "Te has unido", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Te has unido al grupo", Toast.LENGTH_SHORT)
                     .show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al unirse al grupo", Snackbar.LENGTH_SHORT).show()
             }
-
-        val userRef = FirebaseFirestore.getInstance().collection("users")
-        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
-            "groups",
-            FieldValue.arrayUnion(group.id)
-        )
     }
 }

@@ -90,6 +90,9 @@
         <action
             android:id="@+id/action_profileFragment_to_activitiesFragment"
             app:destination="@id/activitiesFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
@@ -305,5 +308,14 @@
             android:name="idGroup"
             app:argType="string"
             android:defaultValue="0" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.inavarro.ridesync.mainModule.aboutModule.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" >
+        <action
+            android:id="@+id/action_aboutFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
 </navigation>

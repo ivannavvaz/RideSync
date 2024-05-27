@@ -24,7 +24,17 @@
             app:title="Editar perfil"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
-            app:titleCentered="true" />
+            app:titleCentered="true" >
+
+            <ImageView
+                android:id="@+id/ivCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="16dp"
+                android:src="@drawable/ic_check_line" />
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -32,7 +42,7 @@
         android:id="@+id/ivProfile"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop" />
 
@@ -82,33 +92,6 @@
             android:id="@+id/swPublicProfile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_default"
-        android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginStart="@dimen/common_margin_default"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/md_theme_light_outline"
-            app:cornerRadius="8dp"
-            android:text="Cancelar" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAccept"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            app:cornerRadius="8dp"
-            android:text="Aceptar" />
 
     </LinearLayout>
 

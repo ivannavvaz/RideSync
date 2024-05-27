@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldValue
@@ -38,11 +39,11 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
 
     private lateinit var mBinding: FragmentInfoGroupBinding
 
-    private lateinit var mGroup: Group
-
     private lateinit var mLayoutManager: RecyclerView.LayoutManager
 
     private lateinit var mInfoGroupListAdapter: InfoGroupListAdapter
+
+    private lateinit var mGroup: Group
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,8 +75,8 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
         menuHost.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    override fun onCreateMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.option_menu_item, menu)
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.option_menu_item, menu)
 
         val itemExitGroup = menu.findItem(R.id.action_exit_group)
         val itemAddUsers = menu.findItem(R.id.action_add_users)
@@ -272,7 +273,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 Toast.makeText(context, "Has abandonado el grupo", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al abandonar el grupo", Snackbar.LENGTH_SHORT).show()
             }
 
         val userRef = FirebaseFirestore.getInstance().collection("users")
@@ -292,7 +293,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 Toast.makeText(context, "Usuario eliminado", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                Snackbar.make(mBinding.root, "Error al eliminar usuario", Snackbar.LENGTH_SHORT).show()
             }
     }
 
@@ -303,23 +304,27 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 Toast.makeText(context, "Grupo eliminado", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show()
+                view?.let { Snackbar.make(it, "Error al abandonar el grupo", Snackbar.LENGTH_SHORT).show() }
             }
 
-        val messageRef = FirebaseDatabase
-            .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
-            .reference
-            .child("groups")
-            .child(group.id)
+        if (mGroup.photo != null) {
+            val photoRef = FirebaseStorage
+                .getInstance()
+                .reference
+                .child("groupPhotos")
+                .child(group.id)
 
-        messageRef.removeValue()
+            photoRef.delete()
+        }
 
-        val photoRef = FirebaseStorage
-            .getInstance()
-            .reference
-            .child("groupPhotos")
-            .child(group.id)
+        if (mGroup.lastMessageRef != null) {
+            val messageRef = FirebaseDatabase
+                .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
+                .reference
+                .child("groups")
+                .child(group.id)
 
-        photoRef.delete()
+            messageRef.removeValue()
+        }
     }
 }
