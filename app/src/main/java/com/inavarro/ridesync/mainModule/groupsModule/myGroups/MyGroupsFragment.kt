@@ -62,23 +62,14 @@ open class MyGroupsFragment : Fragment() {
 
                 binding.root.setOnLongClickListener {
                     if (group.admin != FirebaseAuth.getInstance().currentUser?.uid) {
-                        val builder = AlertDialog.Builder(requireContext())
-
-                        val alertDialog = builder.create()
-                        alertDialog.show()
-
-                        builder.setTitle("Confirmación")
-                        builder.setMessage("¿Quieres salir del grupo?")
-                        builder.setPositiveButton("Aceptar") { _, _ ->
-                            leaveGroup(group)
-                            alertDialog.dismiss()
-                        }
-                        builder.setNegativeButton("Cancel") { _, _ ->
-                            alertDialog.dismiss()
-                        }
-
-                        builder.show()
-                        alertDialog.dismiss()
+                        AlertDialog.Builder(requireContext())
+                            .setTitle("Confirmación")
+                            .setMessage("¿Quieres salir del grupo?")
+                            .setPositiveButton("Aceptar") { _, _ ->
+                                leaveGroup(group)
+                            }
+                            .setNegativeButton("Cancelar", null)
+                            .show()
                     }
 
                     true

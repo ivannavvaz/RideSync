@@ -13,7 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,6 +26,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.R
+import com.inavarro.ridesync.common.entities.Group
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentEditProfileBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.util.Locale
@@ -34,9 +38,7 @@ class EditProfileFragment : Fragment() {
 
     private lateinit var mAuth: FirebaseAuth
 
-    private lateinit var mFullName: String
-
-    private var mPublicProfile: Boolean = false
+    private lateinit var mUser: User
 
     private var mPhotoProfileUri: Uri? = null
 
@@ -79,44 +81,55 @@ class EditProfileFragment : Fragment() {
         mBinding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolbar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        mBinding.ivCheck.setOnClickListener {
-            // Hide the keyboard
             val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
 
-            updateProfile()
+            if (validateUserChanges()) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Descartar cambios")
+                    .setMessage("¿Estás seguro de que quieres descartar los cambios?")
+                    .setPositiveButton("Descartar") { _, _ ->
+                        findNavController().navigateUp()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                findNavController().navigateUp()
+            }
+        }
+
+        mBinding.ivCheck.setOnClickListener {
+            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+
+            if (validateUserChanges()) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Guardar cambios")
+                    .setMessage("¿Estás seguro de que quieres guardar los cambios?")
+                    .setPositiveButton("Guardar") { _, _ ->
+                        updateProfile()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                findNavController().navigateUp()
+            }
         }
     }
 
     private fun setupProfile() {
-        getFullName()
-        setupSwitchPublicProfile()
-        loadPhotoProfile(getPhotoUrl())
-    }
-
-    private fun getFullName() {
         val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
+
         userRef.get().addOnSuccessListener { document ->
-            if (document != null) {
-                mFullName = document.getString("fullName")!!.split(" ").joinToString(" ") { it.lowercase(Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(
-                    Locale.ROOT) else it.toString() } }
+            mUser = document.toObject(User::class.java)!!
 
-                mBinding.etFullName.setText(mFullName)
+            mBinding.etFullName.setText(mUser.fullName)
+            mBinding.swPublicProfile.isChecked = mUser.publicProfile!!
+
+            if (mUser.profilePhoto != null) {
+                loadPhotoProfile(mUser.profilePhoto!!.toUri())
             }
-        }
-    }
 
-    private fun setupSwitchPublicProfile() {
-        val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
-        userRef.get().addOnSuccessListener { document ->
-            if (document != null) {
-                mPublicProfile = document.getBoolean("publicProfile")!!
-
-                mBinding.swPublicProfile.isChecked = mPublicProfile
-            }
         }
     }
 
@@ -129,15 +142,6 @@ class EditProfileFragment : Fragment() {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .circleCrop()
                 .into(mBinding.ivProfile)
-        }
-    }
-
-    private fun getPhotoUrl(): Uri? {
-        val user = mAuth.currentUser
-        return if (user?.photoUrl == null) {
-            null
-        } else {
-            user.photoUrl
         }
     }
 
@@ -156,6 +160,12 @@ class EditProfileFragment : Fragment() {
         }
     }
 
+    private fun validateUserChanges(): Boolean {
+        return !(mUser.fullName == mBinding.etFullName.text.toString().trim().lowercase() &&
+                mUser.publicProfile == mBinding.swPublicProfile.isChecked &&
+                !mPhotoProfileChanged)
+    }
+
     private fun updateProfile() {
         if (validateFullName()) {
             val user = mAuth.currentUser
@@ -163,11 +173,11 @@ class EditProfileFragment : Fragment() {
             // Update user in Firestore
             val userRef = FirebaseFirestore.getInstance().collection("users").document(user?.uid!!)
 
-            if (mFullName != mBinding.etFullName.text.toString().trim().lowercase()) {
+            if (mUser.fullName != mBinding.etFullName.text.toString().trim().lowercase()) {
                 userRef.update("fullName", mBinding.etFullName.text.toString().trim().lowercase())
             }
 
-            if (mPublicProfile != mBinding.swPublicProfile.isChecked) {
+            if (mUser.publicProfile != mBinding.swPublicProfile.isChecked) {
                 userRef.update("publicProfile", mBinding.swPublicProfile.isChecked)
             }
 
@@ -189,13 +199,13 @@ class EditProfileFragment : Fragment() {
                 user.updateProfile(profileUpdates)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            goBack()
+                            findNavController().navigateUp()
 
                             Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
                         }
                     }
             } else {
-                goBack()
+                findNavController().navigateUp()
 
                 Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
             }
@@ -212,9 +222,5 @@ class EditProfileFragment : Fragment() {
         } else {
             userName.matches(Regex("^[a-zA-Z ]+\$"))
         }
-    }
-
-    private fun goBack() {
-        findNavController().navigateUp()
     }
 }

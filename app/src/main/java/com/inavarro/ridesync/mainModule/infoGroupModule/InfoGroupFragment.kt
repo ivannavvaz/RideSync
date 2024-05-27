@@ -96,24 +96,15 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     override fun onMenuItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_exit_group -> {
-                val builder = AlertDialog.Builder(requireContext())
-
-                val alertDialog = builder.create()
-                alertDialog.show()
-
-                builder.setTitle("Confirmación")
-                builder.setMessage("¿Quieres salir del grupo?")
-                builder.setPositiveButton("Aceptar") { _, _ ->
-                    leaveGroup(mGroup)
-                    findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
-                    alertDialog.dismiss()
-                }
-                builder.setNegativeButton("Cancel") { _, _ ->
-                    alertDialog.dismiss()
-                }
-
-                builder.show()
-                alertDialog.dismiss()
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Confirmación")
+                    .setMessage("¿Quieres salir del grupo?")
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        leaveGroup(mGroup)
+                        findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
             R.id.action_add_users -> {
                 findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToAddUsersGroupFragment(mGroup.id!!, true))
@@ -122,24 +113,15 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment(mGroup.id!!))
             }
             R.id.action_delete_group -> {
-                val builder = AlertDialog.Builder(requireContext())
-
-                val alertDialog = builder.create()
-                alertDialog.show()
-
-                builder.setTitle("Confirmación")
-                builder.setMessage("¿Quieres eliminar el grupo?")
-                builder.setPositiveButton("Aceptar") { _, _ ->
-                    deleteGroup(mGroup)
-                    findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
-                    alertDialog.dismiss()
-                }
-                builder.setNegativeButton("Cancel") { _, _ ->
-                    alertDialog.dismiss()
-                }
-
-                builder.show()
-                alertDialog.dismiss()
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Confirmación")
+                    .setMessage("¿Quieres eliminar el grupo?")
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        deleteGroup(mGroup)
+                        findNavController().navigate(R.id.action_infoGroupFragment_to_GroupsFragment)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         }
         return false
@@ -206,23 +188,14 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     override fun onLongClick(userEntity: User) {
         if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
             if (mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid) {
-                val builder = AlertDialog.Builder(requireContext())
-
-                val alertDialog = builder.create()
-                alertDialog.show()
-
-                builder.setTitle("Confirmación")
-                builder.setMessage("¿Quieres eliminar a ${userEntity.username}?")
-                builder.setPositiveButton("Aceptar") { _, _ ->
-                    removeUser(userEntity)
-                    alertDialog.dismiss()
-                }
-                builder.setNegativeButton("Cancel") { _, _ ->
-                    alertDialog.dismiss()
-                }
-
-                builder.show()
-                alertDialog.dismiss()
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Confirmación")
+                    .setMessage("¿Quieres eliminar a ${userEntity.username}?")
+                    .setPositiveButton("Aceptar") { _, _ ->
+                        removeUser(userEntity)
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
             }
         }
     }

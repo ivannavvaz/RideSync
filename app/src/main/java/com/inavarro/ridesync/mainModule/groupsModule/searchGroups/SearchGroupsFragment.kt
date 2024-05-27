@@ -55,36 +55,25 @@ class SearchGroupsFragment : Fragment() {
                     } else if (group.admin == FirebaseAuth.getInstance().currentUser?.uid) {
                         Toast.makeText(context, "Eres el administrador", Toast.LENGTH_SHORT).show()
                     } else {
-
-                        val builder = AlertDialog.Builder(requireContext())
-
-                        val alertDialog = builder.create()
-                        alertDialog.show()
-
                         if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
-                            builder.setTitle("Ya perteneces al grupo")
-                            builder.setMessage("¿Quieres salir del grupo?")
-                            builder.setPositiveButton("Aceptar") { _, _ ->
-                                leaveGroup(group)
-                                alertDialog.dismiss()
-                            }
-                            builder.setNegativeButton("Cancelar") { _, _ ->
-                                alertDialog.dismiss()
-                            }
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Ya perteneces al grupo")
+                                .setMessage("¿Quieres salir del grupo?")
+                                .setPositiveButton("Aceptar") { _, _ ->
+                                    leaveGroup(group)
+                                }
+                                .setNegativeButton("Cancelar", null)
+                                .show()
                         } else {
-                            builder.setTitle("Confirmacion")
-                            builder.setMessage("¿Quieres unirte al grupo?")
-                            builder.setPositiveButton("Aceptar") { _, _ ->
-                                joinGroup(group)
-                                alertDialog.dismiss()
-                            }
-                            builder.setNegativeButton("Cancelar") { _, _ ->
-                                alertDialog.dismiss()
-                            }
+                            AlertDialog.Builder(requireContext())
+                                .setTitle("Confirmación")
+                                .setMessage("¿Quieres unirte al grupo?")
+                                .setPositiveButton("Aceptar") { _, _ ->
+                                    joinGroup(group)
+                                }
+                                .setNegativeButton("Cancelar", null)
+                                .show()
                         }
-
-                        builder.show()
-                        alertDialog.dismiss()
                     }
                 }
             }

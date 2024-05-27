@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +34,8 @@ import kotlinx.coroutines.tasks.await
 class EditGroupFragment : Fragment() {
 
     private lateinit var mBinding: FragmentEditGroupBinding
+
+    private lateinit var mGroup: Group
 
     private var mPhotoGroupUri: Uri? = null
 
@@ -79,20 +82,44 @@ class EditGroupFragment : Fragment() {
         mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        mBinding.ivCheck.setOnClickListener {
-            // Hide the keyboard
             val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
 
-            val groupName = mBinding.etGroupName.text.toString()
-            val groupDescription = mBinding.etGroupDescription.text.toString()
-            val groupPrivate = mBinding.swPrivateGroup.isChecked
+            if (validateGroupChange()) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Descartar cambios")
+                    .setMessage("¿Estás seguro de que quieres descartar los cambios?")
+                    .setPositiveButton("Descartar") { _, _ ->
+                        findNavController().navigateUp()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                findNavController().navigateUp()
+            }
+        }
 
-            if (validateGroupName(groupName) && validateGroupDescription(groupDescription)) {
-                updateGroup(groupName, groupDescription, mPhotoGroupUri, groupPrivate)
+        mBinding.ivCheck.setOnClickListener {
+            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+
+            if (validateGroupChange()) {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Guardar cambios")
+                    .setMessage("¿Estás seguro de que quieres guardar los cambios?")
+                    .setPositiveButton("Guardar") { _, _ ->
+                        val groupName = mBinding.etGroupName.text.toString()
+                        val groupDescription = mBinding.etGroupDescription.text.toString()
+                        val groupPrivate = mBinding.swPrivateGroup.isChecked
+
+                        if (validateGroupName(groupName) && validateGroupDescription(groupDescription)) {
+                            updateGroup(groupName, groupDescription, mPhotoGroupUri, groupPrivate)
+                        }
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            } else {
+                findNavController().navigateUp()
             }
         }
     }
@@ -100,19 +127,19 @@ class EditGroupFragment : Fragment() {
     private fun setupGroup() {
         val idGroup = arguments?.getString("idGroup")
 
-        val query = FirebaseFirestore.getInstance()
+        val groupRef = FirebaseFirestore.getInstance()
             .collection("groups")
             .document(idGroup!!)
 
-        query.get().addOnSuccessListener { document ->
-            val group = document.toObject(Group::class.java)
+        groupRef.get().addOnSuccessListener { document ->
+            mGroup = document.toObject(Group::class.java)!!
 
-            mBinding.etGroupName.setText(group?.name)
-            mBinding.etGroupDescription.setText(group?.description)
-            mBinding.swPrivateGroup.isChecked = group?.private!!
+            mBinding.etGroupName.setText(mGroup.name)
+            mBinding.etGroupDescription.setText(mGroup.description)
+            mBinding.swPrivateGroup.isChecked = mGroup.private!!
 
-            if (group.photo != null) {
-                loadPhoto(group.photo.toUri())
+            if (mGroup.photo != null) {
+                loadPhoto(mGroup.photo!!.toUri())
             }
         }
     }
@@ -142,6 +169,13 @@ class EditGroupFragment : Fragment() {
                 .circleCrop()
                 .into(mBinding.ivPhotoGroup)
         }
+    }
+
+    private fun validateGroupChange(): Boolean {
+        return !(mGroup.name == mBinding.etGroupName.text.toString() &&
+                mGroup.description == mBinding.etGroupDescription.text.toString() &&
+                mGroup.private == mBinding.swPrivateGroup.isChecked &&
+                !mPhotoGroupChanged)
     }
 
     private fun validateGroupName(groupName: String): Boolean {
