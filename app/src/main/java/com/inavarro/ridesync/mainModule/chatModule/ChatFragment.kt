@@ -134,6 +134,8 @@ class ChatFragment : Fragment() {
                 mListAdapter.submitList(mItems)
                 mBinding.progressBar.visibility = View.GONE
                 mBinding.rvMessages.scrollToPosition(mItems.size - 1)
+
+                emptyList()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -173,5 +175,10 @@ class ChatFragment : Fragment() {
         db.collection("groups")
             .document(arguments?.getString("idGroup")!!)
             .update("lastMessageTime", Timestamp.now().seconds)
+    }
+
+    private fun emptyList() {
+        mBinding.ivEmptyList.visibility = if (mItems.isEmpty()) View.VISIBLE else View.GONE
+        mBinding.tvEmptyList.visibility = if (mItems.isEmpty()) View.VISIBLE else View.GONE
     }
 }

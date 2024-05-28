@@ -217,7 +217,7 @@ class EditProfileFragment : Fragment() {
     private fun validateFullName(): Boolean {
         val userName = mBinding.etFullName.text.toString().trim()
 
-        return if (userName.isEmpty()) {
+        return if (userName.isEmpty() || userName.length < 3 || userName.length > 30) {
             false
         } else {
             userName.matches(Regex("^[a-zA-Z ]+\$"))

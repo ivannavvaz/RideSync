@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Nombre completo"
                 android:textSize="14sp"
-                android:inputType="textPersonName"/>
+                android:inputType="textPersonName|textCapSentences"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

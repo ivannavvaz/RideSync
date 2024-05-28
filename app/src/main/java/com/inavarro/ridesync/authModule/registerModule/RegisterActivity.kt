@@ -131,7 +131,11 @@ class RegisterActivity : AppCompatActivity() {
                         task.exception
                     )
 
-                    updateUI(null)
+                    if (task.exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                        Snackbar.make(mBinding.root, "El correo electrónico ya está en uso.", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        updateUI(null)
+                    }
                 }
             }
     }
