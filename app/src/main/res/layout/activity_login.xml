@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/common_margin_24dp"
         android:paddingStart="@dimen/common_padding_default"
         android:paddingEnd="@dimen/common_padding_default"
         android:paddingBottom="@dimen/common_padding_default">
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tvSubTitle"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="@dimen/_32dp_margin"
+            android:layout_marginTop="@dimen/common_margin_defaultX2"
             android:text="@string/tvEmail_text"
             android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
@@ -62,7 +62,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvEmail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_min_text"
             app:boxCornerRadiusBottomEnd="@dimen/cornerRadius_textInputLayout"
             app:boxCornerRadiusBottomStart="@dimen/cornerRadius_textInputLayout"
             app:boxCornerRadiusTopEnd="@dimen/cornerRadius_textInputLayout"
@@ -72,8 +72,8 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Introduce tu Email"
-                android:textSize="14sp"
+                android:hint="@string/etEmail_text"
+                android:textSize="@dimen/_14sp"
                 android:textAlignment="textStart"
                 android:inputType="textEmailAddress"/>
 
@@ -85,9 +85,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilEmail"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="20dp"
-            android:text="Contraseña"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/common_margin_24dp"
+            android:text="@string/tvPassword_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -97,7 +97,7 @@
             app:layout_constraintTop_toBottomOf="@id/tvPassword"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/margin_min_text"
             app:boxCornerRadiusBottomEnd="@dimen/cornerRadius_textInputLayout"
             app:boxCornerRadiusBottomStart="@dimen/cornerRadius_textInputLayout"
             app:boxCornerRadiusTopEnd="@dimen/cornerRadius_textInputLayout"
@@ -109,8 +109,8 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contraseña"
-                android:textSize="14sp"
+                android:hint="@string/edPassword_text"
+                android:textSize="@dimen/_14sp"
                 android:textAlignment="textStart"
                 android:inputType="textPassword"/>
 
@@ -122,46 +122,45 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilPassword"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp"
-            android:text="Recuerdame" />
+            android:layout_marginTop="@dimen/common_margin_min"
+            android:text="@string/cbRemeber_text" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="@dimen/long_button_height"
             app:layout_constraintTop_toBottomOf="@id/cbRemember"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="@dimen/common_margin_default"
-            app:cornerRadius="8dp"
-            android:text="Iniciar Sesión" />
+            app:cornerRadius="@dimen/corner_radius_button"
+            android:text="@string/btnLoggin_text" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/height_divider"
             app:layout_constraintTop_toBottomOf="@id/btnLogin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/common_margin_min"
             android:insetLeft="@dimen/common_margin_default"
             android:insetRight="@dimen/common_margin_default" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnGoogle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/long_button_height_google"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="10dp"
-            android:paddingStart="16dp"
+            android:layout_marginTop="@dimen/margin_top_AppCompatButton"
+            android:paddingStart="@dimen/padding_start_AppCompatButton"
             android:drawableStart="@mipmap/google"
             android:background="@drawable/button_border"
-            android:text="Iniciar sesión con Google"
+            android:text="@string/btnGoogleLogin_text"
             android:textAlignment="center"
-            android:textStyle="bold"
-            android:contentDescription="Google Login" />
+            android:textStyle="bold" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
@@ -169,7 +168,7 @@
             app:layout_constraintTop_toBottomOf="@id/btnGoogle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="@dimen/common_margin_defaultX2">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvRegister"
@@ -177,9 +176,9 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/btnRegister"
-                android:layout_marginTop="8dp"
-                android:text="¿No tienes cuenta?"
-                android:textSize="16sp"
+                android:layout_marginTop="@dimen/common_margin_min"
+                android:text="@string/tvRegister_text"
+                android:textSize="@dimen/_16sp"
                 tools:ignore="MissingConstraints" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -188,10 +187,10 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toEndOf="@id/tvRegister"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:text="Regístrate"
-                android:textSize="16sp"
+                android:layout_marginStart="@dimen/margin_min_text"
+                android:layout_marginTop="@dimen/common_margin_min"
+                android:text="@string/btnRegister_text"
+                android:textSize="@dimen/_16sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_light_secondary"
                 tools:ignore="MissingConstraints" />

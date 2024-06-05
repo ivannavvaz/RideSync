@@ -21,7 +21,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Editar perfil"
+            app:title="@string/tvEditProfile_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             app:titleCentered="true" >
@@ -31,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:padding="16dp"
+                android:padding="@dimen/common_padding_default"
                 android:src="@drawable/ic_check_line" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -40,9 +40,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivProfile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="@dimen/ivProfile_width_height"
+        android:layout_height="@dimen/ivProfile_width_height"
+        android:layout_marginTop="@dimen/common_margin_default"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop" />
 
@@ -50,8 +50,8 @@
         android:id="@+id/btnEditImageProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Editar foto de perfil"
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:text="@string/btnEditImageProfile_text"
         android:textColor="@color/md_theme_light_secondary"/>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -60,15 +60,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="48dp"
-        android:hint="Nombre de completo">
+        android:layout_marginTop="@dimen/common_margin_defaultX2"
+        android:hint="@string/tilFullName_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etFullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName|textCapSentences"
-            android:text="Nombre completo" />
+            android:text="@string/etFullName_text" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,8 +84,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Perfil público"
-            android:textSize="16sp"
+            android:text="@string/tvPublicProfile_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold"/>
 
         <com.google.android.material.materialswitch.MaterialSwitch

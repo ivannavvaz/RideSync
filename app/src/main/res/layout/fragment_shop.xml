@@ -27,14 +27,16 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_default"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="6dp">
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        app:cardCornerRadius="@dimen/corner_radius_card"
+        app:cardElevation="@dimen/elevation_card">
 
         <ImageView
             android:id="@+id/ivPhoto"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/ivPhotoShop_height"
             android:scaleType="centerCrop" />
 
     </com.google.android.material.card.MaterialCardView>
@@ -42,38 +44,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_default">
+        android:layout_marginTop="@dimen/common_margin_24dp"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvName"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Nombre"
-            android:textSize="20sp"
+            android:text="@string/tvNameShop_text"
+            android:textSize="@dimen/_24sp"
             android:textStyle="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_min_text"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-
-        android:text="Descripción"
-        android:textSize="14sp" />
+        android:text="@string/tvDescripcion_text"
+        android:textSize="@dimen/_14sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="@dimen/common_margin_default">
+        android:layout_marginTop="@dimen/common_margin_24dp">
 
         <ImageView
             android:id="@+id/ivType"
@@ -85,17 +89,17 @@
             android:src="@drawable/ic_store"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvType"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/ivType"
             app:layout_constraintBottom_toBottomOf="@id/ivType"
             app:layout_constraintStart_toEndOf="@id/ivType"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Tipo"
-            android:textSize="14sp"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:text="@string/tvType_text"
+            android:textSize="@dimen/_14sp"
             android:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -117,17 +121,17 @@
             android:src="@drawable/ic_phone"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvPhone"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/ivPhone"
             app:layout_constraintBottom_toBottomOf="@id/ivPhone"
             app:layout_constraintStart_toEndOf="@id/ivPhone"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Teléfono"
-            android:textSize="14sp"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:text="@string/tvPhone_text"
+            android:textSize="@dimen/_14sp"
             android:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -149,17 +153,17 @@
             android:src="@drawable/ic_email"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvEmail"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/ivEmail"
             app:layout_constraintBottom_toBottomOf="@id/ivEmail"
             app:layout_constraintStart_toEndOf="@id/ivEmail"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Email"
-            android:textSize="14sp"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:text="@string/tvEmail_text"
+            android:textSize="@dimen/_14sp"
             android:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -181,18 +185,18 @@
             android:src="@drawable/ic_location"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAddress"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="@id/ivAddress"
             app:layout_constraintBottom_toBottomOf="@id/ivAddress"
             app:layout_constraintStart_toEndOf="@id/ivAddress"
             app:layout_constraintEnd_toStartOf="@id/ivMap"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Dirección"
-            android:textSize="14sp"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:text="@string/tvAddress_text"
+            android:textSize="@dimen/_14sp"
             android:visibility="visible"/>
 
         <ImageView
@@ -203,7 +207,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/ivAddress"
             app:layout_constraintBottom_toBottomOf="@id/ivAddress"
-            android:layout_marginStart="8dp" />
+            android:layout_marginStart="@dimen/common_margin_min" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -211,25 +215,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="@dimen/common_margin_default">
+        android:layout_marginTop="@dimen/common_margin_24dp"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCall"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginEnd="@dimen/common_margin_min"
             android:backgroundTint="@color/md_theme_light_outline"
-            android:text="Llamar"
-            app:cornerRadius="8dp" />
+            android:text="@string/btnCall_text"
+            app:cornerRadius="@dimen/corner_radius_button" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVisit"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Visitar web"
-            app:cornerRadius="8dp" />
+            android:text="@string/btnVisit_text"
+            app:cornerRadius="@dimen/corner_radius_button" />
 
     </LinearLayout>
 

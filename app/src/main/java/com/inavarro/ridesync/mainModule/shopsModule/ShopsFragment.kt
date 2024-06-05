@@ -224,6 +224,7 @@ class ShopsFragment : Fragment() {
 
     private fun setupShopFragment() {
         ((activity as? MainActivity)?.showBottomNav())
+        (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 
     private fun setupClicks() {

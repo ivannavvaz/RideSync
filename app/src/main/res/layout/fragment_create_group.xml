@@ -18,7 +18,7 @@
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Crear grupo"
+            app:title="@string/tbCreateGroup_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             android:theme="@style/MyThemeOverlay_Toolbar"
@@ -28,9 +28,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivPhotoGroup"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="48dp"
+        android:layout_width="@dimen/ivPhotoGroup_width_height"
+        android:layout_height="@dimen/ivPhotoGroup_width_height"
+        android:layout_marginTop="@dimen/common_margin_default"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop" />
 
@@ -38,8 +38,8 @@
         android:id="@+id/btnEditPhotoGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Editar foto del grupo"
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:text="@string/btnEditPhotoGroup_text"
         android:textColor="@color/md_theme_light_secondary"/>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -48,8 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="48dp"
-        android:hint="Nombre del grupo">
+        android:layout_marginTop="@dimen/common_margin_defaultX2"
+        android:hint="@string/tilGroupName_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etGroupName"
@@ -65,8 +65,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="16dp"
-        android:hint="Descripción del grupo">
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:hint="@string/tilGroupDescription_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etGroupDescription"
@@ -88,11 +88,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvPrivateGroup"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Grupo privado"
-            android:textSize="16sp"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -122,16 +122,16 @@
             android:id="@+id/tvInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Los grupos privados solo pueden ser creados por usuarios premium"
-            android:textSize="16sp"
-            android:layout_marginStart="8dp"/>
+            android:text="@string/tvInforCreateGroup_text"
+            android:textSize="@dimen/_16sp"
+            android:layout_marginStart="@dimen/common_margin_min"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_default"
+        android:layout_marginTop="@dimen/common_margin_24dp"
         android:layout_marginEnd="@dimen/common_margin_default"
         android:layout_marginStart="@dimen/common_margin_default"
         android:orientation="horizontal"
@@ -139,19 +139,19 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancel"
-            android:layout_width="160dp"
+            android:layout_width="@dimen/btnSmallButton_width"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="@dimen/common_margin_min"
             android:backgroundTint="@color/md_theme_light_outline"
-            app:cornerRadius="8dp"
-            android:text="Cancelar" />
+            app:cornerRadius="@dimen/corner_radius_button"
+            android:text="@string/btnCancel_text" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAccept"
-            android:layout_width="160dp"
+            android:layout_width="@dimen/btnSmallButton_width"
             android:layout_height="wrap_content"
-            app:cornerRadius="8dp"
-            android:text="Crear grupo" />
+            app:cornerRadius="@dimen/corner_radius_button"
+            android:text="@string/btnCreateGroup_text" />
 
     </LinearLayout>
 

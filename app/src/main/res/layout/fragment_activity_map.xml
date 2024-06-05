@@ -7,14 +7,14 @@
     tools:context=".mainModule.activityMapModule.ActivityMapFragment"
     android:id="@+id/background"
     android:gravity="center"
-    android:background="#80000000">
+    android:background="@color/transparent_color">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="8dp"
+        android:layout_margin="@dimen/common_margin_default"
+        app:cardCornerRadius="@dimen/corner_radius_card"
+        app:cardElevation="@dimen/elevation_card"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -25,25 +25,27 @@
             <ImageView
                 android:id="@+id/ivActivity"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="@dimen/ivActivity_height"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/common_margin_default">
+                android:layout_marginTop="@dimen/common_margin_default"
+                android:layout_marginStart="@dimen/common_margin_default"
+                android:layout_marginEnd="@dimen/common_margin_default">
 
                 <TextView
                     android:id="@+id/tvTitle"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/_0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:text="Titulo"
-                    android:textSize="16sp"
+                    android:text="@string/tvTittle_text"
+                    android:textSize="@dimen/_18sp"
                     android:textStyle="bold" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -52,11 +54,11 @@
                 android:id="@+id/tvDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/common_margin_min"
                 android:layout_marginStart="@dimen/common_margin_default"
                 android:layout_marginEnd="@dimen/common_margin_default"
-
                 android:text="Descripción"
-                android:textSize="14sp" />
+                android:textSize="@dimen/_14sp" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -71,7 +73,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@id/ivDate"
                     app:layout_constraintBottom_toBottomOf="@id/ivDate"
-                    android:layout_marginStart="8dp" />
+                    android:layout_marginStart="@dimen/common_margin_min" />
 
                 <ImageView
                     android:id="@+id/ivDate"
@@ -85,15 +87,15 @@
 
                 <TextView
                     android:id="@+id/tvDate"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/_0dp"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toTopOf="@id/ivDate"
                     app:layout_constraintBottom_toBottomOf="@id/ivDate"
                     app:layout_constraintStart_toEndOf="@id/ivDate"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="Fecha"
-                    android:textSize="14sp"
+                    android:layout_marginStart="@dimen/common_margin_min"
+                    android:layout_marginEnd="@dimen/common_margin_min"
+                    android:text="@string/tvDate_text"
+                    android:textSize="@dimen/_14sp"
                     android:visibility="gone"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>

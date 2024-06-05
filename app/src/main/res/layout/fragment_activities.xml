@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Actividades"
+            app:title="@string/tbActivities_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             app:titleCentered="true" />
@@ -28,18 +28,18 @@
         android:id="@+id/horizontalScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="@dimen/common_margin_chipGroup"
         android:scrollbars="none">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:paddingEnd="20dp"
-            app:chipSpacing="5dp"
-            app:chipSpacingHorizontal="5dp"
-            app:chipSpacingVertical="5dp"
+            android:layout_marginStart="@dimen/cgMarginStart"
+            android:paddingEnd="@dimen/cgPaddingEnd"
+            app:chipSpacing="@dimen/chipSpacing"
+            app:chipSpacingHorizontal="@dimen/chipSpacing"
+            app:chipSpacingVertical="@dimen/chipSpacing"
             app:selectionRequired="true"
             app:singleLine="true"
             app:singleSelection="true">
@@ -51,15 +51,15 @@
                 android:layout_height="wrap_content"
                 android:checkable="true"
                 android:checked="true"
-                android:text="Todos" />
+                android:text="@string/chipAll_text" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipRoute"
+                android:id="@+id/chipRoutes"
                 style="@style/Widget.MaterialComponents.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Rutas" />
+                android:text="@string/chipRoutes_text" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipRestaurants"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Restuarantes" />
+                android:text="@string/chipRestaurants_text" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipMettings"
@@ -75,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Quedadas" />
+                android:text="@string/chipMettings_text" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipCareer"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Carreras" />
+                android:text="@string/chipCareer_text" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipEvents"
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Eventos" />
+                android:text="@string/chipEvents_text" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipOthers"
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checkable="true"
-                android:text="Otros" />
+                android:text="@string/chipOthers_text" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -108,7 +108,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="@dimen/common_margin_chipGroup">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -123,7 +123,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvActivities"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/_0dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -136,12 +136,12 @@
 
         <ImageView
             android:id="@+id/ivEmptyList"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/ivEmptyList_width_height"
+            android:layout_height="@dimen/ivEmptyList_width_height"
             app:layout_constraintBottom_toTopOf="@id/tvEmptyList"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/common_margin_min"
             android:src="@drawable/ic_public_off"
             android:visibility="gone"/>
 
@@ -153,8 +153,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="No hay tiendas"
-            android:textSize="18sp"
+            android:text="@string/tvEmptyListActivities_text"
+            android:textSize="@dimen/_16sp"
             android:textAlignment="center"
             android:visibility="gone"/>
 

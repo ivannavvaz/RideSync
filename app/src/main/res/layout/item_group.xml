@@ -6,36 +6,36 @@
 
     <ImageView
         android:id="@+id/ivGroupImage"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/ivGroupImage_width_height"
+        android:layout_height="@dimen/ivGroupImage_width_height"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="16dp" />
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:layout_marginBottom="@dimen/common_margin_default"
+        android:layout_marginStart="@dimen/common_margin_default" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvGroupName"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/ivGroupImage"
         app:layout_constraintEnd_toStartOf="@id/tvLastMessageTime"
         app:layout_constraintTop_toTopOf="@id/ivGroupImage"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="18sp"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        android:textSize="@dimen/common_margin_default"
         android:textStyle="bold"/>
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvLastMessage"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/_0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/tvGroupName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvGroupName"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:layout_marginEnd="@dimen/common_margin_default"
         android:textColor="@color/md_theme_light_outline" />
 
     <com.google.android.material.textview.MaterialTextView
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/tvGroupName"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="@dimen/common_margin_default"
         android:textColor="@color/md_theme_light_outline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

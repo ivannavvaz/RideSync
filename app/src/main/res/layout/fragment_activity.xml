@@ -27,14 +27,16 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_default"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="6dp">
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default"
+        app:cardCornerRadius="@dimen/corner_radius_card"
+        app:cardElevation="@dimen/elevation_card">
 
         <ImageView
             android:id="@+id/ivImage"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/ivImageActivity_height"
             android:scaleType="centerCrop" />
 
     </com.google.android.material.card.MaterialCardView>
@@ -42,37 +44,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/common_margin_default">
+        android:layout_marginTop="@dimen/common_margin_24dp"
+        android:layout_marginStart="@dimen/common_margin_default"
+        android:layout_marginEnd="@dimen/common_margin_default">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="Titulo"
-            android:textSize="20sp"
+            android:text="@string/tvTittleActivity_text"
+            android:textSize="@dimen/_24sp"
             android:textStyle="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tvDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_min_text"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:text="Descripción"
-        android:textSize="14sp" />
+        android:text="@string/tvDescripcion_text"
+        android:textSize="@dimen/_14sp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="@dimen/common_margin_default">
+        android:layout_marginTop="@dimen/common_margin_24dp">
 
         <ImageView
             android:id="@+id/ivType"
@@ -84,7 +89,7 @@
             android:src="@drawable/ic_store"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvType"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -117,7 +122,7 @@
             android:src="@drawable/ic_calendar"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvDate"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -149,7 +154,7 @@
             android:src="@drawable/ic_location"
             android:visibility="visible"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

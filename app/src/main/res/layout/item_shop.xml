@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="6dp">
+    android:layout_margin="@dimen/common_margin_items"
+    app:cardCornerRadius="@dimen/corner_radius_card"
+    app:cardElevation="@dimen/elevation_card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,19 +15,19 @@
         <ImageView
             android:id="@+id/ivPhoto"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="@dimen/itemActivity_height"
             android:scaleType="centerCrop" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/common_margin_min"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
             android:textStyle="bold"
-            android:textSize="18sp"
-            android:text="Nombre"
+            android:textSize="@dimen/_18sp"
+            android:text="@string/tvName_text"
             android:maxLines="1"
             android:ellipsize="end"/>
 
@@ -35,18 +35,18 @@
             android:id="@+id/tvType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Tipo" />
+            android:layout_marginTop="@dimen/common_margin_min_item"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:text="@string/tvType_text" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="4dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp">
+            android:layout_marginTop="@dimen/common_margin_min"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -57,8 +57,8 @@
                 android:id="@+id/tvCity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:text="Ciudad"
+                android:layout_marginStart="@dimen/margin_min_text"
+                android:text="@string/tvCity_text"
                 android:maxLines="1"
                 android:ellipsize="end"/>
 
@@ -68,13 +68,13 @@
             android:id="@+id/btnShop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textSize="14dp"
-            app:cornerRadius="8dp"
-            android:text="Ver tienda" />
+            android:layout_marginTop="@dimen/common_margin_min"
+            android:layout_marginBottom="@dimen/common_margin_min"
+            android:layout_marginStart="@dimen/common_margin_min"
+            android:layout_marginEnd="@dimen/common_margin_min"
+            android:textSize="@dimen/_12sp"
+            app:cornerRadius="@dimen/corner_radius_button"
+            android:text="@string/btnShop_text" />
 
     </LinearLayout>
 

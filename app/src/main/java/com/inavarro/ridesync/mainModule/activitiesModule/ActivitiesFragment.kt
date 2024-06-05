@@ -82,7 +82,7 @@ class ActivitiesFragment : Fragment() {
             R.id.chipAll -> {
                 mQuery = FirebaseFirestore.getInstance().collection("activities")
             }
-            R.id.chipRoute -> {
+            R.id.chipRoutes -> {
                 mQuery = FirebaseFirestore.getInstance().collection("activities")
                     .whereEqualTo("type", "route")
             }
@@ -224,6 +224,7 @@ class ActivitiesFragment : Fragment() {
 
     private fun setupActivitiesFragment(){
         (activity as MainActivity).showBottomNav()
+        (activity as MainActivity).hideFragmentContainerViewActivity()
     }
 
     private fun setupClicks() {
@@ -243,8 +244,8 @@ class ActivitiesFragment : Fragment() {
 
             mFirebaseAdapter.updateOptions(options)
         }
-        mBinding.chipRoute.setOnClickListener {
-            mSharedPreferences.edit().putInt("activitiesChipSelected", R.id.chipRoute).apply()
+        mBinding.chipRoutes.setOnClickListener {
+            mSharedPreferences.edit().putInt("activitiesChipSelected", R.id.chipRoutes).apply()
 
             val query = FirebaseFirestore.getInstance().collection("activities")
                 .whereEqualTo("type", "route")

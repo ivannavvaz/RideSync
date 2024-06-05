@@ -35,8 +35,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivPhotoGroup"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/ivPhotoGroup_width_height"
+                android:layout_height="@dimen/ivPhotoGroup_width_height"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -51,9 +51,9 @@
                 app:layout_constraintTop_toBottomOf="@id/ivPhotoGroup"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="16dp"
-                android:textSize="24sp"
-                android:text="Nombre del grupo" />
+                android:layout_marginTop="@dimen/common_margin_default"
+                android:textSize="@dimen/_24sp"
+                android:text="@string/tvGroupName_text" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvGroupDescription"
@@ -61,10 +61,10 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/tvGroupName"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="16dp"
-                android:textSize="16sp"
-                android:text="Descripción" />
+                android:layout_marginTop="@dimen/common_margin_defaultX2"
+                android:layout_marginStart="@dimen/common_margin_default"
+                android:textSize="@dimen/_16sp"
+                android:text="@string/tvDescripcion_text" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvDescription"
@@ -73,12 +73,12 @@
                 app:layout_constraintTop_toBottomOf="@id/tvGroupDescription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="@dimen/common_margin_min"
+                android:layout_marginStart="@dimen/common_margin_default"
+                android:layout_marginEnd="@dimen/common_margin_default"
+                android:layout_marginBottom="@dimen/common_margin_default"
+                app:cardCornerRadius="@dimen/corner_radius_card"
+                app:cardElevation="@dimen/elevation_card">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,12 +88,12 @@
                         android:id="@+id/tvDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:textSize="14sp"
-                        android:text="Descripción" />
+                        android:layout_marginTop="@dimen/common_margin_min"
+                        android:layout_marginBottom="@dimen/common_margin_min"
+                        android:layout_marginStart="@dimen/common_margin_default"
+                        android:layout_marginEnd="@dimen/common_margin_default"
+                        android:textSize="@dimen/_14sp"
+                        android:text="@string/tvDescripcion_text" />
 
                 </LinearLayout>
 
@@ -105,26 +105,26 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@id/cvDescription"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="16dp"
-                android:textSize="16sp"
-                android:text="Miembros" />
+                android:layout_marginTop="@dimen/common_margin_24dp"
+                android:layout_marginStart="@dimen/common_margin_default"
+                android:textSize="@dimen/_16sp"
+                android:text="@string/tvGroupMembers_text" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cvMembers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="64dp"
+                android:minHeight="@dimen/cvMembers_minHeight"
                 app:layout_constraintTop_toBottomOf="@id/tvGroupMembers"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp">
+                android:layout_marginTop="@dimen/common_margin_min"
+                android:layout_marginStart="@dimen/common_margin_default"
+                android:layout_marginEnd="@dimen/common_margin_default"
+                android:layout_marginBottom="@dimen/common_margin_default"
+                app:cardCornerRadius="@dimen/corner_radius_card"
+                app:cardElevation="@dimen/elevation_card">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -150,10 +150,10 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="@dimen/common_margin_default"
+                        android:layout_marginTop="@dimen/common_margin_min"
+                        android:layout_marginEnd="@dimen/common_margin_default"
+                        android:layout_marginBottom="@dimen/common_margin_min"
                         android:scrollbars="none"
                         android:overScrollMode="never"
                         tools:listitem="@layout/item_user" />

@@ -17,7 +17,7 @@
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Crear grupo"
+            app:title="@string/tbCreateGroup_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             android:theme="@style/MyThemeOverlay_Toolbar"
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:padding="16dp"
+                android:padding="@dimen/common_padding_default"
                 android:src="@drawable/ic_check_line" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -39,19 +39,19 @@
         android:id="@+id/tvAddUsersTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/common_margin_default"
         android:layout_marginStart="@dimen/common_margin_default"
-        android:text="Añadir participantes"
-        android:textSize="22sp"
+        android:text="@string/tvAddUsersTitle_text"
+        android:textSize="@dimen/_24sp"
         android:textStyle="bold"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvUsersAdded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:paddingStart="@dimen/common_padding_min"
+        android:paddingEnd="@dimen/common_padding_min"
         android:orientation="horizontal"
         tools:listitem="@layout/item_user_added"
         android:clipToPadding="false"
@@ -62,7 +62,7 @@
     <androidx.appcompat.widget.SearchView
         android:id="@+id/svSearch"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/svHeight"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

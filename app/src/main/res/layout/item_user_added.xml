@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="80dp"
-    android:layout_height="90dp"
+    android:layout_width="@dimen/cardUserAdded_width"
+    android:layout_height="@dimen/cardUserAdded_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginEnd="@dimen/common_margin_default">
 
@@ -15,15 +15,15 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:elevation="1dp"
+            android:elevation="@dimen/elevation"
             android:src="@drawable/ic_close"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp" />
+            android:layout_marginTop="@dimen/common_margin_min_item"
+            android:layout_marginEnd="@dimen/common_margin_min_item" />
 
         <ImageView
             android:id="@+id/ivPhotoUser"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="@dimen/ivPhotoUserAdded_width_height"
+            android:layout_height="@dimen/ivPhotoUserAdded_width_height"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +34,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvNameUser"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -43,12 +43,12 @@
             android:layout_marginStart="@dimen/common_margin_min"
             android:layout_marginEnd="@dimen/common_margin_min"
             android:layout_marginBottom="@dimen/common_margin_min"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/common_margin_min_item"
             android:textAlignment="center"
-            android:textSize="12sp"
+            android:textSize="@dimen/_14sp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:text="Nombre"/>
+            android:text="@string/tvName_text"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

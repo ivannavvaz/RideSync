@@ -26,8 +26,8 @@
 
         <ImageView
             android:id="@+id/ivPhotoGroup"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/ivPhotoGroupMin_width_height"
+            android:layout_height="@dimen/ivPhotoGroupMin_width_height"
             app:layout_constraintStart_toEndOf="@id/ivBack"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -41,8 +41,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginStart="@dimen/common_margin_default"
-            android:text="Name"
-            android:textSize="20sp"/>
+            android:text="@string/tvGroupName_text"
+            android:textSize="@dimen/_16sp"/>
 
         <ImageView
             android:id="@+id/ivInfo"
@@ -57,7 +57,7 @@
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/height_divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
@@ -77,7 +77,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMessages"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="@dimen/_0dp"
         tools:listitem="@layout/item_receiver_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -86,8 +86,8 @@
 
     <ImageView
         android:id="@+id/ivEmptyList"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="@dimen/ivEmptyList_width_height"
+        android:layout_height="@dimen/ivEmptyList_width_height"
         app:layout_constraintBottom_toTopOf="@id/tvEmptyList"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -103,8 +103,8 @@
         app:layout_constraintBottom_toTopOf="@id/clInput"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="No hay mensajes"
-        android:textSize="18sp"
+        android:text="@string/ivEmptyListMessages_text"
+        android:textSize="@dimen/_16sp"
         android:textAlignment="center"
         android:visibility="gone"/>
     
@@ -118,23 +118,23 @@
     
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilMessage"
-            android:layout_width="0dp"
-            android:layout_height="64dp"
+            android:layout_width="@dimen/_0dp"
+            android:layout_height="@dimen/tilMessage_height"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ivSend"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_margin="@dimen/common_margin_default"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            app:boxCornerRadiusBottomEnd="@dimen/common_margin_min"
+            app:boxCornerRadiusBottomStart="@dimen/common_margin_min"
+            app:boxCornerRadiusTopEnd="@dimen/common_margin_min"
+            app:boxCornerRadiusTopStart="@dimen/common_margin_min">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etMessage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Message..."
+                android:hint="@string/etMessage_text"
                 android:inputType="textMultiLine|textAutoCorrect|textCapSentences"
                 android:maxLines="5"
                 android:scrollbars="vertical" />
@@ -143,13 +143,13 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/ivSend"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/ivSend_width_height"
+            android:layout_height="@dimen/ivSend_width_height"
             app:layout_constraintStart_toEndOf="@id/tilMessage"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/tilMessage"
             app:layout_constraintTop_toTopOf="@id/tilMessage"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="@dimen/_5dp"
             android:layout_marginEnd="@dimen/common_margin_default"
             android:src="@drawable/ic_send_black"
             android:background="@drawable/image_button_border"/>

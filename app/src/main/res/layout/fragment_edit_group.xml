@@ -18,7 +18,7 @@
             android:id="@+id/toolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Editar grupo"
+            app:title="@string/tbEditGroup_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             android:theme="@style/MyThemeOverlay_Toolbar"
@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:padding="16dp"
+                android:padding="@dimen/common_padding_default"
                 android:src="@drawable/ic_check_line" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -38,9 +38,9 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivPhotoGroup"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="@dimen/ivPhotoGroup_width_height"
+        android:layout_height="@dimen/ivPhotoGroup_width_height"
+        android:layout_marginTop="@dimen/common_margin_default"
         android:src="@drawable/ic_person"
         android:scaleType="centerCrop" />
 
@@ -48,8 +48,8 @@
         android:id="@+id/btnEditPhotoGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Editar foto del grupo"
+        android:layout_marginTop="@dimen/common_margin_min"
+        android:text="@string/btnEditPhotoGroup_text"
         android:textColor="@color/md_theme_light_secondary"/>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -58,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="48dp"
-        android:hint="Nombre del grupo">
+        android:layout_marginTop="@dimen/common_margin_defaultX2"
+        android:hint="@string/tilGroupName_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etGroupName"
@@ -75,8 +75,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:layout_marginTop="16dp"
-        android:hint="Descripción del grupo">
+        android:layout_marginTop="@dimen/common_margin_default"
+        android:hint="@string/tilGroupDescription_text">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etGroupDescription"
@@ -98,11 +98,11 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvPrivateGroup"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/_0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Grupo privado"
-            android:textSize="16sp"
+            android:text="@string/tvPrivateGroup_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.materialswitch.MaterialSwitch

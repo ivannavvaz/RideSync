@@ -20,7 +20,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Acerca de RideSync"
+            app:title="@string/tbAbout_text"
             app:titleTextAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
             app:titleTextColor="@color/md_theme_light_shadow"
             app:titleCentered="true" />
@@ -30,7 +30,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/common_margin_default"
+        android:layout_marginTop="@dimen/common_margin_24dp"
         android:src="@mipmap/ic_logo"
         android:layout_gravity="center" />
 
@@ -38,12 +38,10 @@
         android:id="@+id/tvDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="@dimen/common_margin_24dp"
         android:layout_marginStart="@dimen/common_margin_default"
         android:layout_marginEnd="@dimen/common_margin_default"
-        android:text="En RideSync, hemos identificado una necesidad significativa dentro de la comunidad motociclista: la falta de una plataforma dedicada exclusivamente a conectar a los entusiastas de las motocicletas. Con mi vasta experiencia en el mundo de las motos, he sido testigo de las dificultades que enfrentan los motociclistas al intentar organizar eventos, coordinar salidas y compartir experiencias de manera eficiente y centralizada. \n\n
-
-RideSync nace de esta observación y de la pasión por el motociclismo. Nuestra plataforma está diseñada para servir como un punto de encuentro digital para los motociclistas de todo el mundo. Queremos facilitar la formación de grupos, fomentar la comunicación entre compañeros y promover la organización de eventos y salidas."
+        android:text="@string/tvAboutRideSync_text"
         android:textSize="@dimen/_16sp" />
 
 </LinearLayout>

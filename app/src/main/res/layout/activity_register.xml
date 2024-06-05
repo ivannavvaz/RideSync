@@ -13,29 +13,27 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Crear tu cuenta"
-        android:textSize="32sp"
+        android:text="@string/tvCreateAccount_text"
+        android:textSize="@dimen/_32sp"
         android:textStyle="bold" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnGoogle"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="36dp"
-        android:paddingStart="16dp"
+        android:layout_height="@dimen/long_button_height_google"
+        android:layout_marginTop="@dimen/common_margin_24dp"
+        android:paddingStart="@dimen/padding_start_AppCompatButton"
         android:drawableStart="@mipmap/google"
         android:background="@drawable/button_border"
-        android:text="Registrarse con Google"
+        android:text="@string/btnGoogleRegister_text"
         android:textAlignment="center"
-        android:textStyle="bold"
-        android:contentDescription="Google Login" />
+        android:textStyle="bold" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="@dimen/common_margin_24dp">
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="70dp"
@@ -60,7 +58,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
+        android:layout_marginTop="@dimen/common_margin_24dp">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tvFullName"
@@ -68,8 +66,8 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:text="Nombre completo"
-            android:textSize="16sp"
+            android:text="@string/tvFullName_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -79,18 +77,18 @@
             app:layout_constraintTop_toBottomOf="@id/tvFullName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="4dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            android:layout_marginTop="@dimen/margin_min_text"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_button">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre completo"
-                android:textSize="14sp"
+                android:hint="@string/etFullName_text"
+                android:textSize="@dimen/_14sp"
                 android:inputType="textPersonName|textCapSentences"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -101,9 +99,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilFullName"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp"
-            android:text="Email"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/common_margin_default"
+            android:text="@string/tvEmail_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -113,18 +111,18 @@
             app:layout_constraintTop_toBottomOf="@id/tvEmail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="4dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            android:layout_marginTop="@dimen/margin_min_text"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_button">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Introduce tu Email"
-                android:textSize="14sp"
+                android:hint="@string/etEmail_text"
+                android:textSize="@dimen/_14sp"
                 android:inputType="textEmailAddress"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -135,9 +133,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilEmail"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp"
-            android:text="Contraseña"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/common_margin_default"
+            android:text="@string/tvPassword_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -147,11 +145,11 @@
             app:layout_constraintTop_toBottomOf="@id/tvPassword"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="4dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp"
+            android:layout_marginTop="@dimen/margin_min_text"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_button"
             app:endIconCheckable="true"
             app:endIconMode="password_toggle">
 
@@ -159,8 +157,8 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Contraseña"
-                android:textSize="14sp"
+                android:hint="@string/edPassword_text2"
+                android:textSize="@dimen/_14sp"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -171,9 +169,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/tilPassword"
             app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="16dp"
-            android:text="Confirmar contraseña"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/common_margin_default"
+            android:text="@string/tvConfirmPassword_text"
+            android:textSize="@dimen/_16sp"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -183,11 +181,11 @@
             app:layout_constraintTop_toBottomOf="@id/tvConfirmPassword"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="4dp"
-            app:boxCornerRadiusBottomEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp"
+            android:layout_marginTop="@dimen/margin_min_text"
+            app:boxCornerRadiusBottomEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusBottomStart="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopEnd="@dimen/corner_radius_button"
+            app:boxCornerRadiusTopStart="@dimen/corner_radius_button"
             app:endIconCheckable="true"
             app:endIconMode="password_toggle">
 
@@ -195,8 +193,8 @@
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Confirmar contraseña"
-                android:textSize="14sp"
+                android:hint="@string/etConfirmPassword_text"
+                android:textSize="@dimen/_14sp"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -206,9 +204,9 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSignUp"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="26dp"
-        app:cornerRadius="8dp"
-        android:text="Registrarse" />
+        android:layout_height="@dimen/long_button_height"
+        android:layout_marginTop="@dimen/common_margin_defaultX2"
+        app:cornerRadius="@dimen/corner_radius_button"
+        android:text="@string/btnRegister_text2" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

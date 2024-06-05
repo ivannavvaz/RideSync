@@ -50,11 +50,9 @@ class ViewProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentViewProfileBinding.inflate(layoutInflater)
 
-        setupProfile()
+        setupToolBar()
 
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
+        setupProfile()
 
         return mBinding.root
     }
@@ -72,6 +70,14 @@ class ViewProfileFragment : Fragment() {
 
         if (this::mFirebaseAdapter.isInitialized) {
             mFirebaseAdapter.stopListening()
+        }
+    }
+
+    private fun setupToolBar() {
+        mBinding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
+
+        mBinding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
         }
     }
 

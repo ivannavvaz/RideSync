@@ -32,15 +32,14 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:elevation="4dp"
                 android:theme="@style/MyThemeOverlay_Toolbar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextColor="@android:color/black" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/ivProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="@dimen/ivProfile_width_height"
+                android:layout_height="@dimen/ivProfile_width_height"
                 android:src="@drawable/ic_person"
                 android:scaleType="centerCrop" />
 
@@ -50,21 +49,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/common_margin_default"
                 android:textStyle="bold"
-                android:textSize="24sp"
-                android:text="Username" />
+                android:textSize="@dimen/_24sp"
+                android:text="@string/tvUserName_text" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Email" />
+                android:layout_marginTop="@dimen/common_margin_min"
+                android:text="@string/tvEmail_text"
+                android:textSize="@dimen/_14sp"/>
 
             <com.google.android.material.divider.MaterialDivider
                 android:id="@+id/dividerMyTrips"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
+                android:layout_height="@dimen/height_divider"
+                android:layout_marginTop="@dimen/common_margin_default"
                 android:layout_marginLeft="@dimen/common_margin_default"
                 android:layout_marginRight="@dimen/common_margin_default"
                 android:insetLeft="@dimen/common_margin_default"
@@ -73,7 +73,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/common_margin_min"
                 android:layout_marginStart="@dimen/common_margin_default"
                 android:layout_marginEnd="@dimen/common_margin_default">
 
@@ -102,8 +102,8 @@
 
                 <ImageView
                     android:id="@+id/ivEmptyList"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
+                    android:layout_width="@dimen/ivEmptyList_width_height"
+                    android:layout_height="@dimen/ivEmptyList_width_height"
                     app:layout_constraintBottom_toTopOf="@id/tvEmptyList"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -119,8 +119,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:text="No hay publicaciones"
-                    android:textSize="18sp"
+                    android:text="@string/tvEmptyListPhotos_text"
+                    android:textSize="@dimen/_16sp"
                     android:textAlignment="center"
                     android:visibility="gone"/>
 
@@ -132,10 +132,10 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/navigationView_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/nav_menu"
-        app:drawerLayoutCornerSize="0dp"/>
+        app:drawerLayoutCornerSize="@dimen/_0dp"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
