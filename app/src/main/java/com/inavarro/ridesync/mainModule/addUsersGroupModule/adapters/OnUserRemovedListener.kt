@@ -4,5 +4,4 @@ import com.inavarro.ridesync.common.entities.User
 
 interface OnUserRemovedListener {
     fun onUserRemoved(user: User)
-
 }

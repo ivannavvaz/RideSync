@@ -84,10 +84,12 @@ class ViewProfileFragment : Fragment() {
     private fun setupRecyclerView() {
         mLayoutManager = GridLayoutManager(context, 2)
 
+        // Storage
         mStorageReference = FirebaseStorage.getInstance()
             .reference.child("photos")
             .child(arguments?.getString("idUser")!!)
 
+        // Firestore
         mFirestoreReference = FirebaseFirestore.getInstance()
             .collection("users")
             .document(arguments?.getString("idUser")!!)
@@ -146,10 +148,12 @@ class ViewProfileFragment : Fragment() {
     }
 
     private fun setupProfile() {
+        // Get user data
         val user = FirebaseFirestore.getInstance().collection("users").document(arguments?.getString("idUser")!!)
 
         user.get().addOnSuccessListener {
             if (it.exists()) {
+                // Set user data
                 val username = it.getString("username")
                 val name = it.getString("fullName")?.split(" ")?.joinToString(" ") { it.lowercase(
                     Locale.ROOT).replaceFirstChar { if (it.isLowerCase()) it.titlecase(
@@ -170,6 +174,7 @@ class ViewProfileFragment : Fragment() {
                     mBinding.ivProfile.setImageResource(R.drawable.ic_person)
                 }
 
+                // Check if user has public profile
                 if (it.getBoolean("publicProfile") == false) {
                     mBinding.ivPrivateProfile.visibility = View.VISIBLE
                     mBinding.tvPrivateProfile.visibility = View.VISIBLE

@@ -48,8 +48,6 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
 
     private var mAddedUsersList: ArrayList<User> = ArrayList()
 
-    private val mAddedUsersListLiveData: LiveData<ArrayList<User>> = MutableLiveData(mAddedUsersList)
-
     private var mAlreadyGroup: Boolean = false
 
     private lateinit var mGroupId: String
@@ -82,44 +80,7 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
         // Inflate the layout for this fragment
         mBinding = FragmentAddUsersGroupBinding.inflate(inflater, container, false)
 
-        mAlreadyGroup = arguments?.getBoolean("alreadyGroup") ?: false
-
-        if (!mAlreadyGroup) {
-            (activity as? MainActivity)?.hideBottomNav()
-        } else {
-            mGroupId = arguments?.getString("groupId") ?: ""
-
-            // Get users from group
-            val query = FirebaseFirestore.getInstance()
-                .collection("groups")
-                .document(mGroupId)
-
-            query.get().addOnSuccessListener { document ->
-                val group = document.toObject(Group::class.java)
-
-                if (group != null) {
-                    for (userId in group.users!!) {
-                        val userRef =
-                            FirebaseFirestore.getInstance().collection("users").document(userId)
-
-                        userRef.get().addOnSuccessListener { document ->
-                            val user = document.toObject(User::class.java)
-
-                            if (user != null) {
-                                mAddedUsersList.add(user)
-                            }
-                        }.addOnCompleteListener {
-                            mAddedUsersList.removeIf { user -> user.id == FirebaseAuth.getInstance().currentUser?.uid }
-
-                            mAddedUsersAdapter.notifyDataSetChanged()
-                            mAddedUsersAdapter.submitList(mAddedUsersList)
-
-                            mFirebaseAdapter.notifyDataSetChanged()
-                        }
-                    }
-                }
-            }
-        }
+        setAlreadyGroup()
 
         setupToolBar()
 
@@ -226,7 +187,52 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
         mFirebaseAdapter.stopListening()
     }
 
+    private fun setAlreadyGroup() {
+        mAlreadyGroup = arguments?.getBoolean("alreadyGroup") ?: false
+
+        if (!mAlreadyGroup) {
+            (activity as? MainActivity)?.hideBottomNav()
+        } else {
+            // Get group id
+            mGroupId = arguments?.getString("groupId") ?: ""
+
+            // Get users from group
+            val query = FirebaseFirestore.getInstance()
+                .collection("groups")
+                .document(mGroupId)
+
+            query.get().addOnSuccessListener { document ->
+                // Get group
+                val group = document.toObject(Group::class.java)
+
+                // If group exists
+                if (group != null) {
+                    // Add users to list
+                    for (userId in group.users!!) {
+                        val userRef =
+                            FirebaseFirestore.getInstance().collection("users").document(userId)
+
+                        userRef.get().addOnSuccessListener { document ->
+                            val user = document.toObject(User::class.java)
+
+                            if (user != null) {
+                                // Add user to list
+                                mAddedUsersList.add(user)
+                            }
+                        }.addOnCompleteListener {
+                            mAddedUsersList.removeIf { user -> user.id == FirebaseAuth.getInstance().currentUser?.uid }
+
+                            mAddedUsersAdapter.notifyDataSetChanged()
+                            mAddedUsersAdapter.submitList(mAddedUsersList)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     override fun onUserRemoved(user: User) {
+        // Remove user from list
         val query = FirebaseFirestore.getInstance()
             .collection("users")
             .whereEqualTo("publicProfile", true)
@@ -257,24 +263,29 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
         }
 
         mBinding.ivCheck.setOnClickListener {
-            if (mAlreadyGroup) {
-                mAddedUsersList.add(User(FirebaseAuth.getInstance().currentUser?.uid!!))
+            confirmUserAdded()
+        }
+    }
 
-                val groupRef = FirebaseFirestore.getInstance().collection("groups").document(mGroupId)
-                groupRef.update("users", mAddedUsersList.map { user -> user.id })
-                    .addOnSuccessListener {
-                        findNavController().navigateUp()
-                    }
-            } else {
-                // Pasar lista de usuarios a array de ids
-                val usersIdList = mAddedUsersList.map { user -> user.id }
+    private fun confirmUserAdded() {
+        if (mAlreadyGroup) {
+            mAddedUsersList.add(User(FirebaseAuth.getInstance().currentUser?.uid!!))
 
-                findNavController().navigate(
-                    R.id.action_addUsersGroupFragment_to_createGroupFragment,
-                    Bundle().apply {
-                        putStringArrayList("usersIdList", ArrayList(usersIdList))
-                    })
-            }
+            val groupRef = FirebaseFirestore.getInstance().collection("groups").document(mGroupId)
+            groupRef.update("users", mAddedUsersList.map { user -> user.id })
+                .addOnSuccessListener {
+                    findNavController().navigateUp()
+                }
+        } else {
+            // List to map
+            val usersIdList = mAddedUsersList.map { user -> user.id }
+
+            // Go to create group fragment
+            findNavController().navigate(
+                R.id.action_addUsersGroupFragment_to_createGroupFragment,
+                Bundle().apply {
+                    putStringArrayList("usersIdList", ArrayList(usersIdList))
+                })
         }
     }
 
@@ -291,6 +302,7 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
     }
 
     private fun setupSearchView() {
+        // Set hint
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 (activity as? MainActivity)?.hideBottomNav()
@@ -300,12 +312,15 @@ class AddUsersGroupFragment : Fragment(), OnUserRemovedListener {
         }
 
         mBinding.svSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            // Search when submit
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
+            // Search when text change
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
+                    // Search users
                     val query = FirebaseFirestore.getInstance()
                         .collection("users")
                         .whereEqualTo("publicProfile", true)

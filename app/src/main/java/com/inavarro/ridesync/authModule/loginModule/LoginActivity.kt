@@ -67,9 +67,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupSharedPreferences() {
+        // Get the shared preferences
         mSharedPreferences = getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
         mSharedPreferences.edit().putInt("activitiesChipSelected", R.id.chipAll).apply()
         mSharedPreferences.edit().putInt("shopsChipSelected", R.id.chipAll).apply()
+
+        // Check if the user has remembered the session
         if (mSharedPreferences.getBoolean("session", false)) {
             val email = mSharedPreferences.getString("email", "")
             val password = mSharedPreferences.getString("password", "")
@@ -81,8 +84,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
+            // If user is logged in
             Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
         } else {
+            // If user is not logged in
             Snackbar.make(mBinding.root, "Credenciales incorrectas.", Snackbar.LENGTH_SHORT).show()
         }
     }
@@ -104,6 +109,7 @@ class LoginActivity : AppCompatActivity() {
                         val user = mAuth.currentUser
                         updateUI(user)
 
+                        // If user has remembered the session
                         if (mBinding.cbRemember.isChecked) {
                             mSharedPreferences.edit()
                                 .putString("email", email)
@@ -135,6 +141,8 @@ class LoginActivity : AppCompatActivity() {
             .build()
 
         val googleClient = GoogleSignIn.getClient(this, googleConf)
+
+        // Sign out before signing in
         googleClient.signOut()
 
         resultLauncher.launch(googleClient.signInIntent)
@@ -162,6 +170,7 @@ class LoginActivity : AppCompatActivity() {
                             val userRef = FirebaseFirestore.getInstance().collection("users")
                             userRef.document(user!!.uid).get().addOnSuccessListener { document ->
                                 if (!document.exists()) {
+                                    // Create username from email
                                     val username = user.email?.lowercase()?.substringBefore("@")
 
                                     // Update username of the user
@@ -170,7 +179,6 @@ class LoginActivity : AppCompatActivity() {
                                         .build()
 
                                     user.updateProfile(profileUpdates)
-
 
                                     // Insert user in Firestore
                                     val userDB = User(
@@ -204,6 +212,8 @@ class LoginActivity : AppCompatActivity() {
     private fun intentToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+
+        // Close the current activity
         finish()
     }
 }

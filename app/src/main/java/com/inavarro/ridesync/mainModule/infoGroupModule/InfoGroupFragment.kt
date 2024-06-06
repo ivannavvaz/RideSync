@@ -83,6 +83,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
         val itemEditGroup = menu.findItem(R.id.action_edit_group)
         val itemDeleteGroup = menu.findItem(R.id.action_delete_group)
 
+        // Hide or show the menu items depending on the user's role in the group
         if (::mGroup.isInitialized) {
             itemExitGroup.isVisible = mGroup.admin != FirebaseAuth.getInstance().currentUser?.uid
             itemAddUsers.isVisible = mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid
@@ -94,8 +95,10 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
+        // Handle item selection
         when (item.itemId) {
             R.id.action_exit_group -> {
+                // Show a confirmation dialog before leaving the group
                 AlertDialog.Builder(requireContext())
                     .setTitle("Confirmación")
                     .setMessage("¿Quieres salir del grupo?")
@@ -113,6 +116,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
                 findNavController().navigate(InfoGroupFragmentDirections.actionInfoGroupFragmentToEditGroupFragment(mGroup.id!!))
             }
             R.id.action_delete_group -> {
+                // Show a confirmation dialog before deleting the group
                 AlertDialog.Builder(requireContext())
                     .setTitle("Confirmación")
                     .setMessage("¿Quieres eliminar el grupo?")
@@ -128,9 +132,13 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     private fun setupGroup() {
+        // Get the group id from the arguments
         val idGroup = arguments?.getString("idGroup")
+
+        // Get the group from Firestore
         val query = FirebaseFirestore.getInstance().collection("groups").document(idGroup!!)
         query.get().addOnSuccessListener {
+            // Set the group data to the view
             mGroup = it.toObject(Group::class.java)!!
 
             if (mGroup.photo != null) {
@@ -176,6 +184,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     override fun onClick(userEntity: User) {
+        // Open the user's profile
         if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
             findNavController().navigate(
                 InfoGroupFragmentDirections.actionInfoGroupFragmentToViewProfileFragment(
@@ -186,6 +195,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     override fun onLongClick(userEntity: User) {
+        // Show a confirmation dialog before removing the user from the group
         if (userEntity.id != FirebaseAuth.getInstance().currentUser?.uid) {
             if (mGroup.admin == FirebaseAuth.getInstance().currentUser?.uid) {
                 AlertDialog.Builder(requireContext())
@@ -201,9 +211,11 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     private fun getMembers() {
+        // Create an empty list of users
         val users = mutableListOf<User>()
         mInfoGroupListAdapter.submitList(users)
 
+        // Listen for changes in the group's users list
         FirebaseFirestore.getInstance().collection("groups").document(mGroup.id!!)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
@@ -237,6 +249,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     private fun leaveGroup(group: Group) {
+        // Remove the user from the group
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(group.id!!).update(
             "users",
@@ -248,15 +261,10 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
             .addOnFailureListener {
                 Snackbar.make(mBinding.root, "Error al abandonar el grupo", Snackbar.LENGTH_SHORT).show()
             }
-
-        val userRef = FirebaseFirestore.getInstance().collection("users")
-        userRef.document(FirebaseAuth.getInstance().currentUser?.uid!!).update(
-            "groups",
-            FieldValue.arrayRemove(group.id)
-        )
     }
 
     private fun removeUser(user: User) {
+        // Remove the user from the group
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(mGroup.id!!).update(
             "users",
@@ -271,6 +279,7 @@ class InfoGroupFragment : Fragment(), MenuProvider, OnClickListener {
     }
 
     private fun deleteGroup(group: Group) {
+        // Delete the group from Firestore
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(group.id!!).delete()
             .addOnSuccessListener {

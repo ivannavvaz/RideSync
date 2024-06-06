@@ -29,11 +29,10 @@ class ActivityMapFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentActivityMapBinding.inflate(layoutInflater)
 
-        // Get id activity
-        val id = arguments?.getString("id")
-        getActivities(id)
+        getSelectedActivity()
 
         mBinding.background.setOnClickListener {
+            // Close fragment
             requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
         }
 
@@ -44,17 +43,21 @@ class ActivityMapFragment : Fragment() {
         return mBinding.root
     }
 
-    private fun getActivities(Id: String?) {
+    private fun getSelectedActivity() {
+        val id = arguments?.getString("id")
+
         // Get activities from Firestore
         val db = FirebaseFirestore.getInstance()
           db.collection("activities")
-                .document(Id!!)
+                .document(id!!)
                 .get()
                 .addOnSuccessListener { document ->
                  if (document.exists()) {
+                     // Get activity
                       mActivity = document.toObject(Activity::class.java)!!
                       setActivity(mActivity)
                  } else {
+                     // Show error
                      Snackbar.make(mBinding.root, "No such activity", Snackbar.LENGTH_SHORT).show()
                  }
                 }

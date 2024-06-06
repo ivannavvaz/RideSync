@@ -40,15 +40,7 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         mBinding.btnSignUp.setOnClickListener {
-            val fullName = mBinding.etFullName.text.toString().lowercase().trim()
-            val email = mBinding.etEmail.text.toString().trim()
-            val username = mBinding.etEmail.text.toString().lowercase().trim().substringBefore("@")
-            val password = mBinding.etPassword.text.toString().trim()
-            val confirmPassword = mBinding.etConfirmPassword.text.toString().trim()
-
-            if (validateFields(fullName, email, password, confirmPassword)) {
-                signUpWithEmail(fullName, email, username, password)
-            }
+            signUpWithEmail()
         }
     }
 
@@ -73,6 +65,7 @@ class RegisterActivity : AppCompatActivity() {
                             Snackbar.LENGTH_SHORT
                         ).show()
                     } else {
+                        // Validate confirm password
                         return if (password != confirmPassword) {
                             Snackbar.make(
                                 mBinding.root,
@@ -92,52 +85,76 @@ class RegisterActivity : AppCompatActivity() {
         return false
     }
 
-    private fun signUpWithEmail(fullName: String, email: String, username: String, password: String) {
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(ContentValues.TAG, "createUserWithEmail:success")
+    private fun updateUI(user: FirebaseUser?) {
+        if (user != null) {
+            // If user is logged in
+            Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
+        } else {
+            // If user is not logged in
+            Snackbar.make(mBinding.root, "Credenciales incorrectas.", Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
-                    val user = mAuth.currentUser
-                    updateUI(user)
+    private fun signUpWithEmail() {
+        val fullName = mBinding.etFullName.text.toString().lowercase().trim()
+        val email = mBinding.etEmail.text.toString().trim()
+        val username = mBinding.etEmail.text.toString().lowercase().trim().substringBefore("@")
+        val password = mBinding.etPassword.text.toString().trim()
+        val confirmPassword = mBinding.etConfirmPassword.text.toString().trim()
 
-                    // Update username of the user
-                    val profileUpdates = com.google.firebase.auth.UserProfileChangeRequest.Builder()
-                        .setDisplayName(username)
-                        .build()
+        if (validateFields(fullName, email, password, confirmPassword)) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.d(ContentValues.TAG, "createUserWithEmail:success")
 
-                    user!!.updateProfile(profileUpdates)
+                        val user = mAuth.currentUser
+                        updateUI(user)
 
-                    // Insert user in Firestore
-                    val userDB = User(
-                        user.uid,
-                        fullName,
-                        email,
-                        username,
-                        null
-                    )
+                        // Update username of the user
+                        val profileUpdates =
+                            com.google.firebase.auth.UserProfileChangeRequest.Builder()
+                                .setDisplayName(username)
+                                .build()
 
-                    val userRef = FirebaseFirestore.getInstance().collection("users")
-                    userRef.document(user.uid).set(userDB)
+                        user!!.updateProfile(profileUpdates)
 
-                    // Go to the next activity
-                    intentToMainActivity()
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(
-                        ContentValues.TAG,
-                        "createUserWithEmail:failure",
-                        task.exception
-                    )
+                        // Insert user in Firestore
+                        val userDB = User(
+                            user.uid,
+                            fullName,
+                            email,
+                            username,
+                            null
+                        )
 
-                    if (task.exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
-                        Snackbar.make(mBinding.root, "El correo electrónico ya está en uso.", Snackbar.LENGTH_SHORT).show()
+                        val userRef = FirebaseFirestore.getInstance().collection("users")
+                        userRef.document(user.uid).set(userDB)
+
+                        // Go to the next activity
+                        intentToMainActivity()
                     } else {
-                        updateUI(null)
+                        // If sign in fails, display a message to the user.
+                        Log.w(
+                            ContentValues.TAG,
+                            "createUserWithEmail:failure",
+                            task.exception
+                        )
+
+                        // Check if user already exists
+                        if (task.exception is com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                            Snackbar.make(
+                                mBinding.root,
+                                "El correo electrónico ya está en uso.",
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            updateUI(null)
+                        }
                     }
                 }
-            }
+        }
     }
 
     private fun signUpWithGoogle() {
@@ -147,6 +164,8 @@ class RegisterActivity : AppCompatActivity() {
             .build()
 
         val googleClient = GoogleSignIn.getClient(this, googleConf)
+
+        // Sign out before signing in
         googleClient.signOut()
 
         resultLauncher.launch(googleClient.signInIntent)
@@ -174,6 +193,7 @@ class RegisterActivity : AppCompatActivity() {
                             val userRef = FirebaseFirestore.getInstance().collection("users")
                             userRef.document(user!!.uid).get().addOnSuccessListener { document ->
                                 if (!document.exists()) {
+                                    // Create username from email
                                     val username = user.email?.lowercase()?.substringBefore("@")
 
                                     // Update username of the user
@@ -213,17 +233,11 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUI(user: FirebaseUser?) {
-        if (user != null) {
-            Toast.makeText(this, "Bienvenido.", Toast.LENGTH_SHORT).show()
-        } else {
-            Snackbar.make(mBinding.root, "Credenciales incorrectas.", Snackbar.LENGTH_SHORT).show()
-        }
-    }
-
     private fun intentToMainActivity() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
+
+        // Close the activity
         finish()
     }
 }

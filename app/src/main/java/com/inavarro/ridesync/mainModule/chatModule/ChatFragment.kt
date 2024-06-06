@@ -44,16 +44,55 @@ class ChatFragment : Fragment() {
 
         setupChatFragment()
 
-        mBinding.progressBar.visibility = View.VISIBLE
-
         setupRecyclerView()
 
         mItems = mutableListOf()
 
+        setupGroup()
+
         getMessages()
 
+        mBinding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        mBinding.ivInfo.setOnClickListener {
+            findNavController().navigate(ChatFragmentDirections.actionChatFragmentToInfoGroupFragment(arguments?.getString("idGroup")!!))
+        }
+
+        mBinding.ivSend.setOnClickListener {
+            // If the message is not empty, send it
+            if (mBinding.etMessage.text.toString().isNotEmpty()) {
+                sendMessage(mBinding.etMessage.text.toString())
+            }
+        }
+
+        return mBinding.root
+    }
+
+    private fun setupChatFragment(){
+        (activity as? MainActivity)?.hideBottomNav()
+
+        mBinding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun setupRecyclerView() {
+        mListAdapter = MessagesListAdapter()
+
+        mLinearlayout = LinearLayoutManager(context)
+        mLinearlayout.orientation = LinearLayoutManager.VERTICAL
+
+        mBinding.rvMessages.apply {
+            setHasFixedSize(true)
+            layoutManager = mLinearlayout
+            adapter = mListAdapter
+        }
+    }
+
+    private fun setupGroup() {
         mBinding.tvName.text = arguments?.getString("nameGroup").toString()
 
+        // Get the group photo from Firestore
         val groupId = arguments?.getString("idGroup")
         val groupRef = FirebaseFirestore.getInstance().collection("groups").document(groupId!!)
         groupRef.get().addOnSuccessListener {
@@ -73,42 +112,10 @@ class ChatFragment : Fragment() {
                 }
             }
         }
-
-        mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        mBinding.ivInfo.setOnClickListener {
-            findNavController().navigate(ChatFragmentDirections.actionChatFragmentToInfoGroupFragment(arguments?.getString("idGroup")!!))
-        }
-
-        mBinding.ivSend.setOnClickListener {
-            if (mBinding.etMessage.text.toString().isNotEmpty()) {
-                sendMessage(mBinding.etMessage.text.toString())
-            }
-        }
-
-        return mBinding.root
-    }
-
-    private fun setupChatFragment(){
-        (activity as? MainActivity)?.hideBottomNav()
-    }
-
-    private fun setupRecyclerView() {
-        mListAdapter = MessagesListAdapter()
-
-        mLinearlayout = LinearLayoutManager(context)
-        mLinearlayout.orientation = LinearLayoutManager.VERTICAL
-
-        mBinding.rvMessages.apply {
-            setHasFixedSize(true)
-            layoutManager = mLinearlayout
-            adapter = mListAdapter
-        }
     }
 
     private fun getMessages() {
+        // Get the messages from Firebase Realtime Database
         val query = FirebaseDatabase
             .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
             .reference
@@ -133,8 +140,11 @@ class ChatFragment : Fragment() {
                 }
                 mListAdapter.submitList(mItems)
                 mBinding.progressBar.visibility = View.GONE
+
+                // Scroll to the last message
                 mBinding.rvMessages.scrollToPosition(mItems.size - 1)
 
+                // Check if the list is empty
                 emptyList()
             }
 
@@ -151,6 +161,7 @@ class ChatFragment : Fragment() {
             Timestamp.now().seconds
         )
 
+        // Send the message to Firebase Realtime Database
         val ref = FirebaseDatabase
             .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
             .reference
@@ -167,6 +178,7 @@ class ChatFragment : Fragment() {
                 Snackbar.make(mBinding.root, it.message.toString(), Snackbar.LENGTH_SHORT).show()
             }
 
+        // Update the last message in Firestore
         val db = FirebaseFirestore.getInstance()
         db.collection("groups")
             .document(arguments?.getString("idGroup")!!)

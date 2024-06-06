@@ -60,12 +60,7 @@ class CreateGroupFragment : Fragment() {
         }
 
         mBinding.btnAccept.setOnClickListener {
-            val groupName = mBinding.etGroupName.text.toString().trim()
-            val description = mBinding.etGroupDescription.text.toString().trim()
-
-            if (validateGroupName(groupName) && validateGroupDescription(description)) {
-                createGroup(groupName, description, mBinding.swPrivateGroup.isChecked)
-            }
+            createGroup()
         }
 
         return mBinding.root
@@ -99,6 +94,7 @@ class CreateGroupFragment : Fragment() {
     }
 
     private fun setupAddedUsersList() {
+        // Get the list of users added to the group
         val bundle = arguments
         mAddedUsersIdList = bundle!!.getStringArrayList("usersIdList") as ArrayList<String>
         mAddedUsersIdList.add(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -109,14 +105,14 @@ class CreateGroupFragment : Fragment() {
         startForResult.launch(intent)
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            if ((result.data != null)) {
-                loadPhoto(result.data?.data)
+    private val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if ((result.data != null)) {
+                    loadPhoto(result.data?.data)
+                }
             }
         }
-    }
 
     private fun loadPhoto(photoUri: Uri?) {
         if (photoUri != null) {
@@ -133,19 +129,38 @@ class CreateGroupFragment : Fragment() {
     private fun validateGroupName(groupName: String): Boolean {
         val maxLength = 20
 
+        // Validate the group name
         return when {
+            // If the group name is empty, show a message
             groupName.isEmpty() -> {
-                Snackbar.make(mBinding.root, "El nombre del grupo no puede estar vacío", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    mBinding.root,
+                    "El nombre del grupo no puede estar vacío",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 false
             }
+
+            // If the group name is longer than the maximum length, show a message
             groupName.length > maxLength -> {
-                Snackbar.make(mBinding.root, "El nombre del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    mBinding.root,
+                    "El nombre del grupo no puede exceder los $maxLength caracteres",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 false
             }
+
+            // If the group name contains special characters, show a message
             !groupName.matches(Regex("^[a-zA-Z0-9]+$")) -> {
-                Snackbar.make(mBinding.root, "El nombre del grupo solo puede contener letras y números", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    mBinding.root,
+                    "El nombre del grupo solo puede contener letras y números",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 false
             }
+
             else -> true
         }
     }
@@ -153,49 +168,77 @@ class CreateGroupFragment : Fragment() {
     private fun validateGroupDescription(description: String): Boolean {
         val maxLength = 150
 
+        // Validate the group description
         return when {
+            // If the group description is empty, show a message
             description.isEmpty() -> {
-                Snackbar.make(mBinding.root, "La descripción del grupo no puede estar vacía", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    mBinding.root,
+                    "La descripción del grupo no puede estar vacía",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 false
             }
+
+            // If the group description is longer than the maximum length, show a message
             description.length > maxLength -> {
-                Snackbar.make(mBinding.root, "La descripción del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    mBinding.root,
+                    "La descripción del grupo no puede exceder los $maxLength caracteres",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 false
             }
+
             else -> true
         }
     }
 
-    private fun createGroup(groupName: String, description: String, isPrivate: Boolean) {
+    private fun createGroup() {
 
-        val groupRef = FirebaseFirestore.getInstance().collection("groups").document()
+        val groupName = mBinding.etGroupName.text.toString().trim()
+        val description = mBinding.etGroupDescription.text.toString().trim()
+        val isPrivate = mBinding.swPrivateGroup.isChecked
 
-        val group = Group(
-            groupRef.id,
-            groupName,
-            description,
-            FirebaseAuth.getInstance().currentUser!!.uid,
-            mAddedUsersIdList,
-            null,
-            null,
-            null,
-            isPrivate,
-        )
+        // Validate the group name and description
+        if (validateGroupName(groupName) && validateGroupDescription(description)) {
+            // Create the group in Firestore
+            val groupRef = FirebaseFirestore.getInstance().collection("groups").document()
 
-        groupRef.set(group)
-            .addOnSuccessListener {
-                updateUsersGroups(groupRef.id)
-                uploadPhotoGroup(groupRef.id)
+            val group = Group(
+                groupRef.id,
+                groupName,
+                description,
+                FirebaseAuth.getInstance().currentUser!!.uid,
+                mAddedUsersIdList,
+                null,
+                null,
+                null,
+                isPrivate,
+            )
 
-                Toast.makeText(requireContext(), "Grupo creado correctamente", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_createGroupFragment_to_GroupsFragment)
-            }
-            .addOnFailureListener {
-                Snackbar.make(mBinding.root, "Error al crear el grupo", Snackbar.LENGTH_SHORT).show()
-            }
+            groupRef.set(group)
+                .addOnSuccessListener {
+                    updateUsersGroups(groupRef.id)
+                    uploadPhotoGroup(groupRef.id)
+
+                    Toast.makeText(
+                        requireContext(),
+                        "Grupo creado correctamente",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                    findNavController().navigate(R.id.action_createGroupFragment_to_GroupsFragment)
+                }
+                .addOnFailureListener {
+                    Snackbar.make(mBinding.root, "Error al crear el grupo", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+        }
     }
 
     private fun updateUsersGroups(groupId: String) {
+        // Add the group to the list of groups of each user
         mAddedUsersIdList.forEach { userId ->
             FirebaseFirestore.getInstance().collection("users").document(userId)
                 .update("groups", FieldValue.arrayUnion(groupId))
@@ -203,6 +246,7 @@ class CreateGroupFragment : Fragment() {
     }
 
     private fun uploadPhotoGroup(groupRefId: String) {
+        // Upload the group photo to Firebase Storage
         if (mPhotoUri != null) {
             val storageRef = FirebaseStorage
                 .getInstance()

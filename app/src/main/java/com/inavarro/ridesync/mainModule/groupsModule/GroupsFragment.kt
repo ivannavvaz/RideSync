@@ -34,6 +34,7 @@ class GroupsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Setup ViewPager
         mBinding.viewPager.adapter = ViewPagerAdapter(this)
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
             when(position){

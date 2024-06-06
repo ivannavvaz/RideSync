@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
+        // Setup the Navigation Drawer
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHostFragment) as NavHostFragment
         val navController = navHostFragment.navController
         mBinding.bottomNavigationView.setupWithNavController(navController)

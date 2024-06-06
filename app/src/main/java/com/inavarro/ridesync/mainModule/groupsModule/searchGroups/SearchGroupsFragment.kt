@@ -43,6 +43,7 @@ class SearchGroupsFragment : Fragment() {
 
         fun setListener(group: Group) {
             binding.root.setOnClickListener {
+                // Check if the user is already in the group
                 val userRef = FirebaseFirestore.getInstance().collection("users")
                     .document(FirebaseAuth.getInstance().currentUser?.uid!!)
                     .get()
@@ -50,12 +51,15 @@ class SearchGroupsFragment : Fragment() {
                 userRef.addOnSuccessListener {
                     val user = it.toObject(User::class.java)
 
+                    // Check if the group is private and the user is not premium
                     if (group.private == true && user?.premium == false) {
                         Toast.makeText(context, "Grupo privado", Toast.LENGTH_SHORT).show()
                     } else if (group.admin == FirebaseAuth.getInstance().currentUser?.uid) {
                         Toast.makeText(context, "Eres el administrador", Toast.LENGTH_SHORT).show()
                     } else {
+                        // Check if the user is already in the group
                         if (group.users != null && group.users.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
+                            // Show dialog to leave the group
                             AlertDialog.Builder(requireContext())
                                 .setTitle("Ya perteneces al grupo")
                                 .setMessage("¿Quieres salir del grupo?")
@@ -65,6 +69,7 @@ class SearchGroupsFragment : Fragment() {
                                 .setNegativeButton("Cancelar", null)
                                 .show()
                         } else {
+                            // Show dialog to join the group
                             AlertDialog.Builder(requireContext())
                                 .setTitle("Confirmación")
                                 .setMessage("¿Quieres unirte al grupo?")
@@ -81,6 +86,7 @@ class SearchGroupsFragment : Fragment() {
     }
 
     class VerticalSpaceItemDecoration(private val verticalSpaceHeight: Int) : RecyclerView.ItemDecoration() {
+        // Add vertical space between items
         override fun getItemOffsets(
             outRect: Rect, view: View, parent: RecyclerView,
             state: RecyclerView.State
@@ -140,12 +146,14 @@ class SearchGroupsFragment : Fragment() {
                         group.name.toString().replaceFirstChar { it.uppercase() }
                     binding.tvDescription.text = group.description
 
+                    // Show private icon if the group is private
                     if (group.private == true) {
                         binding.ivPrivate.visibility = View.VISIBLE
                     } else {
                         binding.ivPrivate.visibility = View.GONE
                     }
 
+                    // Show check icon if the user is already in the group
                     if (group.users != null && group.users!!.contains(FirebaseAuth.getInstance().currentUser?.uid)) {
                         binding.ivCheck.visibility = View.VISIBLE
                     } else {
@@ -208,6 +216,7 @@ class SearchGroupsFragment : Fragment() {
 
     private fun setupSearchView() {
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            // Hide bottom navigation when the search view is focused
             if (hasFocus) {
                 (activity as? MainActivity)?.hideBottomNav()
             } else {
@@ -221,6 +230,7 @@ class SearchGroupsFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                // Filter groups by name
                 if (newText != null) {
                     val query = FirebaseFirestore.getInstance().collection("groups")
                         .orderBy("name")
@@ -239,6 +249,7 @@ class SearchGroupsFragment : Fragment() {
     }
 
     private fun leaveGroup(group: Group) {
+        // Remove the user from the group
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(group.id!!).update(
             "users",
@@ -253,6 +264,7 @@ class SearchGroupsFragment : Fragment() {
     }
 
     private fun joinGroup(group: Group) {
+        // Add the user to the group
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(group.id!!).update(
             "users",

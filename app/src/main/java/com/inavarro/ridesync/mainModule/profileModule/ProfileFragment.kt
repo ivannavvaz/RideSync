@@ -62,6 +62,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
                 binding.root.setOnLongClickListener {
                     val builder = AlertDialog.Builder(requireContext())
 
+                    // Set the message show for the Alert time
                     val alertDialog = builder.create()
                     alertDialog.show()
 
@@ -110,10 +111,12 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
         mLayoutManager = GridLayoutManager(context, 2)
 
+        // Storage reference
         mStorageReference = FirebaseStorage.getInstance()
             .reference.child("photos")
             .child(FirebaseAuth.getInstance().currentUser!!.uid)
 
+        // Firestore reference
         mFirestoreReference = FirebaseFirestore.getInstance()
             .collection("users")
             .document(mAuth.currentUser?.uid!!)
@@ -184,14 +187,17 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     }
 
     private fun setupProfileFragment() {
-        mBinding.progressBar.visibility = View.VISIBLE
         (activity as? MainActivity)?.hideFragmentContainerViewActivity()
         (activity as? MainActivity)?.showBottomNav()
+
+        mBinding.progressBar.visibility = View.VISIBLE
     }
 
     private fun setupNavigationView() {
+        // Set navigation view listener
         mBinding.navigationView.setNavigationItemSelectedListener(this)
 
+        // Set navigation drawer
         ActionBarDrawerToggle(requireActivity(),
             mBinding.drawerLayout,
             mBinding.toolbar,
@@ -208,6 +214,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
+        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_edit_profile -> {
                 findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
@@ -223,12 +230,14 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             }
         }
 
+        // Close drawer
         mBinding.drawerLayout.closeDrawer(GravityCompat.START)
 
         return false
     }
 
     private fun setupProfile() {
+        // Set user data
         mBinding.tvEmail.text = getEmail()
         mBinding.tvUserName.text = getUserName()
 
@@ -290,8 +299,8 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private fun uploadImage(photoSelectUri: Uri?) {
         val id = mFirestoreReference.document().id
 
+        // Upload image to storage
         val storageReference = mStorageReference.child(id)
-
         if (photoSelectUri != null) {
             storageReference.putFile(photoSelectUri)
                 .addOnSuccessListener {
@@ -322,6 +331,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private fun deletePhoto(photo: Photo) {
         val photoRef = mStorageReference.child(photo.id)
 
+        // Delete image from storage
         photoRef.delete()
             .addOnSuccessListener {
                 mFirestoreReference.document(photo.id).delete()
@@ -340,6 +350,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     }
 
     private fun emptyList() {
+        // Show empty list message
         mBinding.ivEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
         mBinding.tvEmptyList.visibility = if (mFirebaseAdapter.itemCount == 0) View.VISIBLE else View.GONE
     }

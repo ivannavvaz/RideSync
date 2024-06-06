@@ -81,10 +81,10 @@ class EditProfileFragment : Fragment() {
         mBinding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolbar.setNavigationOnClickListener {
-            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+            hideKeyboard()
 
             if (validateUserChanges()) {
+                // Show dialog to discard changes
                 AlertDialog.Builder(requireContext())
                     .setTitle("Descartar cambios")
                     .setMessage("¿Estás seguro de que quieres descartar los cambios?")
@@ -99,10 +99,10 @@ class EditProfileFragment : Fragment() {
         }
 
         mBinding.ivCheck.setOnClickListener {
-            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+            hideKeyboard()
 
             if (validateUserChanges()) {
+                // Show dialog to save changes
                 AlertDialog.Builder(requireContext())
                     .setTitle("Guardar cambios")
                     .setMessage("¿Estás seguro de que quieres guardar los cambios?")
@@ -117,7 +117,13 @@ class EditProfileFragment : Fragment() {
         }
     }
 
+    private fun hideKeyboard() {
+        val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+    }
+
     private fun setupProfile() {
+        // Get user from Firestore
         val userRef = FirebaseFirestore.getInstance().collection("users").document(mAuth.currentUser?.uid!!)
 
         userRef.get().addOnSuccessListener { document ->
@@ -217,6 +223,7 @@ class EditProfileFragment : Fragment() {
     private fun validateFullName(): Boolean {
         val userName = mBinding.etFullName.text.toString().trim()
 
+        // Check if the full name is valid
         return if (userName.isEmpty() || userName.length < 3 || userName.length > 30) {
             false
         } else {

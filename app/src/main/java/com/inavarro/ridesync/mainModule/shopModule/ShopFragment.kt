@@ -67,10 +67,11 @@ class ShopFragment : Fragment() {
     }
 
     private fun setupShop(){
+        // Get shop id
         val idShop = arguments?.getString("idShop")
 
+        // Get shop data
         val shopRef = FirebaseFirestore.getInstance().collection("shops").document(idShop!!)
-
         shopRef.get().addOnSuccessListener {
             val shop = it.toObject(Shop::class.java)
             mShop = shop!!

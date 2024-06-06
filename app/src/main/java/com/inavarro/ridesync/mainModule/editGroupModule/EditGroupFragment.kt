@@ -62,6 +62,7 @@ class EditGroupFragment : Fragment() {
     }
 
     private fun setupEditGroupFragment() {
+        // Get current user to check if it is premium
         val query = FirebaseFirestore.getInstance()
             .collection("users")
             .document(FirebaseAuth.getInstance().currentUser!!.uid)
@@ -69,6 +70,7 @@ class EditGroupFragment : Fragment() {
         query.get().addOnSuccessListener { document ->
             val user = document.toObject(User::class.java)
 
+            // Show private group switch if user is premium
             if (user?.premium == true) {
                 mBinding.llPrivateGroup.visibility = View.VISIBLE
             }
@@ -82,10 +84,10 @@ class EditGroupFragment : Fragment() {
         mBinding.toolBar.setNavigationIcon(R.drawable.ic_arrow_back)
 
         mBinding.toolBar.setNavigationOnClickListener {
-            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+            hideKeyboard()
 
             if (validateGroupChange()) {
+                // Show dialog to confirm discarding changes
                 AlertDialog.Builder(requireContext())
                     .setTitle("Descartar cambios")
                     .setMessage("¿Estás seguro de que quieres descartar los cambios?")
@@ -100,10 +102,10 @@ class EditGroupFragment : Fragment() {
         }
 
         mBinding.ivCheck.setOnClickListener {
-            val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+            hideKeyboard()
 
             if (validateGroupChange()) {
+                // Show dialog to confirm saving changes
                 AlertDialog.Builder(requireContext())
                     .setTitle("Guardar cambios")
                     .setMessage("¿Estás seguro de que quieres guardar los cambios?")
@@ -124,9 +126,16 @@ class EditGroupFragment : Fragment() {
         }
     }
 
+    private fun hideKeyboard() {
+        val imm = requireActivity().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(mBinding.root.windowToken, 0)
+    }
+
     private fun setupGroup() {
+        // Get the group ID from the arguments
         val idGroup = arguments?.getString("idGroup")
 
+        // Get the group details from Firestore
         val groupRef = FirebaseFirestore.getInstance()
             .collection("groups")
             .document(idGroup!!)
@@ -172,6 +181,7 @@ class EditGroupFragment : Fragment() {
     }
 
     private fun validateGroupChange(): Boolean {
+        // Check if any group details have changed
         return !(mGroup.name == mBinding.etGroupName.text.toString() &&
                 mGroup.description == mBinding.etGroupDescription.text.toString() &&
                 mGroup.private == mBinding.swPrivateGroup.isChecked &&
@@ -181,19 +191,26 @@ class EditGroupFragment : Fragment() {
     private fun validateGroupName(groupName: String): Boolean {
         val maxLength = 20
 
+        // Validate group name
         return when {
+            // Check if group name is empty
             groupName.isEmpty() -> {
                 Snackbar.make(mBinding.root, "El nombre del grupo no puede estar vacío", Snackbar.LENGTH_SHORT).show()
                 false
             }
+
+            // Check if group name exceeds the maximum length
             groupName.length > maxLength -> {
                 Snackbar.make(mBinding.root, "El nombre del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
+
+            // Check if group name contains special characters
             !groupName.matches(Regex("^[a-zA-Z0-9]+$")) -> {
                 Snackbar.make(mBinding.root, "El nombre del grupo solo puede contener letras y números", Snackbar.LENGTH_SHORT).show()
                 false
             }
+
             else -> true
         }
     }
@@ -201,22 +218,29 @@ class EditGroupFragment : Fragment() {
     private fun validateGroupDescription(description: String): Boolean {
         val maxLength = 150
 
+        // Validate group description
         return when {
+            // Check if group description is empty
             description.isEmpty() -> {
                 Snackbar.make(mBinding.root, "La descripción del grupo no puede estar vacía", Snackbar.LENGTH_SHORT).show()
                 false
             }
+
+            // Check if group description exceeds the maximum length
             description.length > maxLength -> {
                 Snackbar.make(mBinding.root, "La descripción del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
                 false
             }
+
             else -> true
         }
     }
 
     private fun updateGroup(groupName: String, groupDescription: String, photoUri: Uri?, groupPrivate: Boolean) {
+        // Get the group ID from the arguments
         val idGroup = arguments?.getString("idGroup")
 
+        // Check if the group photo has changed
         if (mPhotoGroupChanged && photoUri != null) {
             uploadPhotoGroup(idGroup!!, groupName, groupDescription, photoUri, groupPrivate)
         } else {
@@ -225,6 +249,7 @@ class EditGroupFragment : Fragment() {
     }
 
     private fun uploadPhotoGroup(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri, groupPrivate: Boolean) {
+        // Upload the group photo to Firebase Storage
         val storageRef = FirebaseStorage
             .getInstance()
             .reference
@@ -243,16 +268,19 @@ class EditGroupFragment : Fragment() {
     }
 
     private fun updateGroupDetails(idGroup: String, groupName: String, groupDescription: String, photoUri: Uri?, groupPrivate: Boolean) {
+        // Update the group details in Firestore
         val query = FirebaseFirestore.getInstance()
             .collection("groups")
             .document(idGroup)
 
+        // Create a map with the group data
         val groupData = mutableMapOf(
             "name" to groupName,
             "description" to groupDescription,
             "private" to groupPrivate
         )
 
+        // Add the group photo to the group data
         if (photoUri != null) {
             groupData["photo"] = photoUri.toString()
         }

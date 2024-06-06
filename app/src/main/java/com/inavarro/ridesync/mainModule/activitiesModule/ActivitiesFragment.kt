@@ -60,11 +60,9 @@ class ActivitiesFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentActivitiesBinding.inflate(layoutInflater)
 
-        mBinding.progressBar.visibility = View.VISIBLE
-
         setupActivitiesFragment()
 
-        setupClicks()
+        setupChipsClicks()
 
         mSharedPreferences = requireActivity().getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
 
@@ -76,8 +74,10 @@ class ActivitiesFragment : Fragment() {
 
         mLayoutManager = GridLayoutManager(context, 2)
 
+        // Select the chip that was selected before
         val chipSelected = mSharedPreferences.getInt("activitiesChipSelected", R.id.chipAll)
 
+        // Query the activities depending on the selected chip
         when (chipSelected){
             R.id.chipAll -> {
                 mQuery = FirebaseFirestore.getInstance().collection("activities")
@@ -111,6 +111,7 @@ class ActivitiesFragment : Fragment() {
             }
         }
 
+        // Check if the query has items
         mQuery.get().addOnSuccessListener {
             val numItems = it.size()
             emptyList(numItems)
@@ -131,7 +132,7 @@ class ActivitiesFragment : Fragment() {
                         R.layout.item_activity,
                         parent,
                         false
-                    )
+                )
 
                 return ActivityHolder(view)
             }
@@ -213,11 +214,11 @@ class ActivitiesFragment : Fragment() {
 
         selectedChip.isChecked = true
 
-        // Desplaza el HorizontalScrollView a la posición del chip seleccionado
         mBinding.horizontalScrollView.post {
-            // Calcula la posición X del chip seleccionado
+            // Calculate the scroll position of the selected chip
             val scrollX = selectedChip.left - (mBinding.horizontalScrollView.width / 2) + (selectedChip.width / 2)
 
+            // Scroll to the selected chip
             mBinding.horizontalScrollView.smoothScrollTo(scrollX, 0)
         }
     }
@@ -225,9 +226,12 @@ class ActivitiesFragment : Fragment() {
     private fun setupActivitiesFragment(){
         (activity as MainActivity).showBottomNav()
         (activity as MainActivity).hideFragmentContainerViewActivity()
+
+        mBinding.progressBar.visibility = View.VISIBLE
     }
 
-    private fun setupClicks() {
+    // Set the click listeners for the chips
+    private fun setupChipsClicks() {
         mBinding.chipAll.setOnClickListener {
             mSharedPreferences.edit().putInt("activitiesChipSelected", R.id.chipAll).apply()
 
@@ -349,6 +353,7 @@ class ActivitiesFragment : Fragment() {
     }
 
     private fun emptyList(itemCount: Int = 0) {
+        // Show the empty list message
         mBinding.ivEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
         mBinding.tvEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
     }

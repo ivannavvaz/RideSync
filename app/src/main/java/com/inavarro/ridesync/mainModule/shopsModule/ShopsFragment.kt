@@ -59,8 +59,6 @@ class ShopsFragment : Fragment() {
         // Inflate the layout for this fragment
         mBinding = FragmentShopsBinding.inflate(layoutInflater)
 
-        mBinding.progressBar.visibility = View.VISIBLE
-
         setupShopFragment()
 
         setupClicks()
@@ -75,8 +73,10 @@ class ShopsFragment : Fragment() {
 
         mLayoutManager = GridLayoutManager(context, 2)
 
+        // Select the chip that was selected before
         val chipSelected = mSharedPreferences.getInt("shopsChipSelected", R.id.chipAll)
 
+        // Query the shop depending on the chip selected
         when (chipSelected) {
             R.id.chipAll -> {
                 mQuery = FirebaseFirestore.getInstance().collection("shops")
@@ -122,6 +122,7 @@ class ShopsFragment : Fragment() {
             }
         }
 
+        // Check if the query has results
         mQuery.get().addOnSuccessListener {
             val numItems = it.size()
             emptyList(numItems)
@@ -225,6 +226,8 @@ class ShopsFragment : Fragment() {
     private fun setupShopFragment() {
         ((activity as? MainActivity)?.showBottomNav())
         (activity as MainActivity).hideFragmentContainerViewActivity()
+
+        mBinding.progressBar.visibility = View.VISIBLE
     }
 
     private fun setupClicks() {
@@ -419,16 +422,17 @@ class ShopsFragment : Fragment() {
 
         selectedChip.isChecked = true
 
-        // Desplaza el HorizontalScrollView a la posición del chip seleccionado
         mBinding.horizontalScrollView.post {
-            // Calcula la posición X del chip seleccionado
+            // Calculate the scroll position of the selected chip
             val scrollX = selectedChip.left - (mBinding.horizontalScrollView.width / 2) + (selectedChip.width / 2)
 
+            // Scroll to the selected chip
             mBinding.horizontalScrollView.smoothScrollTo(scrollX, 0)
         }
     }
 
     private fun emptyList(itemCount: Int = 0) {
+        // Show the empty list image and text if there are no items
         mBinding.ivEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
         mBinding.tvEmptyList.visibility = if (itemCount == 0) View.VISIBLE else View.GONE
     }

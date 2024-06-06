@@ -63,9 +63,10 @@ class ActivityFragment : Fragment() {
     private fun setupActivity(){
         val idActivity = arguments?.getString("idActivity")
 
+        // Get activity from Firestore
         val activityRef = FirebaseFirestore.getInstance().collection("activities").document(idActivity!!)
-
         activityRef.get().addOnSuccessListener { document ->
+            // Get activity
             val activity = document.toObject(Activity::class.java)
             mActivity = activity!!
 
@@ -73,6 +74,7 @@ class ActivityFragment : Fragment() {
             mBinding.tvDescription.text = activity.description
             mBinding.tvAddress.text = activity.address
 
+            // Set type
             when (activity.type) {
                 "route" -> mBinding.tvType.text = "Ruta"
                 "restaurant" -> mBinding.tvType.text = "Restaurante"
@@ -82,6 +84,7 @@ class ActivityFragment : Fragment() {
                 "other" -> mBinding.tvType.text = "Otro"
             }
 
+            // Format date
             if (activity.date != null) {
                 val date = activity.date.toDate()
                 val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())

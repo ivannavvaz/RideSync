@@ -71,6 +71,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mGoogleMap = googleMap
         enableLocation()
 
+        // Move the camera to the current location if the permission is granted
         if (isLocationPermissionGranted()) {
             moveCameraToCurrentLocation()
         } else {
@@ -114,7 +115,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun enableLocation() {
+        // Check if the map is initialized
         if (!::mGoogleMap.isInitialized) return
+
+        // Check if the permission is granted
         if (isLocationPermissionGranted()) {
             mGoogleMap.isMyLocationEnabled = true
         } else {
@@ -123,6 +127,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun requestLocationPermission() {
+        // Check if the permission should be requested
         if (ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -150,6 +155,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     ) {
         when (requestCode) {
             REQUEST_CODE_LOCATION -> {
+                // Check if the permission was granted
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mGoogleMap.isMyLocationEnabled = true
                 } else {
@@ -165,7 +171,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
+        // Check if the map is initialized
         if (!::mGoogleMap.isInitialized) return
+
+        // Check if the permission is granted
         if (!isLocationPermissionGranted()) {
             mGoogleMap.isMyLocationEnabled = false
             Toast.makeText(
@@ -232,13 +241,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
         val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
         vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+
         val bitmap = Bitmap.createBitmap(
             vectorDrawable.intrinsicWidth,
             vectorDrawable.intrinsicHeight,
             Bitmap.Config.ARGB_8888
         )
+
         val canvas = Canvas(bitmap)
         vectorDrawable.draw(canvas)
+
         return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 }

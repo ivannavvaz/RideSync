@@ -52,6 +52,7 @@ open class MyGroupsFragment : Fragment() {
             fun setListener(group: Group) {
                 binding.root.setOnClickListener {
                     mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+                        // Hide the bottom navigation bar when the search view is focused
                         if (hasFocus) {
                             (activity as? MainActivity)?.hideBottomNav()
                         }
@@ -61,7 +62,9 @@ open class MyGroupsFragment : Fragment() {
                 }
 
                 binding.root.setOnLongClickListener {
+                    // Check if the user is the admin of the group
                     if (group.admin != FirebaseAuth.getInstance().currentUser?.uid) {
+                        // If the user is not the admin, show a dialog to leave the group
                         AlertDialog.Builder(requireContext())
                             .setTitle("Confirmación")
                             .setMessage("¿Quieres salir del grupo?")
@@ -131,6 +134,7 @@ open class MyGroupsFragment : Fragment() {
                         binding.tvLastMessageTime.text = ""
                     } else {
 
+                        // Get the last message from Firebase Realtime Database
                         val ref = group.lastMessageRef.let {
                             FirebaseDatabase
                                 .getInstance("https://ridesync-da55c-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -141,7 +145,10 @@ open class MyGroupsFragment : Fragment() {
                         ref.get().addOnSuccessListener {
                             val message: Message? = it.getValue(Message::class.java)
                             if (message != null) {
+                                // Set the last message in the group
+                                // If the message was sent by the user, show "You" before the message
                                 if (message.senderId == FirebaseAuth.getInstance().currentUser?.uid) {
+                                    // If the message is longer than 20 characters, show only the first 15 characters
                                     if (message.text?.length!! > 20) {
                                         binding.tvLastMessage.text =
                                             "You: ${message.text.substring(0, 15)}..."
@@ -149,6 +156,7 @@ open class MyGroupsFragment : Fragment() {
                                         binding.tvLastMessage.text = "You: ${message.text}"
                                     }
                                 } else {
+                                    // If the message is longer than 20 characters, show only the first 15 characters
                                     if (message.text?.length!! > 20) {
                                         binding.tvLastMessage.text =
                                             "${message.text.substring(0, 15)}..."
@@ -157,6 +165,7 @@ open class MyGroupsFragment : Fragment() {
                                     }
                                 }
 
+                                // Set the last message time in the group
                                 val dayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                                 val hourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
 
@@ -170,6 +179,7 @@ open class MyGroupsFragment : Fragment() {
                                     binding.tvLastMessageTime.text = dayFormat.format(dateDayFormat)
                                 }
                             } else {
+                                // If there is no message, show a message
                                 binding.tvLastMessage.text = "No hay mensajes"
                                 binding.tvLastMessageTime.text = ""
                             }
@@ -237,17 +247,21 @@ open class MyGroupsFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
+        // Clear the search view
         mBinding.svSearch.setQuery(null, false)
+
         mFirebaseAdapter.stopListening()
     }
 
     private fun setupMyGroupsFragment() {
-        mBinding.progressBar.visibility = View.VISIBLE
         ((activity as? MainActivity)?.showBottomNav())
+
+        mBinding.progressBar.visibility = View.VISIBLE
     }
 
     private fun setupSearchView() {
         mBinding.svSearch.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            // Hide the bottom navigation bar when the search view is focused
             if (hasFocus) {
                 (activity as? MainActivity)?.hideBottomNav()
             } else {
@@ -261,6 +275,7 @@ open class MyGroupsFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                // Filter the groups by name
                 if (newText != null) {
                     val query = FirebaseFirestore.getInstance().collection("groups")
                         .whereArrayContains("users", FirebaseAuth.getInstance().currentUser?.uid!!)
@@ -280,6 +295,7 @@ open class MyGroupsFragment : Fragment() {
     }
 
     private fun leaveGroup(group: Group) {
+        // Remove the user from the group
         val groupRef = FirebaseFirestore.getInstance().collection("groups")
         groupRef.document(group.id!!).update(
             "users",
