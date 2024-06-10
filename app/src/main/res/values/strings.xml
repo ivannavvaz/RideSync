@@ -25,7 +25,7 @@
     <string name="edPassword_text2">Contraseña</string>
     <string name="tvConfirmPassword_text">Confirmar contraseña</string>
     <string name="etConfirmPassword_text">Confirmar contraseña</string>
-    <string name="tbActivities_text">Activities</string>
+    <string name="tbActivities_text">Actividades</string>
     <string name="tbShops_text">Tiendas</string>
     <string name="chipAll_text">Todos</string>
     <string name="chipRoutes_text">Rutas</string>
@@ -84,7 +84,7 @@
     <string name="tvName_text">Nombre</string>
     <string name="tvCity_text">Ciudad</string>
     <string name="btnActivity_text">Ver Actividad</string>
-    <string name="btnShop_text">Ver tienda</string>
+    <string name="btnShop_text">Ver Tienda</string>
     <string name="tvAdmin_text">Admin</string>
     <string name="tvMe_text">Yo</string>
 </resources>

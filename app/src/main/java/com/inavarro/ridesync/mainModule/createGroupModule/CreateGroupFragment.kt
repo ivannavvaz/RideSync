@@ -15,11 +15,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,6 +52,8 @@ class CreateGroupFragment : Fragment() {
         setupToolBar()
 
         setupAddedUsersList()
+
+        setupTextFields()
 
         mBinding.btnEditPhotoGroup.setOnClickListener {
             openGallery()
@@ -100,6 +104,32 @@ class CreateGroupFragment : Fragment() {
         mAddedUsersIdList.add(FirebaseAuth.getInstance().currentUser!!.uid)
     }
 
+    private fun setupTextFields() {
+        with(mBinding) {
+            etGroupName.addTextChangedListener {
+                validateFields(tilGroupName)
+            }
+            etGroupDescription.addTextChangedListener {
+                validateFields(tilGroupDescription)
+            }
+        }
+    }
+
+    private fun validateFields(vararg textFields: TextInputLayout): Boolean {
+        var isValid = true
+
+        for (textField in textFields) {
+            if (textField.editText?.text.toString().isEmpty()) {
+                textField.error = "Campo requerido."
+                isValid = false
+            } else {
+                textField.error = null
+            }
+        }
+
+        return isValid
+    }
+
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         startForResult.launch(intent)
@@ -131,16 +161,6 @@ class CreateGroupFragment : Fragment() {
 
         // Validate the group name
         return when {
-            // If the group name is empty, show a message
-            groupName.isEmpty() -> {
-                Snackbar.make(
-                    mBinding.root,
-                    "El nombre del grupo no puede estar vacío",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                false
-            }
-
             // If the group name is longer than the maximum length, show a message
             groupName.length > maxLength -> {
                 Snackbar.make(
@@ -170,16 +190,6 @@ class CreateGroupFragment : Fragment() {
 
         // Validate the group description
         return when {
-            // If the group description is empty, show a message
-            description.isEmpty() -> {
-                Snackbar.make(
-                    mBinding.root,
-                    "La descripción del grupo no puede estar vacía",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-                false
-            }
-
             // If the group description is longer than the maximum length, show a message
             description.length > maxLength -> {
                 Snackbar.make(
@@ -200,40 +210,52 @@ class CreateGroupFragment : Fragment() {
         val description = mBinding.etGroupDescription.text.toString().trim()
         val isPrivate = mBinding.swPrivateGroup.isChecked
 
-        // Validate the group name and description
-        if (validateGroupName(groupName) && validateGroupDescription(description)) {
-            // Create the group in Firestore
-            val groupRef = FirebaseFirestore.getInstance().collection("groups").document()
+        if (validateFields(mBinding.tilGroupName, mBinding.tilGroupDescription)) {
+            // Validate the group name and description
+            if (validateGroupName(groupName) && validateGroupDescription(description)) {
+                // Create the group in Firestore
+                val groupRef = FirebaseFirestore.getInstance().collection("groups").document()
 
-            val group = Group(
-                groupRef.id,
-                groupName,
-                description,
-                FirebaseAuth.getInstance().currentUser!!.uid,
-                mAddedUsersIdList,
-                null,
-                null,
-                null,
-                isPrivate,
-            )
+                val group = Group(
+                    groupRef.id,
+                    groupName,
+                    description,
+                    FirebaseAuth.getInstance().currentUser!!.uid,
+                    mAddedUsersIdList,
+                    null,
+                    null,
+                    null,
+                    isPrivate,
+                )
 
-            groupRef.set(group)
-                .addOnSuccessListener {
-                    updateUsersGroups(groupRef.id)
-                    uploadPhotoGroup(groupRef.id)
+                groupRef.set(group)
+                    .addOnSuccessListener {
+                        updateUsersGroups(groupRef.id)
+                        uploadPhotoGroup(groupRef.id)
 
-                    Toast.makeText(
-                        requireContext(),
-                        "Grupo creado correctamente",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                    findNavController().navigate(R.id.action_createGroupFragment_to_GroupsFragment)
-                }
-                .addOnFailureListener {
-                    Snackbar.make(mBinding.root, "Error al crear el grupo", Snackbar.LENGTH_SHORT)
-                        .show()
-                }
+                        Toast.makeText(
+                            requireContext(),
+                            "Grupo creado correctamente",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        findNavController().navigate(R.id.action_createGroupFragment_to_GroupsFragment)
+                    }
+                    .addOnFailureListener {
+                        Snackbar.make(
+                            mBinding.root,
+                            "Error al crear el grupo",
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+            }
+        } else {
+            Snackbar.make(
+                mBinding.root,
+                "Completa todos los campos",
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
     }
 

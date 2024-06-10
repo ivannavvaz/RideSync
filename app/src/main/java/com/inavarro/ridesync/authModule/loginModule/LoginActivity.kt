@@ -10,10 +10,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.addTextChangedListener
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -41,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         setupSharedPreferences()
+
+        setupTextFields()
 
         mBinding.btnLogin.setOnClickListener {
             signIn()
@@ -82,6 +86,32 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupTextFields() {
+        with(mBinding) {
+            etEmail.addTextChangedListener {
+                validateFields(mBinding.tilEmail)
+            }
+            etPassword.addTextChangedListener {
+                validateFields(mBinding.tilPassword)
+            }
+        }
+    }
+
+    private fun validateFields(vararg textFields:TextInputLayout): Boolean {
+        var isValid = true
+
+        for (textField in textFields) {
+            if (textField.editText?.text.toString().isEmpty()) {
+                textField.error = "Campo requerido."
+                isValid = false
+            } else {
+                textField.error = null
+            }
+        }
+
+        return isValid
+    }
+
     private fun updateUI(user: FirebaseUser?) {
         if (user != null) {
             // If user is logged in
@@ -97,7 +127,7 @@ class LoginActivity : AppCompatActivity() {
         val email = mBinding.etEmail.text.toString().trim()
         val password = mBinding.etPassword.text.toString().trim()
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (validateFields(mBinding.tilEmail, mBinding.tilPassword).not()) {
             Snackbar.make(mBinding.root, "Completa todos los campos.", Snackbar.LENGTH_SHORT).show()
         } else {
             mAuth.signInWithEmailAndPassword(email, password)

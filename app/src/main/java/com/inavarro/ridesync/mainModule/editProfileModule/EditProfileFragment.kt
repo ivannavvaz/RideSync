@@ -16,10 +16,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
@@ -60,6 +62,8 @@ class EditProfileFragment : Fragment() {
         setupToolBar()
 
         setupProfile()
+
+        setupTextFields()
 
         mBinding.btnEditImageProfile.setOnClickListener {
             openGallery()
@@ -139,6 +143,29 @@ class EditProfileFragment : Fragment() {
         }
     }
 
+    private fun setupTextFields() {
+        with(mBinding) {
+            etFullName.addTextChangedListener {
+                validateTextFields(tilFullName)
+            }
+        }
+    }
+
+    private fun validateTextFields(vararg textFields: TextInputLayout): Boolean {
+        var isValid = true
+
+        for (textField in textFields) {
+            if (textField.editText?.text.toString().isEmpty()) {
+                textField.error = "Campo requerido."
+                isValid = false
+            } else {
+                textField.error = null
+            }
+        }
+
+        return isValid
+    }
+
     private fun loadPhotoProfile(photoUrl: Uri?) {
         if (photoUrl != null) {
             mPhotoProfileUri = photoUrl
@@ -173,50 +200,64 @@ class EditProfileFragment : Fragment() {
     }
 
     private fun updateProfile() {
-        if (validateFullName()) {
-            val user = mAuth.currentUser
+        if (validateTextFields(mBinding.tilFullName)) {
+            if (validateFullName()) {
+                val user = mAuth.currentUser
 
-            // Update user in Firestore
-            val userRef = FirebaseFirestore.getInstance().collection("users").document(user?.uid!!)
+                // Update user in Firestore
+                val userRef =
+                    FirebaseFirestore.getInstance().collection("users").document(user?.uid!!)
 
-            if (mUser.fullName != mBinding.etFullName.text.toString().trim().lowercase()) {
-                userRef.update("fullName", mBinding.etFullName.text.toString().trim().lowercase())
-            }
-
-            if (mUser.publicProfile != mBinding.swPublicProfile.isChecked) {
-                userRef.update("publicProfile", mBinding.swPublicProfile.isChecked)
-            }
-
-            if (mPhotoProfileChanged) {
-                // Up image in Firebase Storage
-                val photoRef = mStorageReference.child(user.uid)
-                photoRef.putFile(mPhotoProfileUri!!)
-                    .addOnSuccessListener { taskSnapshot ->
-                        taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
-                            userRef.update("profilePhoto", uri)
-                        }
-                    }
-
-                // Update user in Firebase Auth
-                val profileUpdates = userProfileChangeRequest {
-                    photoUri = mPhotoProfileUri
+                if (mUser.fullName != mBinding.etFullName.text.toString().trim().lowercase()) {
+                    userRef.update(
+                        "fullName",
+                        mBinding.etFullName.text.toString().trim().lowercase()
+                    )
                 }
 
-                user.updateProfile(profileUpdates)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            findNavController().navigateUp()
+                if (mUser.publicProfile != mBinding.swPublicProfile.isChecked) {
+                    userRef.update("publicProfile", mBinding.swPublicProfile.isChecked)
+                }
 
-                            Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
+                if (mPhotoProfileChanged) {
+                    // Up image in Firebase Storage
+                    val photoRef = mStorageReference.child(user.uid)
+                    photoRef.putFile(mPhotoProfileUri!!)
+                        .addOnSuccessListener { taskSnapshot ->
+                            taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                                userRef.update("profilePhoto", uri)
+                            }
                         }
-                    }
-            } else {
-                findNavController().navigateUp()
 
-                Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT).show()
+                    // Update user in Firebase Auth
+                    val profileUpdates = userProfileChangeRequest {
+                        photoUri = mPhotoProfileUri
+                    }
+
+                    user.updateProfile(profileUpdates)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                findNavController().navigateUp()
+
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Perfil actualizado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                } else {
+                    findNavController().navigateUp()
+
+                    Toast.makeText(requireContext(), "Perfil actualizado", Toast.LENGTH_SHORT)
+                        .show()
+                }
+            } else {
+                Snackbar.make(mBinding.root, "Nombre completo inválido.", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         } else {
-            Snackbar.make(mBinding.root, "Nombre completo inválido.", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(mBinding.root, "Completa todos los campos.", Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -224,7 +265,7 @@ class EditProfileFragment : Fragment() {
         val userName = mBinding.etFullName.text.toString().trim()
 
         // Check if the full name is valid
-        return if (userName.isEmpty() || userName.length < 3 || userName.length > 30) {
+        return if (userName.length < 3 || userName.length > 30) {
             false
         } else {
             userName.matches(Regex("^[a-zA-Z ]+\$"))

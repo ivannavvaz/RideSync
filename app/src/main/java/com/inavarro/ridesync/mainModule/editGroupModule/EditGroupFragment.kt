@@ -16,11 +16,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -53,6 +55,8 @@ class EditGroupFragment : Fragment() {
         setupToolBar()
 
         setupGroup()
+
+        setupTextFields()
 
         mBinding.btnEditPhotoGroup.setOnClickListener {
             openGallery()
@@ -114,8 +118,21 @@ class EditGroupFragment : Fragment() {
                         val groupDescription = mBinding.etGroupDescription.text.toString()
                         val groupPrivate = mBinding.swPrivateGroup.isChecked
 
-                        if (validateGroupName(groupName) && validateGroupDescription(groupDescription)) {
-                            updateGroup(groupName, groupDescription, mPhotoGroupUri, groupPrivate)
+                        if (validateFields(mBinding.tilGroupName, mBinding.tilGroupDescription)) {
+                            if (validateGroupName(groupName) && validateGroupDescription(
+                                    groupDescription
+                                )
+                            ) {
+                                updateGroup(
+                                    groupName,
+                                    groupDescription,
+                                    mPhotoGroupUri,
+                                    groupPrivate
+                                )
+                            }
+                        } else {
+                            Snackbar.make(mBinding.root, "Por favor, completa los campos requeridos", Snackbar.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     .setNegativeButton("Cancelar", null)
@@ -151,6 +168,32 @@ class EditGroupFragment : Fragment() {
                 loadPhoto(mGroup.photo!!.toUri())
             }
         }
+    }
+
+    private fun setupTextFields() {
+        with(mBinding) {
+            etGroupName.addTextChangedListener {
+                validateFields(tilGroupName)
+            }
+            etGroupDescription.addTextChangedListener {
+                validateFields(tilGroupDescription)
+            }
+        }
+    }
+
+    private fun validateFields(vararg textFields: TextInputLayout): Boolean {
+        var isValid = true
+
+        for (textField in textFields) {
+            if (textField.editText?.text.toString().isEmpty()) {
+                textField.error = "Campo requerido."
+                isValid = false
+            } else {
+                textField.error = null
+            }
+        }
+
+        return isValid
     }
 
     private fun openGallery() {
@@ -193,12 +236,6 @@ class EditGroupFragment : Fragment() {
 
         // Validate group name
         return when {
-            // Check if group name is empty
-            groupName.isEmpty() -> {
-                Snackbar.make(mBinding.root, "El nombre del grupo no puede estar vacío", Snackbar.LENGTH_SHORT).show()
-                false
-            }
-
             // Check if group name exceeds the maximum length
             groupName.length > maxLength -> {
                 Snackbar.make(mBinding.root, "El nombre del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
@@ -220,12 +257,6 @@ class EditGroupFragment : Fragment() {
 
         // Validate group description
         return when {
-            // Check if group description is empty
-            description.isEmpty() -> {
-                Snackbar.make(mBinding.root, "La descripción del grupo no puede estar vacía", Snackbar.LENGTH_SHORT).show()
-                false
-            }
-
             // Check if group description exceeds the maximum length
             description.length > maxLength -> {
                 Snackbar.make(mBinding.root, "La descripción del grupo no puede exceder los $maxLength caracteres", Snackbar.LENGTH_SHORT).show()
