@@ -22,6 +22,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.inavarro.ridesync.mainModule.MainActivity
 import com.inavarro.ridesync.R
+import com.inavarro.ridesync.authModule.forgotPasswordModule.ForgotPasswordActivity
 import com.inavarro.ridesync.authModule.registerModule.RegisterActivity
 import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.ActivityLoginBinding
@@ -45,6 +46,11 @@ class LoginActivity : AppCompatActivity() {
         setupSharedPreferences()
 
         setupTextFields()
+
+        mBinding.tvForgotPassword.setOnClickListener {
+            val intent = Intent(this, ForgotPasswordActivity::class.java)
+            startActivity(intent)
+        }
 
         mBinding.btnLogin.setOnClickListener {
             signIn()

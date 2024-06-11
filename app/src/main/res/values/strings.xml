@@ -65,7 +65,7 @@
     <string name="tvAboutRideSync_text">En RideSync, hemos identificado una necesidad significativa dentro de la comunidad motociclista: la falta de una plataforma dedicada exclusivamente a conectar a los entusiastas de las motocicletas. Con mi vasta experiencia en el mundo de las motos, he sido testigo de las dificultades que enfrentan los motociclistas al intentar organizar eventos, coordinar salidas y compartir experiencias de manera eficiente y centralizada. \n\n RideSync nace de esta observación y de la pasión por el motociclismo. Nuestra plataforma está diseñada para servir como un punto de encuentro digital para los motociclistas de todo el mundo. Queremos facilitar la formación de grupos, fomentar la comunicación entre compañeros y promover la organización de eventos y salidas.</string>
     <string name="tvGroupName_text">Nombre del grupo</string>
     <string name="tvGroupMembers_text">Miembros</string>
-    <string name="tvEditProfile_text">Editor perfil</string>
+    <string name="tvEditProfile_text">Editar perfil</string>
     <string name="btnEditImageProfile_text">Editar foto de perfil</string>
     <string name="tilFullName_text">Nombre de completo</string>
     <string name="tvPublicProfile_text">Perfil público</string>
@@ -87,4 +87,8 @@
     <string name="btnShop_text">Ver Tienda</string>
     <string name="tvAdmin_text">Admin</string>
     <string name="tvMe_text">Yo</string>
+    <string name="tvForgotPassword_text">Olvidé mi contraseña</string>
+    <string name="tvForgotPasword_text">Recuperar contraseña</string>
+    <string name="tvSubTitleForgotPassword_text">Pon tu correo electrónico y te enviaremos un enlace para recuperar tu contraseña</string>
+    <string name="btnSend_text">Enviar</string>
 </resources>

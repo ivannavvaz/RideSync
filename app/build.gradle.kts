@@ -43,6 +43,7 @@ android {
 }
 
 dependencies {
+    implementation("androidx.activity:activity:1.8.0")
     val firebaseVersion = "32.8.0"
     val firebaseAuthGoogleVersion = "20.7.0"
     val navVersion = "2.7.7"
