@@ -84,8 +84,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             for (document in result) {
                 val location = document.getGeoPoint("location")
                 val id = document.id
+                val date = document.getTimestamp("date")
+
                 if (location != null) {
-                    addMarker(LatLng(location.latitude, location.longitude), id, document.getString("type")!!)
+                    if (date != null && date.toDate().time > System.currentTimeMillis()){
+                        addMarker(LatLng(location.latitude, location.longitude), id, document.getString("type")!!)
+                    } else {
+                        addMarker(
+                            LatLng(location.latitude, location.longitude),
+                            id,
+                            document.getString("type")!!
+                        )
+                    }
                 }
             }
         }

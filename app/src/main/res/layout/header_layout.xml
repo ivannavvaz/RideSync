@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/headerLayout_height"
+    android:padding="@dimen/common_padding_default"
+    android:background="@color/md_theme_light_primary"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="@dimen/ivProfile_width_height"
+        android:layout_height="@dimen/ivProfile_width_height"
+        android:src="@mipmap/ic_logo2"
+        android:scaleType="centerCrop" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

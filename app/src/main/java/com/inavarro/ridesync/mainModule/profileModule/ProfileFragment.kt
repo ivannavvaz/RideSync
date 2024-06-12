@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +55,13 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private lateinit var mStorageReference: StorageReference
 
     private lateinit var mFirestoreReference: CollectionReference
+
+    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.rotate_open_anim) }
+    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.rotate_close_anim) }
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.from_bottom_anim) }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.to_bottom_anim) }
+
+    private var clicked = false
 
     inner class PhotoHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -99,7 +108,11 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
         setupProfile()
 
-        mBinding.fabUploadImage.setOnClickListener {
+        mBinding.fabOptions.setOnClickListener {
+            onAddButtonClicked()
+        }
+
+        mBinding.fabGallery.setOnClickListener {
             openGallery()
         }
 
@@ -273,6 +286,46 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .circleCrop()
             .into(mBinding.ivProfile)
+    }
+
+    private fun onAddButtonClicked() {
+        setVisibility(clicked)
+        setAnimation(clicked)
+        setClicklable(clicked)
+
+        clicked = !clicked
+    }
+
+    private fun setVisibility(clicked: Boolean) {
+        if (!clicked) {
+            mBinding.fabCamera.visibility = View.VISIBLE
+            mBinding.fabGallery.visibility = View.VISIBLE
+        } else {
+            mBinding.fabCamera.visibility = View.INVISIBLE
+            mBinding.fabGallery.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun setAnimation(clicked: Boolean) {
+        if (!clicked) {
+            mBinding.fabCamera.startAnimation(fromBottom)
+            mBinding.fabGallery.startAnimation(fromBottom)
+            mBinding.fabOptions.startAnimation(rotateOpen)
+        } else {
+            mBinding.fabCamera.startAnimation(toBottom)
+            mBinding.fabGallery.startAnimation(toBottom)
+            mBinding.fabOptions.startAnimation(rotateClose)
+        }
+    }
+
+    private fun setClicklable(clicked: Boolean) {
+        if (!clicked) {
+            mBinding.fabCamera.isClickable = true
+            mBinding.fabGallery.isClickable = true
+        } else {
+            mBinding.fabCamera.isClickable = false
+            mBinding.fabGallery.isClickable = false
+        }
     }
 
     private fun openGallery() {
