@@ -1,10 +1,12 @@
 package com.inavarro.ridesync.mainModule.profileModule
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,6 +21,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,6 +45,7 @@ import com.inavarro.ridesync.common.entities.Photo
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
+import java.io.File
 
 class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -62,6 +67,8 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(context, R.anim.to_bottom_anim) }
 
     private var clicked = false
+
+    private lateinit var mImageUrl: Uri
 
     inner class PhotoHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -93,6 +100,10 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             }
         }
 
+    companion object {
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 100
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -110,6 +121,12 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
         mBinding.fabOptions.setOnClickListener {
             onAddButtonClicked()
+        }
+
+        mImageUrl = createImageUri()
+
+        mBinding.fabCamera.setOnClickListener {
+            mContract.launch(mImageUrl)
         }
 
         mBinding.fabGallery.setOnClickListener {
@@ -328,16 +345,58 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         }
     }
 
-    private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startForResult.launch(intent)
-    }
-
     private fun openShare() {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_TEXT, "¡Mira mi perfil en RideSync! ${mAuth.currentUser?.displayName}")
         startActivity(Intent.createChooser(intent, "Compartir"))
+    }
+
+    private fun openCamera() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startForResult.launch(intent)
+        } else {
+            requestCameraPermission()
+        }
+    }
+
+    private fun requestCameraPermission() {
+        when {
+            shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
+                Snackbar.make(mBinding.root, "Permisos necesarios para hacer una foto", Snackbar.LENGTH_LONG).show()
+            }
+            else -> {
+                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        }
+    }
+
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Snackbar.make(mBinding.root, "Permisos de cámara denegados", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private val mContract = registerForActivityResult(ActivityResultContracts.TakePicture()) {
+        val uri = createImageUri()
+
+        uploadImage(uri)
+    }
+
+    private fun createImageUri(): Uri {
+        val image = File(requireContext().externalCacheDir, "image.jpg")
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "com.inavarro.ridesync.mainModule.profileModule.FileProvider",
+            image)
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startForResult.launch(intent)
     }
 
     private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
