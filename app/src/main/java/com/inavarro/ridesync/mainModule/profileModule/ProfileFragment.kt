@@ -48,6 +48,7 @@ import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.R
 import com.inavarro.ridesync.authModule.loginModule.LoginActivity
 import com.inavarro.ridesync.common.entities.Photo
+import com.inavarro.ridesync.common.entities.User
 import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
@@ -250,6 +251,12 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             R.id.nav_about -> {
                 findNavController().navigate(R.id.action_profileFragment_to_aboutFragment)
             }
+            R.id.nav_promotion_store -> {
+                openWhatsAppChat(requireContext(), "654363692")
+            }
+            R.id.nav_upgrade_account -> {
+                findNavController().navigate(R.id.action_profileFragment_to_premiumFragment)
+            }
             R.id.nav_logout -> {
                 signOut()
             }
@@ -266,10 +273,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         mBinding.tvEmail.text = getEmail()
         mBinding.tvUserName.text = getUserName()
 
-        val photoUrl = getPhotoUrl()
-        if (photoUrl != null) {
-            loadPhotoProfile(photoUrl)
-        }
+        loadPhotoProfile()
     }
 
     private fun getEmail(): String? {
@@ -287,17 +291,25 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         } else "anonymous"
     }
 
-    private fun getPhotoUrl(): Uri? {
-        val user = mAuth.currentUser
-        return user?.photoUrl
-    }
+    private fun loadPhotoProfile() {
+        // Get profile photo from firestore
+        val query = FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(mAuth.currentUser?.uid!!)
 
-    private fun loadPhotoProfile(photoUrl: Uri?) {
-        Glide.with(requireContext())
-            .load(photoUrl)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
-            .circleCrop()
-            .into(mBinding.ivProfile)
+        query.get().addOnSuccessListener { document ->
+            if (document.exists()) {
+                val user = document.toObject(User::class.java)
+
+                if (user?.profilePhoto != null) {
+                    Glide.with(requireContext())
+                        .load(user.profilePhoto)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .circleCrop()
+                        .into(mBinding.ivProfile)
+                }
+            }
+        }
     }
 
     private fun onAddButtonClicked() {
@@ -345,6 +357,16 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         intent.type = "text/plain"
         intent.putExtra(Intent.EXTRA_TEXT, "¡Mira mi perfil en RideSync! ${mAuth.currentUser?.displayName}")
         startActivity(Intent.createChooser(intent, "Compartir"))
+    }
+
+    fun openWhatsAppChat(context: Context, phoneNumber: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = Uri.parse("https://api.whatsapp.com/send?phone=$phoneNumber")
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "WhatsApp no está instalado", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openCamera() {
