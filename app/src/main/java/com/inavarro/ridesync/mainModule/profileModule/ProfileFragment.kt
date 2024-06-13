@@ -4,12 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -33,10 +37,12 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.inavarro.ridesync.R
@@ -46,6 +52,9 @@ import com.inavarro.ridesync.databinding.FragmentProfileBinding
 import com.inavarro.ridesync.databinding.ItemPhotoBinding
 import com.inavarro.ridesync.mainModule.MainActivity
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.UUID
 
 class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,7 +77,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
     private var clicked = false
 
-    private lateinit var mImageUrl: Uri
+    private var mImageUrl: Uri? = null
 
     inner class PhotoHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -76,33 +85,19 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
             fun setListener(photo: Photo) {
                 binding.root.setOnLongClickListener {
-                    val builder = AlertDialog.Builder(requireContext())
-
-                    // Set the message show for the Alert time
-                    val alertDialog = builder.create()
-                    alertDialog.show()
-
-                    builder.setTitle("Confirmacion")
-                    builder.setMessage("¿Quieres eliminar la foto?")
-                    builder.setPositiveButton("Eliminar") { _, _ ->
-                        deletePhoto(photo)
-                        alertDialog.dismiss()
-                    }
-                    builder.setNegativeButton("Cancelar") { _, _ ->
-                        alertDialog.dismiss()
-                    }
-
-                    alertDialog.dismiss()
-                    builder.show()
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Confirmación")
+                        .setMessage("¿Quieres eliminar la foto?")
+                        .setPositiveButton("Eliminar") { _, _ ->
+                            deletePhoto(photo)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
 
                     true
                 }
             }
         }
-
-    companion object {
-        private const val CAMERA_PERMISSION_REQUEST_CODE = 100
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,10 +118,8 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             onAddButtonClicked()
         }
 
-        mImageUrl = createImageUri()
-
         mBinding.fabCamera.setOnClickListener {
-            mContract.launch(mImageUrl)
+            openCamera()
         }
 
         mBinding.fabGallery.setOnClickListener {
@@ -152,7 +145,9 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             .document(mAuth.currentUser?.uid!!)
             .collection("photos")
 
-        val options = FirestoreRecyclerOptions.Builder<Photo>().setQuery(mFirestoreReference, Photo::class.java).build()
+        val query = mFirestoreReference.orderBy("date", Query.Direction.DESCENDING)
+
+        val options = FirestoreRecyclerOptions.Builder<Photo>().setQuery(query, Photo::class.java).build()
 
         mFirebaseAdapter = object : FirestoreRecyclerAdapter<Photo, PhotoHolder>(options) {
 
@@ -354,8 +349,9 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
 
     private fun openCamera() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startForResult.launch(intent)
+            onAddButtonClicked()
+            saveImageToGallery()
+            takePicture.launch(mImageUrl)
         } else {
             requestCameraPermission()
         }
@@ -364,15 +360,15 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     private fun requestCameraPermission() {
         when {
             shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) -> {
-                Snackbar.make(mBinding.root, "Permisos necesarios para hacer una foto", Snackbar.LENGTH_LONG).show()
+                showRotationDialogForCameraPermission()
             }
             else -> {
-                requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+                requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
             openCamera()
         } else {
@@ -380,31 +376,99 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
         }
     }
 
-    private val mContract = registerForActivityResult(ActivityResultContracts.TakePicture()) {
-        val uri = createImageUri()
-
-        uploadImage(uri)
+    private fun showRotationDialogForCameraPermission() {
+        // Set the message show for the Alert time
+        AlertDialog.Builder(requireContext())
+            .setTitle("Permisos necesarios")
+            .setMessage("Es necesario el permisos de cámara")
+            .setPositiveButton("Ajustes") { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
-    private fun createImageUri(): Uri {
-        val image = File(requireContext().externalCacheDir, "image.jpg")
-        return FileProvider.getUriForFile(
-            requireContext(),
-            "com.inavarro.ridesync.mainModule.profileModule.FileProvider",
-            image)
+    private fun saveImageToGallery() {
+        val values = createImageValues()
+        val uri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+        mImageUrl = uri
+    }
+
+    private fun createImageValues(): ContentValues {
+        val uniqueId = UUID.randomUUID().toString()
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "Imagen_$uniqueId")
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, "Imagen_$uniqueId")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Imagen tomada desde la cámara")
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+        values.put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis())
+        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis())
+        return values
     }
 
     private fun openGallery() {
-        val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-        startForResult.launch(intent)
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            onAddButtonClicked()
+            pickImage.launch("image/*")
+        } else {
+            requestImagesPermission()
+        }
     }
 
-    private val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            if ((result.data != null)) {
-                uploadImage(result.data?.data)
+    private val takePicture = registerForActivityResult(ActivityResultContracts.TakePicture()) { isSuccess ->
+        if (isSuccess) {
+            uploadImage(mImageUrl)
+        }
+    }
+
+    private fun requestImagesPermission() {
+        when {
+            shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) -> {
+                showRotationDialogForImagesPermission()
             }
+            else -> {
+                requestImagesPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+    }
+
+    private val requestImagesPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            openGallery()
+        } else {
+            Snackbar.make(mBinding.root, "Permisos archivos y contenido multimedia denegado", Snackbar.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showRotationDialogForImagesPermission() {
+        // Set the message show for the Alert time
+        AlertDialog.Builder(requireContext())
+            .setTitle("Permisos necesarios")
+            .setMessage("Son necesarios los permisos de archivos y contenido multimedia")
+            .setPositiveButton("Ajustes") { _, _ ->
+                try {
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
+                    intent.data = uri
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            uploadImage(uri)
         }
     }
 
@@ -436,7 +500,7 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
     }
 
     private fun savePhoto(id: String, uri: String) {
-        val photo = Photo(id, uri)
+        val photo = Photo(id, uri, Timestamp.now())
         mFirestoreReference.document(id).set(photo)
     }
 

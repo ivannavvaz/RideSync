@@ -3,7 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -42,8 +47,8 @@
             android:exported="false" />
 
         <provider
-            android:authorities="com.inavarro.ridesync.mainModule.profileModule.FileProvider"
             android:name="androidx.core.content.FileProvider"
+            android:authorities="com.inavarro.ridesync.mainModule.profileModule.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
