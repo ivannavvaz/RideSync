@@ -1,16 +1,22 @@
-*.iml
+# Gradle
 .gradle
-/local.properties
-/.idea/*
-#/.idea/caches
-#/.idea/libraries
-#/.idea/modules.xml
-#/.idea/workspace.xml
-#/.idea/navEditor.xml
-#/.idea/assetWizardSettings.xml
-.DS_Store
 /build
+
+# Local configuration file
+local.properties
+
+# Log/OS File
+*.log
+
+# Android Sutdio generated files and folders
 /captures
 .externalNativeBuild
 .cxx
-local.properties
+
+# IntelliJ
+*.iml
+/.idea/*
+
+# MacOS
+.DS_Store
+

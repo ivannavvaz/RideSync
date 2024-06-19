@@ -245,6 +245,9 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             R.id.nav_edit_profile -> {
                 findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
             }
+            R.id.nav_settings -> {
+                intentToApplicacionSetting()
+            }
             R.id.nav_share -> {
                 openShare()
             }
@@ -404,17 +407,21 @@ class ProfileFragment : Fragment(), NavigationView.OnNavigationItemSelectedListe
             .setTitle("Permisos necesarios")
             .setMessage("Es necesario el permisos de cámara")
             .setPositiveButton("Ajustes") { _, _ ->
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", requireContext().packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-                } catch (e: Exception) {
-                    Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
-                }
+                intentToApplicacionSetting()
             }
             .setNegativeButton("Cancelar", null)
             .show()
+    }
+
+    private fun intentToApplicacionSetting() {
+        try {
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+            val uri = Uri.fromParts("package", requireContext().packageName, null)
+            intent.data = uri
+            startActivity(intent)
+        } catch (e: Exception) {
+            Snackbar.make(mBinding.root, "Error: ${e.message}", Snackbar.LENGTH_SHORT).show()
+        }
     }
 
     private fun saveImageToGallery() {
