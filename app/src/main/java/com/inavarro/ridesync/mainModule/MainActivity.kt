@@ -26,8 +26,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
 
-    private val mapsApiKey = BuildConfig.MAPS_API_KEY
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
