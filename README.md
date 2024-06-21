@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/ivannavvaz/RideSync">
-    <img src="images/RideSyncLogo3.png">
+    <img src="images/RideSync.png">
   </a>
 
   <h3 align="center">RideSync</h3>
